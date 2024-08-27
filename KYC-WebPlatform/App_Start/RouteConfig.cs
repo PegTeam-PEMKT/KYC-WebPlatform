@@ -7,6 +7,7 @@ using System.Web.Routing;
 
 namespace KYC_WebPlatform
 {
+    // capture the URL and route it to the appropriate page
     public class RouteConfig
     {
         public static void RegisterRoutes(RouteCollection routes)
@@ -15,7 +16,7 @@ namespace KYC_WebPlatform
 
             routes.MapRoute(
                 name: "Default",
-                url: "{controller}/{action}/{id}",
+                url: "{controller}/{action}/{id}", //home/about
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }
