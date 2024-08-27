@@ -6,8 +6,12 @@ using System.Web.Mvc;
 
 namespace KYC_WebPlatform.Controllers
 {
-    public class OTPFacadeController : Controller
+    public class SignupController : Controller
     {
-
+        // GET: Signup
+        public ActionResult Index()
+        {
+            return View();
+        }
     }
 }

@@ -157,18 +157,19 @@
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
-    <Compile Include="Controllers\OTPFacadeController.cs" />
+    <Compile Include="Controllers\SignupController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\LoginDto.cs" />
-    <Compile Include="Models\Otp.cs" />
+    <Compile Include="Models\OtpViewModel.cs" />
+    <Compile Include="Models\SignupDto.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Business\AuthenticationService.cs" />
+    <Compile Include="Services\Business\EmailService.cs" />
     <Compile Include="Services\Data\DBContext.cs" />
     <Compile Include="Services\Data\SecurityDAO.cs" />
-    <Compile Include="Services\OTPFacade.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
@@ -236,9 +237,11 @@
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Login\SignIn.cshtml" />
+    <Content Include="Views\Login\OtpView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Signup\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\bootstrap.min.js.map" />
