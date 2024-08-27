@@ -15,8 +15,14 @@ namespace KYC_WebPlatform
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "Login",
+                url: "Login", //Login/Index
+                defaults: new { controller = "Login", action = "Index" }
+            );
+
+            routes.MapRoute(
                 name: "Default",
-                url: "{controller}/{action}/{id}", //home/about
+                url: "{controller}/{action}/{id}", //home/Index or About
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
         }
