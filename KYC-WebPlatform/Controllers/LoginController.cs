@@ -19,16 +19,25 @@ namespace KYC_WebPlatform.Controllers
 
             if (authenticationService.Authenticate(loginDto))
             {
-                SendOTP(loginDto.Email);
-                return View("OTPView");
+                Debug.WriteLine("From Authenticate: " + loginDto.Email);
+                if (SendOTP(loginDto.Email))
+                {
+                    return View("OtpView");
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Failed to send OTP.";
+                    return RedirectToAction("Login");
+                }
             }
             else
             {
+                ViewBag.ErrorMessage = "Failed to log in";
                 return RedirectToAction("Index", "Login");
             }
         }
 
-        public ActionResult SendOTP(string email)
+        public bool SendOTP(string email)
         {
             Random rand = new Random();
             string randomCode = (rand.Next(999999)).ToString();
@@ -47,12 +56,11 @@ namespace KYC_WebPlatform.Controllers
 
             if (emailSent)
             {
-                return View("OTPView");
+                return true;
             }
             else
             {
-                ViewBag.ErrorMessage = "Failed to send OTP.";
-                return RedirectToAction("Login");
+                return false;
             }
         }
 
@@ -89,5 +97,19 @@ namespace KYC_WebPlatform.Controllers
 
             return View("OtpView", model);
         }
+
+        //public ActionResult ResendOtp()
+        //{
+        //    string userEmail = Session["UserEmail"] as string;
+
+        //    if (string.IsNullOrEmpty(userEmail))
+        //    {
+        //        ViewBag.ErrorMessage = "Email not found. Please request a new OTP.";
+        //        return RedirectToAction("Login"); // Redirect to login or another appropriate action
+        //    }
+
+        //    // Resend the OTP
+        //    SendOTP(userEmail); // Ensure SendOtp is correctly implemented to handle resending
+        //}
     }
 }

@@ -9,12 +9,11 @@ namespace KYC_WebPlatform.Services.Data
     {
         DBContext dbContext = DBContext.GetInstance();
 
-        internal bool FindByUser(LoginDto logindto)
+        internal bool FindByUser(string email, string password)
         {
             bool isValidUser = false;
-            string email = logindto.Email;
-            string password = logindto.Password;
 
+            Debug.WriteLine("From DBContext: " + email);
             try
             {
                 using (SqlConnection sqlConnection = dbContext.GetConnection())
