@@ -164,7 +164,6 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\AddBusiness_MODEL.cs" />
     <Compile Include="Models\LoginDto.cs" />
     <Compile Include="Models\OtpViewModel.cs" />
     <Compile Include="Models\SignupDto.cs" />
@@ -1407,8 +1406,7 @@
     <Content Include="Views\Client\ViewStatus.cshtml" />
     <Content Include="Views\Business\ViewClients.cshtml" />
     <Content Include="Views\Business\ViewStatus.cshtml" />
-    <Content Include="Views\Shared\_BusinessLayout.cshtml" 
-    <Content Include="Views\Shared\ApprovalView.cshtml" />
+    <Content Include="Views\Shared\_BusinessLayout.cshtml" />
     <Content Include="Views\Business\CreateView.cshtml" />
   </ItemGroup>
   <ItemGroup>
