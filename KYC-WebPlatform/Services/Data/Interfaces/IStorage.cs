@@ -7,6 +7,6 @@ namespace KYC_WebPlatform.Services.Data.Interfaces
 {
     public interface IStorage
     {
-        List<object> ExecuteSelectQuery(string query);
+        Dictionary<string, List<object>> ExecuteSelectQuery(string query);
     }
 }
