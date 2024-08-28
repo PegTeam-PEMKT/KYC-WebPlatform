@@ -2,7 +2,6 @@
 using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Web.Helpers;
 
 namespace KYC_WebPlatform.Services.Data
 {
@@ -14,6 +13,7 @@ namespace KYC_WebPlatform.Services.Data
         {
             bool userCreated = false;
             DateTime dateTime = DateTime.Now;
+            int roleId = (int)signupDto.Role;
 
             if (FindByEmail(signupDto.Email))
             {
@@ -22,10 +22,9 @@ namespace KYC_WebPlatform.Services.Data
             }
             else
             {
-                InsertRole(signupDto.Role.ToString());
-                if (signupDto.Role == UserRole.Admin) 
-                { 
-                    if(InsertAdmin(signupDto.Username, signupDto.Password))
+                if (signupDto.Role == UserRole.Admin)
+                {
+                    if (InsertAdmin(signupDto.Username, signupDto.Password))
                     {
                         Debug.WriteLine("Admin Created");
                     }
@@ -36,7 +35,7 @@ namespace KYC_WebPlatform.Services.Data
                 }
                 if (signupDto.Role == UserRole.DepartmentHead)
                 {
-                    if(InsertDepartmentHead(signupDto.Username, signupDto.Email, signupDto.Password))
+                    if (InsertDepartmentHead(signupDto.Username, signupDto.Email, signupDto.Password))
                     {
                         Debug.WriteLine("DeptHead Created");
                     }
@@ -49,6 +48,10 @@ namespace KYC_WebPlatform.Services.Data
                 {
                     using (SqlConnection connection = dbContext.GetConnection())
                     {
+                        if((int)signupDto.Role == 0)
+                        {
+                            roleId = 15;
+                        }
                         connection.Open();
 
                         // Insert into Users table
@@ -60,7 +63,7 @@ namespace KYC_WebPlatform.Services.Data
                         userCommand.Parameters.AddWithValue("@Password", signupDto.Password);
                         userCommand.Parameters.AddWithValue("@Email", signupDto.Email);
                         userCommand.Parameters.AddWithValue("@PhoneNumber", signupDto.PhoneNumber);
-                        userCommand.Parameters.AddWithValue("@RoleId", (int)signupDto.Role); // Cast enum to int
+                        userCommand.Parameters.AddWithValue("@RoleId", roleId); // Cast enum to int
                         userCommand.Parameters.AddWithValue("@IsActive", false);
                         userCommand.Parameters.AddWithValue("@CreatedDate", dateTime);
 
@@ -106,7 +109,7 @@ namespace KYC_WebPlatform.Services.Data
             {
                 Debug.WriteLine("From FindByUser: " + e.Message);
             }
-            
+
             return isValidUser;
 
         }
@@ -144,32 +147,6 @@ namespace KYC_WebPlatform.Services.Data
 
         }
 
-        internal bool InsertRole(string role) 
-        {
-            try
-            {
-                using (SqlConnection connection = dbContext.GetConnection())
-                {
-                    connection.Open();
-
-                    // Insert into Users table
-                    string userQuery = "INSERT INTO Roles (RoleName) " +
-                                       "VALUES (@RoleName)";
-
-                    SqlCommand userCommand = new SqlCommand(userQuery, connection);
-                    userCommand.Parameters.AddWithValue("@RoleName", role);
-
-                    userCommand.ExecuteNonQuery();
-                    return true;
-                }
-            }
-            catch (Exception e)
-            {
-                Debug.WriteLine("From CreateUser: " + e.Message);
-                return false;
-            }
-        }
-
         internal bool InsertAdmin(string adminUserName, string adminHashPassword)
         {
             bool adminCreated = false;
@@ -193,7 +170,7 @@ namespace KYC_WebPlatform.Services.Data
                         adminCreated = true;
                         return adminCreated;
                     }
-                   
+
                 }
                 catch (Exception ex)
                 {
@@ -225,7 +202,7 @@ namespace KYC_WebPlatform.Services.Data
 
                     if (rowsAffected > 0)
                     {
-                        deptHeadCreated = true; 
+                        deptHeadCreated = true;
                         return deptHeadCreated;
                     }
                 }
@@ -236,7 +213,40 @@ namespace KYC_WebPlatform.Services.Data
             }
 
             return deptHeadCreated;
-            
+
+        }
+
+        internal int RetrieveRole(string email)
+        {
+            int roleId = 0;
+            try
+            {
+                using (SqlConnection sqlConnection = dbContext.GetConnection())
+                {
+                    string query = "SELECT RoleId FROM dbo.users WHERE Email = @Email";
+
+                    SqlCommand command = new SqlCommand(query, sqlConnection);
+                    command.Parameters.AddWithValue("@Email", email);
+
+                    Debug.WriteLine("From RetrieveRole"+email);
+
+                    sqlConnection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            reader.Read(); // Move to the first record
+                            roleId = reader.GetInt32(0);
+                        }
+                    }
+                    return roleId;
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.WriteLine("From RetrieveRole: " + e.Message);
+            }
+            return roleId;
         }
     }
 }

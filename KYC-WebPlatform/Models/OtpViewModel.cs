@@ -10,5 +10,6 @@ namespace KYC_WebPlatform.Models
     {
         [Required]
         public string Otp { get; set; }
+        public string Email { get; set; }
     }
 }
