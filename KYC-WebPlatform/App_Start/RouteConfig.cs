@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
 
 namespace KYC_WebPlatform
@@ -13,6 +9,18 @@ namespace KYC_WebPlatform
         public static void RegisterRoutes(RouteCollection routes)
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
+
+            routes.MapRoute(
+                name: "ViewBusiness",
+                url: "Business/ViewClients",
+                defaults: new { controller = "Business", action = "ViewClients" }
+            );
+
+            routes.MapRoute(
+            name: "BusinessViewStatus",
+            url: "Business/ViewStatus",
+            defaults: new { controller = "Business", action = "ViewStatus" }
+           );
 
             //Route for UploadKYC
             routes.MapRoute(
