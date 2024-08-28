@@ -164,11 +164,15 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\Director_MODEL.cs" />
     <Compile Include="Models\LoginDto.cs" />
     <Compile Include="Models\OtpViewModel.cs" />
     <Compile Include="Models\SignupDto.cs" />
     <Compile Include="Models\UserRole.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Models\SanctionRequest.cs" />
+    <Compile Include="Models\SanctionResponse.cs" />
+    <Compile Include="Services\ApiService.cs" />
     <Compile Include="Services\Business\AuthenticationService.cs" />
     <Compile Include="Services\Business\EmailService.cs" />
     <Compile Include="Services\Data\ClientService.cs" />
@@ -1407,6 +1411,7 @@
     <Content Include="Views\Business\ViewClients.cshtml" />
     <Content Include="Views\Business\ViewStatus.cshtml" />
     <Content Include="Views\Shared\_BusinessLayout.cshtml" />
+    <Content Include="Views\Client\Confirmation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
