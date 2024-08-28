@@ -19,16 +19,25 @@ namespace KYC_WebPlatform.Controllers
 
             if (authenticationService.Authenticate(loginDto))
             {
-                SendOTP(loginDto.Email);
-                return View("OTPView");
+                Debug.WriteLine("From Authenticate: " + loginDto.Email);
+                if (SendOTP(loginDto.Email))
+                {
+                    return View("OtpView");
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Failed to send OTP.";
+                    return View("SignIn");
+                }
             }
             else
             {
-                return RedirectToAction("Index", "Login");
+                ViewBag.ErrorMessage = "Failed to log in";
+                return View("SignIn");
             }
         }
 
-        public ActionResult SendOTP(string email)
+        public bool SendOTP(string email)
         {
             Random rand = new Random();
             string randomCode = (rand.Next(999999)).ToString();
@@ -41,18 +50,18 @@ namespace KYC_WebPlatform.Controllers
             string toEmail = email;
             string subject = "Your OTP Code";
             string body = "Your OTP code is " + randomCode + " it will expire in 5 minutes";
-
+            string altHost = "smtp-mail.outlook.com";
+            
             EmailService emailService = new EmailService("jemimahsoulsister@outlook.com", "jemimah@soulsister", "smtp.office365.com", 587, true);
             bool emailSent = emailService.SendEmail(toEmail, subject, body);
 
             if (emailSent)
             {
-                return View("OTPView");
+                return true;
             }
             else
             {
-                ViewBag.ErrorMessage = "Failed to send OTP.";
-                return RedirectToAction("Login");
+                return false;
             }
         }
 
@@ -65,7 +74,7 @@ namespace KYC_WebPlatform.Controllers
                 string userEmail = Session["Email"] as string;
 
                 // Check if OTP has expired
-                if (DateTime.Now > storedOtpTimeStamp.Value.AddSeconds(15))
+                if (DateTime.Now > storedOtpTimeStamp.Value.AddMinutes(5))
                 {
                     ViewBag.ErrorMessage = "OTP has expired. Would you like to resend it?";
                     ViewBag.ExpiredOtp = true;
@@ -78,7 +87,8 @@ namespace KYC_WebPlatform.Controllers
                     Session.Remove("OTP"); // Remove OTP from session after successful verification
                     Session.Remove("OTPTime");
                     Session.Remove("UserEmail");
-                    return RedirectToAction("Index", "Home"); // Redirect to dashboard
+                    ViewBag.SuccessMessage = "Logged In Successfully";
+                    return View("Index", "Home"); // Redirect to dashboard
                 }
                 else
                 {
@@ -88,6 +98,36 @@ namespace KYC_WebPlatform.Controllers
             }
 
             return View("OtpView", model);
+        }
+
+
+        /// <summary>
+        /// This method has problem!!!
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult ResendOtp()
+        {
+            string userEmail = Session["UserEmail"] as string;
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                ViewBag.ErrorMessage = "Email not found. Please request a new OTP.";
+                return View("SignIn"); // Redirect to login or another appropriate action
+            }
+            else
+            {
+                // Resend the OTP
+                if (SendOTP(userEmail))
+                {
+                    return View("OtpView");
+                } // Ensure SendOtp is correctly implemented to handle resending
+                else
+                {
+                    ViewBag.ErrorMessage = "Failed to send OTP.";
+                    return View("SignIn");
+                }
+            }
+         
         }
     }
 }

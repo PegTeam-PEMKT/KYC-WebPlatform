@@ -35,7 +35,7 @@
     }
     if (ViewBag.ExpiredOtp != null && (bool)ViewBag.ExpiredOtp)
     {
-        <a href="@Url.Action("SendOTP", "Login", ViewBag.UserEmail)" class="btn btn-secondary">Resend OTP</a>
+        <a href="@Url.Action("ResendOtp", "Login")" class="btn btn-secondary">Resend OTP</a>
     }
 }
 
