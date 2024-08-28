@@ -27,13 +27,13 @@ namespace KYC_WebPlatform.Controllers
                 else
                 {
                     ViewBag.ErrorMessage = "Failed to send OTP.";
-                    return RedirectToAction("Login");
+                    return View("Login");
                 }
             }
             else
             {
                 ViewBag.ErrorMessage = "Failed to log in";
-                return RedirectToAction("Index", "Login");
+                return View("Login");
             }
         }
 
