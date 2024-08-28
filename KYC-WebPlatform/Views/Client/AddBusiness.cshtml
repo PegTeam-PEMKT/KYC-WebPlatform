@@ -1,9 +1,9 @@
-﻿@model KYC_WebPlatform.Models.AddBusiness_MODEL
-
+﻿
 @{
     ViewBag.Title = "AddBusiness";
     Layout = "~/Views/Shared/_ClientLayout.cshtml";
 }
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,33 +24,31 @@
 
     <!-- App CSS -->
     <link id="theme-style" rel="stylesheet" href="~/assets/css/portal.css">
+
 </head>
 
 <body class="app">
 
+
     <div class="app-wrapper">
+
         <div class="app-content pt-3 p-md-3 p-lg-4">
             <div class="container-xl">
                 <h1 class="app-page-title">Add Business</h1>
                 <hr class="mb-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-4">
+                        <h3 class="section-title">General</h3>
+                        <div class="section-intro">Provide General Information about your Business <a href="/Client/Help">Learn more</a></div>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <div class="app-card app-card-settings shadow-sm p-4">
 
-                <!-- Form -->
-                @using (Html.BeginForm("AddBusiness", "Client", FormMethod.Post, new { @class = "settings-form" }))
-                {
-                    @Html.AntiForgeryToken()
-
-                    <div class="row g-4 settings-section">
-                        <div class="col-12 col-md-4">
-                            <h3 class="section-title">General</h3>
-                            <div class="section-intro">Provide General Information about your Business <a href="/Client/Help">Learn more</a></div>
-                        </div>
-                        <div class="col-12 col-md-8">
-                            <div class="app-card app-card-settings shadow-sm p-4">
-                                <div class="app-card-body">
+                            <div class="app-card-body">
+                                <form class="settings-form">
                                     <div class="mb-3">
-                                        <label for="BusinessName" class="form-label">
-                                            Business Name
-                                            <span class="ms-2" data-container="body" data-bs-toggle="popover" data-trigger="hover" data-placement="top" data-content="This is a Bootstrap popover example. You can use popover to provide extra info.">
+                                        <label for="setting-input-1" class="form-label">
+                                            Business Name<span class="ms-2" data-container="body" data-bs-toggle="popover" data-trigger="hover" data-placement="top" data-content="This is a Bootstrap popover example. You can use popover to provide extra info.">
                                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                                     <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z" />
@@ -58,45 +56,45 @@
                                                 </svg>
                                             </span>
                                         </label>
-                                        @Html.TextBoxFor(m => m.BusinessName, new { @class = "form-control", placeholder = "Business Name", required = true })
+                                        <input type="text" class="form-control" id="setting-input-1" placeholder="Business Name" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="ContactName" class="form-label">Contact Name</label>
-                                        @Html.TextBoxFor(m => m.ContactName, new { @class = "form-control", placeholder = "Contact Person Name", required = true })
+                                        <label for="setting-input-2" class="form-label">Contact Name</label>
+                                        <input type="text" class="form-control" id="setting-input-2" placeholder="Contact Person Name" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="BusinessPhoneNumber" class="form-label">Business Phone Number</label>
-                                        @Html.TextBoxFor(m => m.BusinessPhoneNumber, new { @class = "form-control", required = true })
+                                        <label for="setting-input-2" class="form-label">Business Phone Number</label>
+                                        <input type="text" class="form-control" id="setting-input-2" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="BusinessEmail" class="form-label">Business Email Address</label>
-                                        @Html.TextBoxFor(m => m.BusinessEmail, new { @class = "form-control", type = "email" })
+                                        <label for="setting-input-3" class="form-label">Business Email Address</label>
+                                        <input type="email" class="form-control" id="setting-input-3">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="BusinessWebsite" class="form-label">Business Website</label>
-                                        @Html.TextBoxFor(m => m.BusinessWebsite, new { @class = "form-control", type = "url" })
+                                        <label for="setting-input-3" class="form-label">Business Website</label>
+                                        <input type="email" class="form-control" id="setting-input-3">
                                     </div>
                                     <button type="submit" class="btn app-btn-primary">Submit Business Info</button>
-                                </div>
-                            </div>
-                        </div>
+                                </form>
+                            </div><!--//app-card-body-->
+
+                        </div><!--//app-card-->
                     </div>
+                </div><!--//row-->
+                <hr class="my-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-4">
+                        <h3 class="section-title">Director Information</h3>
+                        <div class="section-intro">Provide Information about your Business Managing Director <a href="/Client/Help">Learn more</a></div>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <div class="app-card app-card-settings shadow-sm p-4">
 
-                    <hr class="my-4">
-
-                    <!-- Director Information -->
-                    <div class="row g-4 settings-section">
-                        <div class="col-12 col-md-4">
-                            <h3 class="section-title">Director Information</h3>
-                            <div class="section-intro">Provide Information about your Business Managing Director <a href="/Client/Help">Learn more</a></div>
-                        </div>
-                        <div class="col-12 col-md-8">
-                            <div class="app-card app-card-settings shadow-sm p-4">
-                                <div class="app-card-body">
+                            <div class="app-card-body">
+                                <form class="settings-form">
                                     <div class="mb-3">
-                                        <label for="DirectorName" class="form-label">
-                                            Director Name
-                                            <span class="ms-2" data-container="body" data-bs-toggle="popover" data-trigger="hover" data-placement="top" data-content="This is a Bootstrap popover example. You can use popover to provide extra info.">
+                                        <label for="setting-input-1" class="form-label">
+                                            Director Name<span class="ms-2" data-container="body" data-bs-toggle="popover" data-trigger="hover" data-placement="top" data-content="This is a Bootstrap popover example. You can use popover to provide extra info.">
                                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
                                                     <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z" />
@@ -104,126 +102,170 @@
                                                 </svg>
                                             </span>
                                         </label>
-                                        @Html.TextBoxFor(m => m.DirectorName, new { @class = "form-control", placeholder = "Director Name", required = true })
+                                        <input type="text" class="form-control" id="setting-input-1" placeholder="Director Name" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="NIN" class="form-label">National Identification Number NIN</label>
-                                        @Html.TextBoxFor(m => m.NIN, new { @class = "form-control", placeholder = "National Identification Number", required = true })
+                                        <label for="setting-input-2" class="form-label">National Identification Number NIN</label>
+                                        <input type="text" class="form-control" id="setting-input-2" placeholder="National Identification Number" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="DirectorPhoneNumber" class="form-label">Phone Number</label>
-                                        @Html.TextBoxFor(m => m.DirectorPhoneNumber, new { @class = "form-control", placeholder = "Director Phone Number", required = true })
+                                        <label for="setting-input-2" class="form-label">Phone Number</label>
+                                        <input type="text" class="form-control" id="setting-input-2" placeholder="Business Phone Number" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="DirectorEmail" class="form-label">Email Address</label>
-                                        @Html.TextBoxFor(m => m.DirectorEmail, new { @class = "form-control", placeholder = "Director Email" })
+                                        <label for="setting-input-3" class="form-label">Email Address</label>
+                                        <input type="email" class="form-control" id="setting-input-3" placeholder="Director Email">
                                     </div>
                                     <button type="submit" class="btn app-btn-primary">Submit Director Info</button>
-                                </div>
-                            </div>
-                        </div>
+                                </form>
+                            </div><!--//app-card-body-->
+
+                        </div><!--//app-card-->
                     </div>
-
-                    <hr class="my-4">
-
-                    <!-- Interested Services -->
-                    <div class="row g-4 settings-section">
-                        <div class="col-12 col-md-4">
-                            <h3 class="section-title">Interested Pegasus Services</h3>
-                            <div class="section-intro">Let us know which services we can provide you <a href="/Client/Help">Learn more</a></div>
-                        </div>
-                        <div class="col-12 col-md-8">
-                            <div class="app-card app-card-settings shadow-sm p-4">
-                                <div class="app-card-body">
-                                    <div class="form-check mb-3">
-                                        @Html.CheckBoxFor(m => m.SchoolFeesPayment, new { @class = "form-check-input" })
-                                        @Html.LabelFor(m => m.SchoolFeesPayment, "School Fees Payment", new { @class = "form-check-label" })
-                                    </div>
-                                    <div class="form-check mb-3">
-                                        @Html.CheckBoxFor(m => m.USSDAggregation, new { @class = "form-check-input" })
-                                        @Html.LabelFor(m => m.USSDAggregation, "USSD Aggregation", new { @class = "form-check-label" })
-                                    </div>
-                                    <div class="form-check mb-3">
-                                        @Html.CheckBoxFor(m => m.MobileMoneyAggregation, new { @class = "form-check-input" })
-                                        @Html.LabelFor(m => m.MobileMoneyAggregation, "Mobile Money Aggregation", new { @class = "form-check-label" })
-                                    </div>
-                                    <div class="form-check mb-3">
-                                        @Html.CheckBoxFor(m => m.CustomSoftware, new { @class = "form-check-input" })
-                                        @Html.LabelFor(m => m.CustomSoftware, "Custom Software", new { @class = "form-check-label" })
-                                    </div>
-                                    <div class="form-check mb-3">
-                                        @Html.CheckBoxFor(m => m.OnlinePaymentGateway, new { @class = "form-check-input" })
-                                        @Html.LabelFor(m => m.OnlinePaymentGateway, "Online Payment Gateway", new { @class = "form-check-label" })
-                                    </div>
-                                    <div class="form-check mb-3">
-                                        @Html.CheckBoxFor(m => m.BulkPayments, new { @class = "form-check-input" })
-                                        @Html.LabelFor(m => m.BulkPayments, "Bulk Payments", new { @class = "form-check-label" })
-                                    </div>
-                                    <div class="form-check mb-3">
-                                        @Html.CheckBoxFor(m => m.SMSServices, new { @class = "form-check-input" })
-                                        @Html.LabelFor(m => m.SMSServices, "SMS Services", new { @class = "form-check-label" })
-                                    </div>
-                                    <button type="submit" class="btn app-btn-primary">Submit Services Info</button>
-                                </div>
-                            </div>
-                        </div>
+                </div><!--//row-->
+                <hr class="my-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-4">
+                        <h3 class="section-title">Interested Pegasus Services</h3>
+                        <div class="section-intro">Lets us know which services we can provide you <a href="/Client/Help">Learn more</a></div>
                     </div>
+                    <div class="col-12 col-md-8">
+                        <div class="app-card app-card-settings shadow-sm p-4">
+                            <div class="app-card-body">
+                                <form class="settings-form">
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" value="" id="settings-checkbox-1" checked>
+                                        <label class="form-check-label" for="settings-checkbox-1">
+                                            School Fees Payment
+                                        </label>
+                                    </div><!--//form-check-->
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" value="" id="settings-checkbox-2" checked>
+                                        <label class="form-check-label" for="settings-checkbox-2">
+                                            USSD Aggregation
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" value="" id="settings-checkbox-3">
+                                        <label class="form-check-label" for="settings-checkbox-3">
+                                            Mobile Money Aggregation
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" value="" id="settings-checkbox-4">
+                                        <label class="form-check-label" for="settings-checkbox-4">
+                                            Custom Software
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" value="" id="settings-checkbox-5">
+                                        <label class="form-check-label" for="settings-checkbox-5">
+                                            Online Payment Gateway
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" value="" id="settings-checkbox-6">
+                                        <label class="form-check-label" for="settings-checkbox-6">
+                                            Bulk Payments
+                                        </label>
+                                    </div>
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="checkbox" value="" id="settings-checkbox-7">
+                                        <label class="form-check-label" for="settings-checkbox-7">
+                                            SMS Services
+                                        </label>
+                                    </div>
+                                    <div class="mt-3">
+                                        <button type="submit" class="btn app-btn-primary">Submit Services Interested </button>
+                                    </div>
+                                </form>
+                            </div><!--//app-card-body-->
+                        </div><!--//app-card-->
+                    </div>
+                </div><!--//row-->
 
-                    <hr class="my-4">
+                <hr class="my-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-4">
+                        <h3 class="section-title">Business Financial Information</h3>
+                        <div class="section-intro">Provide Financial Information about your Business <a href="/Client/Help">Learn more</a></div>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <div class="app-card app-card-settings shadow-sm p-4">
 
-                    <!-- Financial Information -->
-                    <div class="row g-4 settings-section">
-                        <div class="col-12 col-md-4">
-                            <h3 class="section-title">Financial Information</h3>
-                            <div class="section-intro">Provide details about your financial status <a href="/Client/Help">Learn more</a></div>
-                        </div>
-                        <div class="col-12 col-md-8">
-                            <div class="app-card app-card-settings shadow-sm p-4">
-                                <div class="app-card-body">
+                            <div class="app-card-body">
+                                <form class="settings-form">
                                     <div class="mb-3">
-                                        <label for="NumberOfTransactions" class="form-label">Number of Transactions per Month</label>
-                                        @Html.TextBoxFor(m => m.NumberOfTransactions, new { @class = "form-control", placeholder = "Number of Transactions", type = "number", required = true })
+                                        <label for="setting-input-1" class="form-label">
+                                            Number of Transactions per Month<span class="ms-2" data-container="body" data-bs-toggle="popover" data-trigger="hover" data-placement="top" data-content="This is a Bootstrap popover example. You can use popover to provide extra info.">
+                                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                    <path d="M8.93 6.588l-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588z" />
+                                                    <circle cx="8" cy="4.5" r="1" />
+                                                </svg>
+                                            </span>
+                                        </label>
+                                        <input type="number" min="0" class="form-control" id="setting-input-1" placeholder="Number of Transactions" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="YearsOfOperation" class="form-label">Enter Years of Operation</label>
-                                        @Html.TextBoxFor(m => m.YearsOfOperation, new { @class = "form-control", placeholder = "Years of Operation", type = "number", required = true })
+                                        <label for="setting-input-2" class="form-label">Enter Years of Operation</label>
+                                        <input type="number" min="0" class="form-control" id="setting-input-2" placeholder="Years of Operation" required>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="AmountEarnedPerMonth" class="form-label">Enter Amount Earned Per Month</label>
-                                        @Html.TextBoxFor(m => m.AmountEarnedPerMonth, new { @class = "form-control", placeholder = "Amount Earned Per Month", type = "number", required = true })
+                                        <label for="setting-input-2" class="form-label">Enter Amount Earned Per Month</label>
+                                        <input type="number" min="0" class="form-control" id="setting-input-2" placeholder="Amount" required>
                                     </div>
                                     <button type="submit" class="btn app-btn-primary">Submit Financial Info</button>
-                                </div>
-                            </div>
-                        </div>
+                                </form>
+                            </div><!--//app-card-body-->
+
+                        </div><!--//app-card-->
                     </div>
+                </div><!--//row-->
 
-                    <hr class="my-4">
-
-                    <!-- Notifications -->
-                    <div class="row g-4 settings-section">
-                        <div class="col-12 col-md-4">
-                            <h3 class="section-title">Notifications</h3>
-                            <div class="section-intro">Choose how you'd like to receive notifications <a href="/Client/Help">Learn more</a></div>
-                        </div>
-                        <div class="col-12 col-md-8">
-                            <div class="app-card app-card-settings shadow-sm p-4">
-                                <div class="app-card-body">
+                <hr class="my-4">
+                <div class="row g-4 settings-section">
+                    <div class="col-12 col-md-4">
+                        <h3 class="section-title">Notifications</h3>
+                        <div class="section-intro">We would love to send you Notifications</div>
+                    </div>
+                    <div class="col-12 col-md-8">
+                        <div class="app-card app-card-settings shadow-sm p-4">
+                            <div class="app-card-body">
+                                <form class="settings-form">
                                     <div class="form-check form-switch mb-3">
-                                        @Html.CheckBoxFor(m => m.ReceiveEmailNotifications, new { @class = "form-check-input" })
-                                        @Html.LabelFor(m => m.ReceiveEmailNotifications, "Receive Email Notifications", new { @class = "form-check-label" })
+                                        <input class="form-check-input" type="checkbox" id="settings-switch-1" checked>
+                                        <label class="form-check-label" for="settings-switch-1">Receive Email notifications</label>
                                     </div>
-                                    <button type="submit" class="btn app-btn-primary">Submit Notification Preferences</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                }
-            </div>
-        </div>
-    </div>
 
-    <!-- App JS -->
+                                    <div class="mt-3">
+                                        <button type="submit" class="btn app-btn-primary">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div><!--//app-card-body-->
+                        </div><!--//app-card-->
+                    </div>
+                </div><!--//row-->
+                <hr class="my-4">
+            </div><!--//container-fluid-->
+        </div><!--//app-content-->
+
+        <footer class="app-footer">
+            <div class="container text-center py-3">
+                <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+                <small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart" style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> for developers</small>
+
+            </div>
+        </footer><!--//app-footer-->
+
+    </div><!--//app-wrapper-->
+    <!-- Javascript -->
+    <script src="~/assets/plugins/popper.min.js"></script>
+    <script src="~/assets/plugins/bootstrap/js/bootstrap.min.js"></script>
+
+    <!-- Page Specific JS -->
     <script src="~/assets/js/app.js"></script>
+
 </body>
 </html>
+

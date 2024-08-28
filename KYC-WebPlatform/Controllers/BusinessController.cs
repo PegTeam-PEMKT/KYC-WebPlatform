@@ -1,9 +1,8 @@
-using KYC_WebPlatform.Models;
+﻿using KYC_WebPlatform.Models;
 using KYC_WebPlatform.Services.Business;
 using KYC_WebPlatform.Services.Data;
 using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
@@ -23,18 +22,11 @@ namespace KYC_WebPlatform.Controllers
 
         public ActionResult ViewClients()
         {
-            try {
-                // Fetch records from the database and map to ViewModel
-                Dictionary<string, List<object>> cards = _storage.ExecuteSelectQuery("Select * from ClientBusiness");
+            // Fetch records from the database and map to ViewModel
+            List<object> cards = _storage.ExecuteSelectQuery("Select * from ClientBusiness");
 
-                return View("ViewClients", cards);
-            } 
-            catch (SqlException e) 
-            {
 
-                return View("Error",e.Message);
-            }
-            
+            return View("ViewClients", cards);
         }
 
         public ActionResult ViewStatus()
