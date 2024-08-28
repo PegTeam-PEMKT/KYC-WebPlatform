@@ -1,0 +1,40 @@
+﻿
+@{
+    ViewBag.Title = "ViewClients";
+    Layout = "~/Views/_BusinessLayout.cshtml";
+
+}
+@model List<object>
+
+<body class="app">
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+                <h1 class="app-page-title"> Your Clients</h1>
+                <div class="row g-4 mb-4">
+                    @foreach (var i in Model)
+                    {
+                        <div class="col-12 col-lg-6">
+                            <div class="app-card app-card-chart h-100 shadow-sm">
+                                <div class="app-card-header p-3 border-0">
+                                    <h4 class="app-card-title">@{System.Diagnostics.Debug.WriteLine(i.ToString());}</h4>
+
+                                </div><!--//app-card-header-->
+
+                                <div class="app-card-body p-4">
+                                    <div class="chart-container">
+                                        <canvas id="chart-line"></canvas>
+                                    </div>
+                                </div><!--//app-card-body-->
+                            </div><!--//app-card-->
+                        </div><!--//col-->
+
+                    }
+                </div><!--//row-->
+
+            </div>
+        </div>
+    </div>
+
+</body>
+
