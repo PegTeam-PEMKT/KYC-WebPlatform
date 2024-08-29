@@ -1,18 +1,15 @@
-﻿using System;
+﻿using KYC_WebPlatform.Models;
+using KYC_WebPlatform.Services;
+using KYC_WebPlatform.Services.Data;
+using NiraApiIntegrationService;
+using System;
+using System.Data;
+using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using KYC_WebPlatform.Services;
-using NiraApiIntegrationService;
-using KYC_WebPlatform.Models;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Data.SqlClient;
-using KYC_WebPlatform.Models;
-using KYC_WebPlatform.Services.Data;
 
 namespace KYC_WebPlatform.Controllers
 {
@@ -33,63 +30,26 @@ namespace KYC_WebPlatform.Controllers
             return View("ClientIndex");
         }
 
-        /*public async ActionResult AddBusiness(AddBusiness_MODEL model)
-        {
-            if (*//*ModelState.IsValid*//*true)
-            {
-                try
-                {
-                    //Doing NIRA Validation
-                    model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurname);
-
-
-                    model.SancationsValidation = await CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);
-
-                    //Doing Sanctions Validation
-
-                    DBContext dbContext = DBContext.GetInstance();
-                    using (SqlConnection connection = dbContext.GetConnection())
-                    {
-                        // Open the connection
-                        connection.Open();
-                        Debug.WriteLine("NIN: " + model.NIN + " BusinessName: " + model.BusinessName);
-                        string sqlCommand = "INSERT INTO Directors (DirectorId, DirectorNIN, BusinessId) VALUES (@DirectorId, @NIN, @BusinessName)";
-                        using (SqlCommand command = new SqlCommand(sqlCommand, connection))
-                        {
-                            command.Parameters.AddWithValue("@DirectorId", (string)model.DirectorPhoneNumber);
-                            command.Parameters.AddWithValue("@NIN", model.NIN);
-                            command.Parameters.AddWithValue("@BusinessName", model.BusinessName);
-                            command.ExecuteNonQuery();
-                        }
-                        //Close the connection
-                        connection.Close();
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.Message);
-                }
-                return View("AddBusiness");
-            }
-
-            return View("AddBusiness", model);
-        }*/
-
-
         public async Task<ActionResult> AddBusiness(AddBusiness_MODEL model)
         {
-           
-            
-                try
-                {
-                    // Performing NIRA Validation (assuming it's a synchronous call)
-                    model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurname);
+            try
+            {
+                // Performing NIRA Validation (assuming it's a synchronous call)
+                model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurname);
 
-                    // Performing Sanctions Validation (awaiting the asynchronous call)
-                    model.SancationsValidation = await CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);
+                /*// Performing Sanctions Validation (awaiting the asynchronous call)
+                model.SancationsValidation = await CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);*/
 
-                    Debug.WriteLine("Nira: " + model.NiraValidation + " Sanctions: " + model.SancationsValidation);
+                /*// Performing Sanctions Validation (awaiting the asynchronous call)
+                SanctionResponse sanctionresponse = await CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);*/
+
+                // Performing Sanctions Validation
+                SanctionResponse sanctionresponse = CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);
+
+                Debug.WriteLine("\n\n\n******\n\n");
+                Debug.WriteLine("SancCode: " + sanctionresponse.StatusCode + " SancDesc: " + sanctionresponse.StatusDescription + " IsSanc: " + sanctionresponse.Sanctioned + " SancScore: " + sanctionresponse.Score);
+                Debug.WriteLine("\n******\n\n");
+                Debug.WriteLine("Nira: " + model.NiraValidation + " Sanctions: " + model.SancationsValidation);
 
                 // Doing database operations
                 DBContext dbContext = DBContext.GetInstance();
@@ -99,32 +59,43 @@ namespace KYC_WebPlatform.Controllers
                     connection.Open();
                     Debug.WriteLine("NIN: " + model.NIN + " BusinessName: " + model.BusinessName);
                     Debug.WriteLine("Nira: " + model.NiraValidation + " Sanctions: " + model.SancationsValidation);
-                    string sqlCommand = "INSERT INTO Directors ( DirectorNIN, BusinessId, NinValidated, IsSanctioned) VALUES (@NIN, @BusinessName, @NiraValidation, @SanctionsValidation)";
-                    using (SqlCommand command = new SqlCommand(sqlCommand, connection))
-                    {
-                        //command.Parameters.AddWithValue("@DirectorId", Guid.NewGuid());
-                        command.Parameters.AddWithValue("@NIN", model.NIN);
-                        command.Parameters.AddWithValue("@BusinessName", model.BusinessName);
-/*                        command.Parameters.AddWithValue("@NiraValidation", model.NiraValidation);
-                        command.Parameters.AddWithValue("@SanctionsValidation", model.SancationsValidation);*/
 
-                        command.Parameters.AddWithValue("@NiraValidation", model.NiraValidation == "Validated" ? "1" : "0");
-                        command.Parameters.AddWithValue("@SanctionsValidation", model.SancationsValidation == "Validated" ? "1" : "0");
+                    using (SqlCommand command = new SqlCommand("AddBusinessAndDirector", connection))
+                    {
+                        command.CommandType = CommandType.StoredProcedure;
+
+                        // Input parameters for Business
+                        command.Parameters.AddWithValue("@BusinessName", model.BusinessName);
+                        command.Parameters.AddWithValue("@ContactPerson", model.ContactName);
+                        command.Parameters.AddWithValue("@IsActive", true);
+                        command.Parameters.AddWithValue("@TransactionVolume", model.NumberOfTransactions);
+                        command.Parameters.AddWithValue("@TransactionTraffic", model.AmountEarnedPerMonth);
+                        command.Parameters.AddWithValue("@Email", model.BusinessEmail);
+                        command.Parameters.AddWithValue("@PhoneNumber", model.BusinessPhoneNumber);
+                        command.Parameters.AddWithValue("@Location", "Location_Value");
+
+                        // Input parameters for Director
+                        command.Parameters.AddWithValue("@DirectorNIN", model.NIN);
+                        command.Parameters.AddWithValue("@NiraValidation", model.NiraValidation);
+                        /*command.Parameters.AddWithValue("@SanctionsValidation", model.SancationsValidation);*/
+                        command.Parameters.AddWithValue("@SanctionScore", sanctionresponse.Score);
+                        command.Parameters.AddWithValue("@SanctionStatusCode", sanctionresponse.StatusCode);
+                        command.Parameters.AddWithValue("@SanctionStatusDescription", sanctionresponse.StatusDescription);
+
+                        // Execute the stored procedure
                         command.ExecuteNonQuery();
                     }
-
                     //Close the connection
                     connection.Close();
                 }
 
                 return View("ClientIndex");
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.Message);
-                    ModelState.AddModelError("", "An error occurred while processing your request.");
-                }
-            
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e.Message);
+                ModelState.AddModelError("", "An error occurred while processing your request.");
+            }
 
             return View("AddBusiness", model);
         }
@@ -197,91 +168,111 @@ namespace KYC_WebPlatform.Controllers
             return "Nira Returned Null";
         }
 
-        /*// Submit Director Info
+
+        /*        //Sanctions Validation method
+                [HttpPost]
+                public async Task<string> CheckSanctions(string name)
+                {
+                    try
+                    {
+                        var jsonResponse = await _apiService.SendRequestAsync(name);
+
+                        if (jsonResponse == null)
+                        {
+                            return "Error occurred while processing the request.";
+                        }
+
+                        string jsonresp = jsonResponse.ToString();
+                        Debug.WriteLine(jsonresp);
+                        Debug.WriteLine("\n\n\n\n" +jsonResponse);
+                        if (!string.IsNullOrEmpty(jsonresp) && jsonresp.Contains("EXISTS"))
+                        {
+                            return "NotValidated";
+                        }
+
+                        return "Validated";
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                        return "Error occurred while processing the request.";
+                    }
+                }*/
+
+        // Sanctions Validation method
+
+
+
+        /*        [HttpPost]
+                public async Task<SanctionResponse> CheckSanctions(string name)
+                {
+                    try
+                    {
+                        var jsonResponse = await _apiService.SendRequestAsync(name);
+                        Debug.WriteLine(jsonResponse);
+
+                        if (jsonResponse == null)
+                        {
+                            return new SanctionResponse { StatusCode = "Error", StatusDescription = "Error occurred while processing the request." };
+                        }
+
+                        List<SanctionResponse> sanctionCheckResponses = JsonConvert.DeserializeObject<List<SanctionResponse>>(jsonResponse);
+
+                        SanctionResponse sanctionObject = new SanctionResponse();
+
+                        // Now you can access the properties like this:
+                        foreach (var response in sanctionCheckResponses)
+                        {
+
+                            Debug.WriteLine($"Entity ID: {response.StatusCode}");
+                            Debug.WriteLine($"Sanctioned: {response.StatusDescription}");
+                            Debug.WriteLine($"Sanctioned: {response.EntityId}");
+                            Debug.WriteLine($"Sanctioned: {response.Sanctioned}");
+                            Debug.WriteLine($"Sanctioned: {response.Score}");
+                            // Add more as needed
+                        }
+
+
+
+                        var sanctionResponse = JsonConvert.DeserializeObject<SanctionResponse>(jsonResponse.ToString());
+
+                        return sanctionResponse;
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine(ex.Message);
+                        return new SanctionResponse { StatusCode = "Error", StatusDescription = "Error occurred while processing the request." };
+                    }
+                }*/
+
+
         [HttpPost]
-        public async Task<string> CheckSanctions(string name)
-        {
-                // Validate the NIN using the QueryCustomer method
-                *//*model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurname);*/
-        /*model.NiraValidation = QueryCustomer("01/01/1993", "000092564", "Johnson", "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", "CM930121003EGE", "Tipiyai");*//*
-        var jsonResponse = await _apiService.SendRequestAsync(name);
-
-        if (jsonResponse == null)
-        {
-            return "Error occurred while processing the request.";
-        }
-
-        string jsonresp = jsonResponse.ToString();
-
-        var sanctionResponses =  jsonresp;
-
-        if (sanctionResponses != null && jsonresp.Contains("EXISTS"))
-        {
-            return "NotValidated";
-
-        }
-            return "Validated";
-
-}*/
-
-
-
-
-        [HttpPost]
-        public async Task<string> CheckSanctions(string name)
+        public SanctionResponse CheckSanctions(string name)
         {
             try
             {
-                var jsonResponse = await _apiService.SendRequestAsync(name);
+                var jsonResponse = _apiService.SendRequestAsync(name);
+                Debug.WriteLine(jsonResponse);
 
                 if (jsonResponse == null)
                 {
-                    return "Error occurred while processing the request.";
+                    return new SanctionResponse { StatusCode = "Error", StatusDescription = "Error occurred while processing the request." };
                 }
 
-                string jsonresp = jsonResponse.ToString();
-                Debug.WriteLine(jsonresp);
-                Debug.WriteLine("\n\n\n\n" +jsonResponse);
-                if (!string.IsNullOrEmpty(jsonresp) && jsonresp.Contains("EXISTS"))
-                {
-                    return "NotValidated";
-                }
+                Debug.WriteLine($"StatusCode: {jsonResponse.StatusCode}");
+                Debug.WriteLine($"StatusDescription: {jsonResponse.StatusDescription}");
+                Debug.WriteLine($"Sanctioned: {jsonResponse.Sanctioned}");
+                Debug.WriteLine($"Score: {jsonResponse.Score}");
+                // Add more as needed
 
-                return "Validated";
+                return jsonResponse;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
-                return "Error occurred while processing the request.";
+                return new SanctionResponse { StatusCode = "Error", StatusDescription = "Error occurred while processing the request." };
             }
-        }
-
-        // Confirmation page after successful submission
-        public ActionResult Confirmation(AddBusiness_MODEL model)
-        {
-            return View(model);
-        }
-
-        // SANCTIONS: Method to handle sanctions checking
-        public async Task<ActionResult> Sanctions()
-        {
-            var jsonResponse = await _apiService.SendRequestAsync("Putin");
-
-            if (jsonResponse == null)
-            {
-                return Content("Error occurred while processing the request.");
-            }
-
-            string jsonresp = jsonResponse.ToString();
-            // Assuming jsonResponse is a string containing the JSON array
-            var sanctionResponses = JsonConvert.DeserializeObject<List<SanctionResponse>>(jsonresp);
-
-            if (sanctionResponses != null && jsonresp.Contains("EXISTS"))
-            {
-                return View(sanctionResponses);
-            }
-
-            return Content("No matching sanctions found.");
         }
     }
 }
+
