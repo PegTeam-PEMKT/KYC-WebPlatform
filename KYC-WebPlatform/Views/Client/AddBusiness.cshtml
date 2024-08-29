@@ -76,12 +76,11 @@
                                         <label for="BusinessWebsite" class="form-label">Business Website</label>
                                         @Html.TextBoxFor(m => m.BusinessWebsite, new { @class = "form-control", type = "url" })
                                     </div>
-                                    <button type="submit" class="btn app-btn-primary">Submit Business Info</button>
+                                    @*<button type="submit" class="btn app-btn-primary">Submit Business Info</button>*@
                                 </div>
                             </div>
                         </div>
                     </div>
-
                     <hr class="my-4">
 
                     <!-- Director Information -->
@@ -94,8 +93,8 @@
                             <div class="app-card app-card-settings shadow-sm p-4">
                                 <div class="app-card-body">
                                     <div class="mb-3">
-                                        <label for="DirectorName" class="form-label">
-                                            Director Name
+                                        <label for="DirectorSurname" class="form-label">
+                                            Director Surname
                                             <span class="ms-2" data-container="body" data-bs-toggle="popover" data-trigger="hover" data-placement="top" data-content="This is a Bootstrap popover example. You can use popover to provide extra info.">
                                                 <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-info-circle" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                                                     <path fill-rule="evenodd" d="M8 15A7 7 0 1 0 8 1a7 7 0 0 0 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
@@ -104,7 +103,15 @@
                                                 </svg>
                                             </span>
                                         </label>
-                                        @Html.TextBoxFor(m => m.DirectorName, new { @class = "form-control", placeholder = "Director Name", required = true })
+                                        @Html.TextBoxFor(m => m.DirectorSurname, new { @class = "form-control", placeholder = "Director Surname", required = true })
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="DirectorGivenName" class="form-label">Director Given Name</label>
+                                        @Html.TextBoxFor(m => m.DirectorGivenName, new { @class = "form-control", placeholder = "Director Given Name", required = true })
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="DirectorDOB" class="form-label">Director Date of Birth (dd/mm/yyyy)</label>
+                                        @Html.TextBoxFor(m => m.DirectorGivenName, new { @class = "form-control", placeholder = "Director DOB", required = true })
                                     </div>
                                     <div class="mb-3">
                                         <label for="NIN" class="form-label">National Identification Number NIN</label>
@@ -118,7 +125,7 @@
                                         <label for="DirectorEmail" class="form-label">Email Address</label>
                                         @Html.TextBoxFor(m => m.DirectorEmail, new { @class = "form-control", placeholder = "Director Email" })
                                     </div>
-                                    <button type="submit" class="btn app-btn-primary">Submit Director Info</button>
+                                    @* <button type="submit" class="btn app-btn-primary">Submit Director Info</button>*@
                                 </div>
                             </div>
                         </div>
@@ -163,7 +170,7 @@
                                         @Html.CheckBoxFor(m => m.SMSServices, new { @class = "form-check-input" })
                                         @Html.LabelFor(m => m.SMSServices, "SMS Services", new { @class = "form-check-label" })
                                     </div>
-                                    <button type="submit" class="btn app-btn-primary">Submit Services Info</button>
+                                    @*<button type="submit" class="btn app-btn-primary">Submit Services Info</button>*@
                                 </div>
                             </div>
                         </div>
@@ -192,7 +199,7 @@
                                         <label for="AmountEarnedPerMonth" class="form-label">Enter Amount Earned Per Month</label>
                                         @Html.TextBoxFor(m => m.AmountEarnedPerMonth, new { @class = "form-control", placeholder = "Amount Earned Per Month", type = "number", required = true })
                                     </div>
-                                    <button type="submit" class="btn app-btn-primary">Submit Financial Info</button>
+                                    <button type="submit" class="btn app-btn-primary">Submit</button>
                                 </div>
                             </div>
                         </div>
@@ -201,7 +208,7 @@
                     <hr class="my-4">
 
                     <!-- Notifications -->
-                    <div class="row g-4 settings-section">
+                    <!--<div class="row g-4 settings-section">
                         <div class="col-12 col-md-4">
                             <h3 class="section-title">Notifications</h3>
                             <div class="section-intro">Choose how you'd like to receive notifications <a href="/Client/Help">Learn more</a></div>
@@ -217,7 +224,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>-->
                 }
             </div>
         </div>

@@ -1,0 +1,67 @@
+﻿@model KYC_WebPlatform.Models.Director_MODEL
+
+@{
+    ViewBag.Title = "Confirmation";
+    Layout = "~/Views/Shared/_ClientLayout.cshtml";
+}
+
+<h2>Confirmation</h2>
+
+<div>
+    <h4>Director_MODEL</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DirectorGivenName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DirectorGivenName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DirectorPhoneNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DirectorPhoneNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NIN)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NIN)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NiraValidation)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NiraValidation)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SanctionsValidation)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SanctionsValidation)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DirectorEmail)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DirectorEmail)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
