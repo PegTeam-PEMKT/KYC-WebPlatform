@@ -14,11 +14,15 @@ namespace KYC_WebPlatform.Models
         public string BusinessEmail { get; set; }
         public string BusinessWebsite { get; set; }
 
+
+
         // Director Information
         public string DirectorName { get; set; }
         public string NIN { get; set; }
         public string DirectorPhoneNumber { get; set; }
         public string DirectorEmail { get; set; }
+
+
 
         // Interested Pegasus Services
         public bool SchoolFeesPayment { get; set; }
