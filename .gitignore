@@ -365,3 +365,4 @@ FodyWeavers.xsd
 *.png
 /KYC-WebPlatform/Controllers/LoginController.cs
 /KYC-WebPlatform/Services/Data/DBContext.cs
+/KYC-WebPlatform/Web.config
