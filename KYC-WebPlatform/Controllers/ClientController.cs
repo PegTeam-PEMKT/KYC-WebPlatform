@@ -7,6 +7,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Reflection;
+using System.Data.SqlClient;
+using KYC_WebPlatform.Models;
+using KYC_WebPlatform.Services.Data;
 
 namespace KYC_WebPlatform.Controllers
 {
@@ -18,9 +22,39 @@ namespace KYC_WebPlatform.Controllers
             return View("ClientIndex");
         }
 
-        public ActionResult AddBusiness()
+        public ActionResult AddBusiness(AddBusiness_MODEL model)
         {
-            return View("AddBusiness");
+            if (/*ModelState.IsValid*/true)
+            {
+                try
+                {
+                    DBContext dbContext = DBContext.GetInstance();
+                    using (SqlConnection connection = dbContext.GetConnection())
+                    {
+                        // Open the connection
+                        connection.Open();
+                        Debug.WriteLine("NIN: " + model.NIN + " BusinessName: " + model.BusinessName);
+                        string sqlCommand = "INSERT INTO Directors (DirectorId, DirectorNIN, BusinessId) VALUES (@DirectorId, @NIN, @BusinessName)";
+                        using (SqlCommand command = new SqlCommand(sqlCommand, connection))
+                        {
+                            command.Parameters.AddWithValue("@DirectorId", (string)model.DirectorPhoneNumber);
+                            command.Parameters.AddWithValue("@NIN", model.NIN);
+                            command.Parameters.AddWithValue("@BusinessName", model.BusinessName);
+                            command.ExecuteNonQuery();
+                        }
+                        //Close the connection
+                        connection.Close();
+                    }
+
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                }
+                return View("AddBusiness");
+            }
+
+            return View("AddBusiness", model);
         }
 
         public ActionResult ViewStatus()
