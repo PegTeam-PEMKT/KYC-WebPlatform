@@ -155,6 +155,7 @@
     <Compile Include="Areas\HelpPage\SampleGeneration\SampleDirection.cs" />
     <Compile Include="Areas\HelpPage\SampleGeneration\TextSample.cs" />
     <Compile Include="Areas\HelpPage\XmlDocumentationProvider.cs" />
+    <Compile Include="Controllers\ApprovalsController.cs" />
     <Compile Include="Controllers\BusinessController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -165,6 +166,7 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AddBusiness_MODEL.cs" />
+    <Compile Include="Models\ApprovalsController.cs" />
     <Compile Include="Models\LoginDto.cs" />
     <Compile Include="Models\OtpViewModel.cs" />
     <Compile Include="Models\SignupDto.cs" />
@@ -175,6 +177,7 @@
     <Compile Include="Services\ApiService.cs" />
     <Compile Include="Services\Business\AuthenticationService.cs" />
     <Compile Include="Services\Business\EmailService.cs" />
+    <Compile Include="Services\Data\BusinessService.cs" />
     <Compile Include="Services\Data\ClientService.cs" />
     <Compile Include="Services\Data\DBContext.cs" />
     <Compile Include="Services\Data\Interfaces\IStorage.cs" />
@@ -1412,6 +1415,8 @@
     <Content Include="Views\Shared\_BusinessLayout.cshtml" />
     <Content Include="Views\Business\CreateView.cshtml" />
     <Content Include="Views\Client\AddBusiness.cshtml" />
+    <Content Include="Views\Shared\_ApprovalLayout.cshtml" />
+    <Content Include="Views\Approvals\PendingBusinesses.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
