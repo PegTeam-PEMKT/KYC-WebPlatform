@@ -11,9 +11,27 @@ namespace KYC_WebPlatform
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}", //Login/Index
+                defaults: new { controller = "Login", action = "Index" }
+            );
+
+            routes.MapRoute(
+                name: "Login",
+                url: "Login/OtpView", //Login/Index
+                defaults: new { controller = "Login", action = "OtpView" }
+            );
+
+            routes.MapRoute(
                 name: "ViewBusiness",
                 url: "Business/ViewClients",
                 defaults: new { controller = "Business", action = "ViewClients" }
+            );
+
+            routes.MapRoute(
+                name: "Business",
+                url: "Business/CreateView",
+                defaults: new { controller = "Business", action = "CreateView" }
             );
 
             routes.MapRoute(
@@ -80,6 +98,7 @@ namespace KYC_WebPlatform
                 url: "{controller}/{action}/{id}", //home/Index or About
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );*/
+
 
             // Default route for Home page
             routes.MapRoute(

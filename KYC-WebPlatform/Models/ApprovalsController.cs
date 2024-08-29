@@ -13,5 +13,6 @@ namespace KYC_WebPlatform.Models
         {
             return View();
         }
+
     }
 }
