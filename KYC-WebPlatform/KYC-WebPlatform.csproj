@@ -1407,6 +1407,7 @@
     <Content Include="Views\Business\ViewClients.cshtml" />
     <Content Include="Views\Business\ViewStatus.cshtml" />
     <Content Include="Views\Shared\_BusinessLayout.cshtml" />
+    <Content Include="Views\Business\CreateView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
