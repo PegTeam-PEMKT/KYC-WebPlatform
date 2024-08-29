@@ -167,17 +167,6 @@ namespace KYC_WebPlatform.Controllers
         }
 
 
-
-                if (sanctionResponses != null && jsonresp.Contains("EXISTS"))
-                {
-                    model.SancationsValidation = "NotValidated";
-
-                }
-                else
-                {
-                    model.SancationsValidation = "Validated";
-                }
-
         [HttpPost]
         public async Task<string> CheckSanctions(string name)
         {
