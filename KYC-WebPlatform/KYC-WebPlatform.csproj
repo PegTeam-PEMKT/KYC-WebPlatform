@@ -172,6 +172,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\Business\AuthenticationService.cs" />
     <Compile Include="Services\Business\EmailService.cs" />
+    <Compile Include="Services\Data\BusinessService.cs" />
     <Compile Include="Services\Data\ClientService.cs" />
     <Compile Include="Services\Data\DBContext.cs" />
     <Compile Include="Services\Data\Interfaces\IStorage.cs" />

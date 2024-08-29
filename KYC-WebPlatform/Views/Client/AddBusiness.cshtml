@@ -76,7 +76,7 @@
                                         <label for="BusinessWebsite" class="form-label">Business Website</label>
                                         @Html.TextBoxFor(m => m.BusinessWebsite, new { @class = "form-control", type = "url" })
                                     </div>
-                                    <button type="submit" class="btn app-btn-primary">Submit Business Info</button>
+                                    @*<button type="submit" class="btn app-btn-primary">Submit Business Info</button>*@
                                 </div>
                             </div>
                         </div>
@@ -118,7 +118,7 @@
                                         <label for="DirectorEmail" class="form-label">Email Address</label>
                                         @Html.TextBoxFor(m => m.DirectorEmail, new { @class = "form-control", placeholder = "Director Email" })
                                     </div>
-                                    <button type="submit" class="btn app-btn-primary">Submit Director Info</button>
+                                    @*<button type="submit" class="btn app-btn-primary">Submit Director Info</button>*@
                                 </div>
                             </div>
                         </div>
@@ -163,7 +163,7 @@
                                         @Html.CheckBoxFor(m => m.SMSServices, new { @class = "form-check-input" })
                                         @Html.LabelFor(m => m.SMSServices, "SMS Services", new { @class = "form-check-label" })
                                     </div>
-                                    <button type="submit" class="btn app-btn-primary">Submit Services Info</button>
+                                    @*<button type="submit" class="btn app-btn-primary">Submit Services Info</button>*@
                                 </div>
                             </div>
                         </div>
@@ -192,7 +192,7 @@
                                         <label for="AmountEarnedPerMonth" class="form-label">Enter Amount Earned Per Month</label>
                                         @Html.TextBoxFor(m => m.AmountEarnedPerMonth, new { @class = "form-control", placeholder = "Amount Earned Per Month", type = "number", required = true })
                                     </div>
-                                    <button type="submit" class="btn app-btn-primary">Submit Financial Info</button>
+                                    <button type="submit" class="btn app-btn-primary">Submit</button>
                                 </div>
                             </div>
                         </div>
@@ -201,7 +201,7 @@
                     <hr class="my-4">
 
                     <!-- Notifications -->
-                    <div class="row g-4 settings-section">
+                    @*<div class="row g-4 settings-section">
                         <div class="col-12 col-md-4">
                             <h3 class="section-title">Notifications</h3>
                             <div class="section-intro">Choose how you'd like to receive notifications <a href="/Client/Help">Learn more</a></div>
@@ -217,7 +217,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div>*@
                 }
             </div>
         </div>

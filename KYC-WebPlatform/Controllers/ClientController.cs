@@ -24,33 +24,9 @@ namespace KYC_WebPlatform.Controllers
 
         public ActionResult AddBusiness(AddBusiness_MODEL model)
         {
-            if (/*ModelState.IsValid*/true)
+            BusinessService businessService = new BusinessService();
+            if (businessService.SaveBusinessInfo(model))
             {
-                try
-                {
-                    DBContext dbContext = DBContext.GetInstance();
-                    using (SqlConnection connection = dbContext.GetConnection())
-                    {
-                        // Open the connection
-                        connection.Open();
-                        Debug.WriteLine("NIN: " + model.NIN + " BusinessName: " + model.BusinessName);
-                        string sqlCommand = "INSERT INTO Directors (DirectorId, DirectorNIN, BusinessId) VALUES (@DirectorId, @NIN, @BusinessName)";
-                        using (SqlCommand command = new SqlCommand(sqlCommand, connection))
-                        {
-                            command.Parameters.AddWithValue("@DirectorId", (string)model.DirectorPhoneNumber);
-                            command.Parameters.AddWithValue("@NIN", model.NIN);
-                            command.Parameters.AddWithValue("@BusinessName", model.BusinessName);
-                            command.ExecuteNonQuery();
-                        }
-                        //Close the connection
-                        connection.Close();
-                    }
-
-                }
-                catch (Exception e)
-                {
-                    Debug.WriteLine(e.Message);
-                }
                 return View("AddBusiness");
             }
 
