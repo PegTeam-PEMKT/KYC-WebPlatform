@@ -169,7 +169,6 @@ namespace KYC_WebPlatform.Controllers
         }
 
 
-
         [HttpPost]
         public SanctionResponse CheckSanctions(string name)
         {
