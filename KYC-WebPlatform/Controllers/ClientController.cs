@@ -28,6 +28,7 @@ namespace KYC_WebPlatform.Controllers
             {
                 try
                 {
+
                     DBContext dbContext = DBContext.GetInstance();
                     using (SqlConnection connection = dbContext.GetConnection())
                     {
