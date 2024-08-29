@@ -18,6 +18,7 @@ namespace KYC_WebPlatform.Services.Data
             try
             {
                 _connectionString = ConfigurationManager.ConnectionStrings["KYC-Connection"].ConnectionString;
+
             }
             catch (Exception e)
             {
