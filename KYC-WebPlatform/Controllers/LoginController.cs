@@ -25,6 +25,7 @@ namespace KYC_WebPlatform.Controllers
                 {
                     ViewBag.Email = loginDto.Email;
                     return View("OtpView");
+
                 }
                 else
                 {
