@@ -71,11 +71,10 @@ namespace KYC_WebPlatform
             );
 
             routes.MapRoute(
-                name: "Login",
-                url: "Login", //Login/Index
+                name: "Default",
+                url: "{controller}/{action}", //Login/Index
                 defaults: new { controller = "Login", action = "Index" }
             );
-
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}", //home/Index or About
@@ -88,6 +87,11 @@ namespace KYC_WebPlatform
                 url: "Client/SubmitDirectorInfo",
                 defaults: new { controller = "Client", action = "SubmitDirectorInfo" }
             );
+            //routes.MapRoute(
+            //    name: "Default",
+            //    url: "{controller}/{action}/{id}", //home/Index or About
+            //    defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+            //);
         }
     }
 }

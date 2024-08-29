@@ -1,5 +1,6 @@
 ﻿using KYC_WebPlatform.Models;
 using KYC_WebPlatform.Services.Business;
+using KYC_WebPlatform.Services.Data;
 using System;
 using System.Diagnostics;
 using System.Web.Mvc;
@@ -22,7 +23,9 @@ namespace KYC_WebPlatform.Controllers
                 Debug.WriteLine("From Authenticate: " + loginDto.Email);
                 if (SendOTP(loginDto.Email))
                 {
+                    ViewBag.Email = loginDto.Email;
                     return View("OtpView");
+
                 }
                 else
                 {
@@ -67,14 +70,20 @@ namespace KYC_WebPlatform.Controllers
 
         public ActionResult VerifyOtp(OtpViewModel model)
         {
+            SecurityDAO dAO = new SecurityDAO();
+
             if (ModelState.IsValid)
             {
                 string storedOtp = Session["OTP"] as string;
                 DateTime? storedOtpTimeStamp = Session["OTPTime"] as DateTime?;
                 string userEmail = Session["Email"] as string;
 
+                Debug.WriteLine(userEmail);
+
+                DateTime otpTimeStamp = storedOtpTimeStamp ?? DateTime.MinValue;
+
                 // Check if OTP has expired
-                if (DateTime.Now > storedOtpTimeStamp.Value.AddMinutes(5))
+                if (DateTime.Now > otpTimeStamp.AddMinutes(5))
                 {
                     ViewBag.ErrorMessage = "OTP has expired. Would you like to resend it?";
                     ViewBag.ExpiredOtp = true;
@@ -86,9 +95,18 @@ namespace KYC_WebPlatform.Controllers
                 {
                     Session.Remove("OTP"); // Remove OTP from session after successful verification
                     Session.Remove("OTPTime");
-                    Session.Remove("UserEmail");
-                    ViewBag.SuccessMessage = "Logged In Successfully";
-                    return View("Index", "Home"); // Redirect to dashboard
+                    
+
+                    if (dAO.RetrieveRole(model.Email) == 15)
+                    {
+                        ViewBag.SuccessMessage = "Logged In Successfully";
+                        return RedirectToAction("ClientIndex", "Client"); // Redirect to client dashboard
+                    }
+                    if (dAO.RetrieveRole(model.Email) == 11)
+                    {
+                        ViewBag.SuccessMessage = "Logged In Successfully";
+                        return RedirectToAction("ViewClients", "Business"); // Redirect to admin dashboard
+                    }
                 }
                 else
                 {

@@ -164,7 +164,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
-    <Compile Include="Models\Director_MODEL.cs" />
+    <Compile Include="Models\AddBusiness_MODEL.cs" />
     <Compile Include="Models\LoginDto.cs" />
     <Compile Include="Models\OtpViewModel.cs" />
     <Compile Include="Models\SignupDto.cs" />
@@ -1402,7 +1402,6 @@
     <Content Include="Views\Login\OtpView.cshtml" />
     <Content Include="Views\Signup\SignUp.cshtml" />
     <Content Include="Views\Shared\_ClientLayout.cshtml" />
-    <Content Include="Views\Client\AddBusiness.cshtml" />
     <Content Include="Views\Client\ClientIndex.cshtml" />
     <Content Include="Views\Client\ClientNotifications.cshtml" />
     <Content Include="Views\Client\Help.cshtml" />
@@ -1411,7 +1410,8 @@
     <Content Include="Views\Business\ViewClients.cshtml" />
     <Content Include="Views\Business\ViewStatus.cshtml" />
     <Content Include="Views\Shared\_BusinessLayout.cshtml" />
-    <Content Include="Views\Client\Confirmation.cshtml" />
+    <Content Include="Views\Business\CreateView.cshtml" />
+    <Content Include="Views\Client\AddBusiness.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
