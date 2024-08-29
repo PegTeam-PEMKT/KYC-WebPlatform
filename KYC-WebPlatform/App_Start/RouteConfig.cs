@@ -86,7 +86,7 @@ namespace KYC_WebPlatform
             routes.MapRoute(
                 name: "ClientSubmitDirector",
                 url: "Client/SubmitDirectorInfo",
-                defaults: new { controller = "Client", action = "CheckSanction" }
+                defaults: new { controller = "Client", action = "SubmitDirectorInfo" }
             );
         }
     }

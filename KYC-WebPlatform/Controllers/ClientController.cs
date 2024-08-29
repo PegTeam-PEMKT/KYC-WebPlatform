@@ -86,6 +86,7 @@ namespace KYC_WebPlatform.Controllers
                                                              utility, vendorCode, password,
                                                              nationalId, surname);
 
+            Console.WriteLine(result);
             if (result != null)
             {
                 if (result.Contains("True"))
@@ -108,21 +109,11 @@ namespace KYC_WebPlatform.Controllers
             if (ModelState.IsValid)
             {
                 // Validate the NIN using the QueryCustomer method
-                model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurnameName);
+                /*model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurnameName);*/
+                model.NiraValidation = QueryCustomer("01/01/1993", "000092564", "Johnson", "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", "CM930121003EGE", "Tipiyai");
 
-                // Optionally, handle Open Sanctions validation
-                /*                var responseList = await _apiService.SendRequestAsync(model.DirectorName);
-                                if (responseList.ToString().Contains("EXISTS"))
-                                {
-                                    model.SanctionsValidation = "Validated";
-                                }
-                                else
-                                {
-                                    model.SanctionsValidation = "NotValidated";
-                                }
-                */
 
-                var jsonResponse = await _apiService.SendRequestAsync(model.DirectorSurnameName+ " " + model.DirectorGivenName);
+                var jsonResponse = await _apiService.SendRequestAsync("Vladimir Putin");
 
                 if (jsonResponse == null)
                 {
@@ -136,16 +127,19 @@ namespace KYC_WebPlatform.Controllers
 
                 var sanctionResponses =  jsonresp;
 
-                // Add to the database
+              
 
                 if (sanctionResponses != null && jsonresp.Contains("EXISTS"))
                 {
                     model.SanctionsValidation = "NotValidated";
 
-                    // Redirect to a confirmation page
-                    return RedirectToAction("Confirmation", model);
                 }
-                model.SanctionsValidation = "Validated";
+                else
+                {
+                    model.SanctionsValidation = "Validated";
+                }
+
+                // Add to the database
 
                 // Redirect to a confirmation page
                 return RedirectToAction("Confirmation", model);
