@@ -14,9 +14,5 @@ namespace KYC_WebPlatform.Models
             return View();
         }
 
-        /*public ActionResult Index()
-        {
-            return View();
-        }*/
     }
 }
