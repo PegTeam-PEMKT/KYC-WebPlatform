@@ -33,14 +33,67 @@ namespace KYC_WebPlatform.Controllers
             return View("ClientIndex");
         }
 
-        public ActionResult AddBusiness(AddBusiness_MODEL model)
+        /*public async ActionResult AddBusiness(AddBusiness_MODEL model)
         {
+
             BusinessService businessService = new BusinessService();
             if (businessService.SaveBusinessInfo(model))
             {
-
                 return View("AddBusiness");
             }
+
+            return View("AddBusiness", model);
+        }*/
+
+
+        public async Task<ActionResult> AddBusiness(AddBusiness_MODEL model)
+        {
+           
+            
+                try
+                {
+                    // Performing NIRA Validation (assuming it's a synchronous call)
+                    model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurname);
+
+                    // Performing Sanctions Validation (awaiting the asynchronous call)
+                    model.SancationsValidation = await CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);
+
+                    Debug.WriteLine("Nira: " + model.NiraValidation + " Sanctions: " + model.SancationsValidation);
+
+                // Doing database operations
+                DBContext dbContext = DBContext.GetInstance();
+                using (SqlConnection connection = dbContext.GetConnection())
+                {
+                    // Open the connection
+                    connection.Open();
+                    Debug.WriteLine("NIN: " + model.NIN + " BusinessName: " + model.BusinessName);
+                    Debug.WriteLine("Nira: " + model.NiraValidation + " Sanctions: " + model.SancationsValidation);
+                    string sqlCommand = "INSERT INTO Directors ( DirectorNIN, BusinessId, NinValidated, IsSanctioned) VALUES (@NIN, @BusinessName, @NiraValidation, @SanctionsValidation)";
+                    using (SqlCommand command = new SqlCommand(sqlCommand, connection))
+                    {
+                        //command.Parameters.AddWithValue("@DirectorId", Guid.NewGuid());
+                        command.Parameters.AddWithValue("@NIN", model.NIN);
+                        command.Parameters.AddWithValue("@BusinessName", model.BusinessName);
+/*                        command.Parameters.AddWithValue("@NiraValidation", model.NiraValidation);
+                        command.Parameters.AddWithValue("@SanctionsValidation", model.SancationsValidation);*/
+
+                        command.Parameters.AddWithValue("@NiraValidation", model.NiraValidation == "Validated" ? "1" : "0");
+                        command.Parameters.AddWithValue("@SanctionsValidation", model.SancationsValidation == "Validated" ? "1" : "0");
+                        command.ExecuteNonQuery();
+                    }
+
+                    //Close the connection
+                    connection.Close();
+                }
+
+                return View("ClientIndex");
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine(e.Message);
+                    ModelState.AddModelError("", "An error occurred while processing your request.");
+                }
+            
 
             return View("AddBusiness", model);
         }
@@ -89,14 +142,14 @@ namespace KYC_WebPlatform.Controllers
         }
 
         //NIRA Validation method
-        public String QueryCustomer(string dateOfBirth, string documentId, string givenName,
+        public string QueryCustomer(string dateOfBirth, string documentId, string givenName,
                                     string utility, string vendorCode, string password,
                                     string nationalId, string surname)
         {
             var result = _pegPayService.QueryCustomerDetails(dateOfBirth, documentId, givenName,
                                                              utility, vendorCode, password,
                                                              nationalId, surname);
-
+            Debug.WriteLine(result);
             Console.WriteLine(result);
             if (result != null)
             {
@@ -113,32 +166,7 @@ namespace KYC_WebPlatform.Controllers
             return "Nira Returned Null";
         }
 
-        // Submit Director Info
-        [HttpPost]
-        public async Task<ActionResult> SubmitDirectorInfo(AddBusiness_MODEL model)
-        {
-            if (ModelState.IsValid)
-            {
-                // Validate the NIN using the QueryCustomer method
-                /*model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurnameName);*/
-                model.NiraValidation = QueryCustomer("01/01/1993", "000092564", "Johnson", "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", "CM930121003EGE", "Tipiyai");
 
-
-                var jsonResponse = await _apiService.SendRequestAsync("Vladimir Putin");
-
-                if (jsonResponse == null)
-                {
-                    return Content("Error occurred while processing the request.");
-                }
-
-                string jsonresp = jsonResponse.ToString();
-                // Assuming jsonResponse is a string containing the JSON array
-                /*var sanctionResponses = JsonConvert.DeserializeObject<List<SanctionResponse>>(jsonresp);*/
-
-
-                var sanctionResponses =  jsonresp;
-
-              
 
                 if (sanctionResponses != null && jsonresp.Contains("EXISTS"))
                 {
@@ -150,16 +178,33 @@ namespace KYC_WebPlatform.Controllers
                     model.SancationsValidation = "Validated";
                 }
 
-                // Add to the database
+        [HttpPost]
+        public async Task<string> CheckSanctions(string name)
+        {
+            try
+            {
+                var jsonResponse = await _apiService.SendRequestAsync(name);
 
-                // Redirect to a confirmation page
-                return RedirectToAction("Confirmation", model);
+                if (jsonResponse == null)
+                {
+                    return "Error occurred while processing the request.";
+                }
 
+                string jsonresp = jsonResponse.ToString();
+                Debug.WriteLine(jsonresp);
+                Debug.WriteLine("\n\n\n\n" +jsonResponse);
+                if (!string.IsNullOrEmpty(jsonresp) && jsonresp.Contains("EXISTS"))
+                {
+                    return "NotValidated";
+                }
 
+                return "Validated";
             }
-
-            // If the model state is not valid, return the form view with validation messages
-            return View(model);
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return "Error occurred while processing the request.";
+            }
         }
 
         // Confirmation page after successful submission
@@ -168,7 +213,7 @@ namespace KYC_WebPlatform.Controllers
             return View(model);
         }
 
-        // SANCTIONS: Method to handle sanctions checking (optional)
+        // SANCTIONS: Method to handle sanctions checking
         public async Task<ActionResult> Sanctions()
         {
             var jsonResponse = await _apiService.SendRequestAsync("Putin");
