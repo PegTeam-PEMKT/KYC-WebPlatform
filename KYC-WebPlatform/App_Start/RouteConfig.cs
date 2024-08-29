@@ -75,11 +75,11 @@ namespace KYC_WebPlatform
                 url: "{controller}/{action}", //Login/Index
                 defaults: new { controller = "Login", action = "Index" }
             );
-            routes.MapRoute(
+           /* routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}", //home/Index or About
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-            );
+            );*/
 
             // Default route for Home page
             routes.MapRoute(
