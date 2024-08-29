@@ -115,7 +115,7 @@ namespace KYC_WebPlatform.Controllers
 
         // Submit Director Info
         [HttpPost]
-        public async Task<ActionResult> SubmitDirectorInfo(Director_MODEL model)
+        public async Task<ActionResult> SubmitDirectorInfo(AddBusiness_MODEL model)
         {
             if (ModelState.IsValid)
             {
@@ -142,12 +142,12 @@ namespace KYC_WebPlatform.Controllers
 
                 if (sanctionResponses != null && jsonresp.Contains("EXISTS"))
                 {
-                    model.SanctionsValidation = "NotValidated";
+                    model.SancationsValidation = "NotValidated";
 
                 }
                 else
                 {
-                    model.SanctionsValidation = "Validated";
+                    model.SancationsValidation = "Validated";
                 }
 
                 // Add to the database
@@ -163,7 +163,7 @@ namespace KYC_WebPlatform.Controllers
         }
 
         // Confirmation page after successful submission
-        public ActionResult Confirmation(Director_MODEL model)
+        public ActionResult Confirmation(AddBusiness_MODEL model)
         {
             return View(model);
         }
