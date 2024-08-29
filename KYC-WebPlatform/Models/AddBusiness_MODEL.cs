@@ -30,6 +30,8 @@ namespace KYC_WebPlatform.Models
         public string DirectorDocumentID { get; set; }
 
 
+
+
         // Interested Pegasus Services
         public bool SchoolFeesPayment { get; set; }
         public bool USSDAggregation { get; set; }
