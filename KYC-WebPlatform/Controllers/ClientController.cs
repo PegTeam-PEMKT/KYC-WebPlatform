@@ -166,35 +166,17 @@ namespace KYC_WebPlatform.Controllers
             return "Nira Returned Null";
         }
 
-        /*// Submit Director Info
-        [HttpPost]
-        public async Task<string> CheckSanctions(string name)
-        {
-                // Validate the NIN using the QueryCustomer method
-                *//*model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurname);*/
-        /*model.NiraValidation = QueryCustomer("01/01/1993", "000092564", "Johnson", "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", "CM930121003EGE", "Tipiyai");*//*
-        var jsonResponse = await _apiService.SendRequestAsync(name);
-
-        if (jsonResponse == null)
-        {
-            return "Error occurred while processing the request.";
-        }
-
-        string jsonresp = jsonResponse.ToString();
-
-        var sanctionResponses =  jsonresp;
-
-        if (sanctionResponses != null && jsonresp.Contains("EXISTS"))
-        {
-            return "NotValidated";
-
-        }
-            return "Validated";
-
-}*/
 
 
+                if (sanctionResponses != null && jsonresp.Contains("EXISTS"))
+                {
+                    model.SancationsValidation = "NotValidated";
 
+                }
+                else
+                {
+                    model.SancationsValidation = "Validated";
+                }
 
         [HttpPost]
         public async Task<string> CheckSanctions(string name)

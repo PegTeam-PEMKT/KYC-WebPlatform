@@ -74,11 +74,13 @@ namespace KYC_WebPlatform.Controllers
 
             if (ModelState.IsValid)
             {
-                string storedOtp = Session["OTP"] as string;
-                DateTime? storedOtpTimeStamp = Session["OTPTime"] as DateTime?;
-                string userEmail = Session["Email"] as string;
+                string storedOtp = HttpContext.Session["OTP"] as string;
+                DateTime? storedOtpTimeStamp = HttpContext.Session["OTPTime"] as DateTime?;
+                string userEmail = HttpContext.Session["Email"] as string;
 
                 Debug.WriteLine(userEmail);
+                Debug.WriteLine("OTP: "+ model.Otp);
+                Debug.WriteLine("Stored OTP: " + storedOtp);
 
                 DateTime otpTimeStamp = storedOtpTimeStamp ?? DateTime.MinValue;
 
@@ -87,7 +89,7 @@ namespace KYC_WebPlatform.Controllers
                 {
                     ViewBag.ErrorMessage = "OTP has expired. Would you like to resend it?";
                     ViewBag.ExpiredOtp = true;
-                    ViewBag.UserEmail = userEmail;
+                    //ViewBag.Email = userEmail;
                     return View("OtpView", model); // Re-render the view with an option to resend the OTP
                 }
 
@@ -97,12 +99,12 @@ namespace KYC_WebPlatform.Controllers
                     Session.Remove("OTPTime");
                     
 
-                    if (dAO.RetrieveRole(model.Email) == 15)
+                    if (dAO.RetrieveRole(userEmail) == 15)
                     {
                         ViewBag.SuccessMessage = "Logged In Successfully";
                         return RedirectToAction("ClientIndex", "Client"); // Redirect to client dashboard
                     }
-                    if (dAO.RetrieveRole(model.Email) == 11)
+                    if (dAO.RetrieveRole(userEmail) == 11)
                     {
                         ViewBag.SuccessMessage = "Logged In Successfully";
                         return RedirectToAction("ViewClients", "Business"); // Redirect to admin dashboard
