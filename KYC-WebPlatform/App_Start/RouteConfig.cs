@@ -71,16 +71,16 @@ namespace KYC_WebPlatform
             );
 
             routes.MapRoute(
-                name: "Login",
-                url: "Login", //Login/Index
+                name: "Default",
+                url: "{controller}/{action}", //Login/Index
                 defaults: new { controller = "Login", action = "Index" }
             );
 
-            routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}", //home/Index or About
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-            );
+            //routes.MapRoute(
+            //    name: "Default",
+            //    url: "{controller}/{action}/{id}", //home/Index or About
+            //    defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+            //);
         }
     }
 }
