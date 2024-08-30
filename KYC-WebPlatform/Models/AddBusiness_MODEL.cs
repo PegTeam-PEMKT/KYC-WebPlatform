@@ -13,6 +13,8 @@ namespace KYC_WebPlatform.Models
         public string BusinessPhoneNumber { get; set; }
         public string BusinessEmail { get; set; }
         public string BusinessWebsite { get; set; }
+        public string Businesslocation { get; set; }
+        public string BusinessId { get; set; }
 
 
 
@@ -24,6 +26,9 @@ namespace KYC_WebPlatform.Models
         public string DirectorPhoneNumber { get; set; }
         public string NiraValidation { get; set; }
         public string SancationsValidation { get; set; }
+        public bool Sanctioned { get; set; }
+        public string SanctionScore { get; set; }
+        public string SanctionDescription { get; set; }
         public string DirectorEmail { get; set; }
         public string DirectorUtility { get; set; }
         public string DirectorVendorCode { get; set; }

@@ -1417,6 +1417,8 @@
     <Content Include="Views\Client\AddBusiness.cshtml" />
     <Content Include="Views\Shared\_ApprovalLayout.cshtml" />
     <Content Include="Views\Approvals\PendingBusinesses.cshtml" />
+    <Content Include="Views\Login\View.cshtml" />
+    <Content Include="Views\Business\ViewClientDetails.cshtml" />
     <Content Include="Views\Approvals\PendingBusinessFiles.cshtml" />
     <Content Include="Views\Approvals\FileViewer.cshtml" />
     <Content Include="Views\Signup\ClientSignup.cshtml" />

@@ -73,6 +73,7 @@ namespace KYC_WebPlatform.Services.Data
 
         }
 
+
         public Dictionary<string, List<object>> ExecuteSelectQuery(string query, params SqlParameter[] parameters)
         {
             // Initialize the dictionary to hold the result
@@ -151,6 +152,7 @@ namespace KYC_WebPlatform.Services.Data
                 }
                 catch (Exception ex)
                 {
+
                     // Handle other possible errors
                     Console.WriteLine("Error: " + ex.Message);
                 }
