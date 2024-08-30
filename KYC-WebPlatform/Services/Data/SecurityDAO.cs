@@ -1,5 +1,6 @@
 ﻿using KYC_WebPlatform.Models;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Web.Helpers;
@@ -31,6 +32,14 @@ namespace KYC_WebPlatform.Services.Data
                     if (InsertAdmin(signupDto.Username, hashedPassword))
                     {
                         Debug.WriteLine("Admin Created");
+                        if (InsertDepartmentHead("BUSINESS#001", signupDto.Username, 5, signupDto.Email, signupDto.PhoneNumber))
+                        {
+                            Debug.WriteLine("DeptHead Created");
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Failure creating DeptHead");
+                        }
                     }
                     else
                     {
@@ -39,7 +48,19 @@ namespace KYC_WebPlatform.Services.Data
                 }
                 if (signupDto.Role == UserRole.DepartmentHead)
                 {
-                    if (InsertDepartmentHead(signupDto.Username, signupDto.Email, hashedPassword))
+                    var deptHeadIds = new Dictionary<int, string>
+                    {
+                        { 1, "TECH#001" },
+                        { 2, "HR#002" },
+                        { 3, "FIN#003" },
+                        { 4, "MKT#004" },
+                        { 5, "OPS#005" },
+                        { 6, "SALES#006" }
+                    };
+
+                    string deptHeadId = deptHeadIds.TryGetValue((int)signupDto.DeptRole, out var id) ? id : "DEFAULT_ID";
+
+                    if (InsertDepartmentHead(deptHeadId, signupDto.Username, (int)signupDto.DeptRole, signupDto.Email, signupDto.PhoneNumber))
                     {
                         Debug.WriteLine("DeptHead Created");
                     }
@@ -190,18 +211,18 @@ namespace KYC_WebPlatform.Services.Data
             }
         }
 
-        internal bool InsertDepartmentHead(string name, string email, string phone)
+        internal bool InsertDepartmentHead(string deptHeadId, string name, int deptId, string email, string phone)
         {
             Random rand = new Random();
-            int deptId = rand.Next(999);
             bool deptHeadCreated = false;
             try
             {
                 using (SqlConnection connection = dbContext.GetConnection())
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("INSERT INTO dbo.HeadOfDepartment (PersonName, DepartmentId, Email, Telephone) VALUES (@PersonName, @DepartmentId, @Email, @Telephone)", connection);
+                    SqlCommand command = new SqlCommand("INSERT INTO dbo.HeadOfDepartment (DepartmentHeadId, PersonName, DepartmentId, Email, Telephone) VALUES (@DeptHeadId, @PersonName, @DepartmentId, @Email, @Telephone)", connection);
 
+                    command.Parameters.AddWithValue("@DeptHeadId", deptHeadId);
                     command.Parameters.AddWithValue("@PersonName", name);
                     command.Parameters.AddWithValue("@DepartmentId", deptId.ToString());
                     command.Parameters.AddWithValue("@Email", email);
