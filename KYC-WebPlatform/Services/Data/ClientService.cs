@@ -160,7 +160,42 @@ namespace KYC_WebPlatform.Services.Data
 
             return resultDictionary;
         }
+
+        public int ExecuteInsertQuery(string query, params SqlParameter[] parameters)
+        {
+            int rowsAffected = 0;
+
+            using (SqlConnection connection = dbContext.GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        if (parameters != null)
+                        {
+                            command.Parameters.AddRange(parameters);
+                        }
+
+                        rowsAffected = command.ExecuteNonQuery();
+                    }
+                }
+                catch (SqlException sq)
+                {
+                    Debug.WriteLine(sq.Message);
+                }
+                finally
+                {
+                    if (connection.State == ConnectionState.Open)
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+
+            return rowsAffected;
+        }
+
+
     }
-
-
 }
