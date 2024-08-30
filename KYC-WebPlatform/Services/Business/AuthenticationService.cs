@@ -16,7 +16,7 @@ namespace KYC_WebPlatform.Services.Business
         public bool Authenticate(LoginDto logindto)
         {
             Debug.WriteLine("From Authenticate: " + logindto.Email);
-            return securityDAO.FindByUser(logindto.Email, logindto.Password);
+            return securityDAO.FindByUser(logindto);
         }
 
         public bool SignUpUser(SignupDto signupDto)

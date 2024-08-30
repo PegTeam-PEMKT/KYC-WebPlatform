@@ -9,33 +9,31 @@ using System.Web.Mvc;
 
 namespace KYC_WebPlatform.Controllers
 {
-    public class SignupController : Controller
+    public class AdminController : Controller
     {
-        // GET: Signup
+        // GET: Admin
         public ActionResult Index()
         {
-            return View("ClientSignup");
+            return View("AddUser");
         }
 
-        public ActionResult Signup(SignupDto signupDto)
+        public ActionResult CreateUser(SignupDto signupDto)
         {
-         
-            if (signupDto.PhoneNumber.Length < 10 || signupDto.PhoneNumber.Length > 10) 
+            if (signupDto.PhoneNumber.Length < 10 || signupDto.PhoneNumber.Length > 10)
             {
                 ViewBag.ErrorMessage = "Invalid phone number length";
-                return View("ClientSignup");
+                return View("AddUser");
             }
             if (!signupDto.PhoneNumber.StartsWith("074") && !signupDto.PhoneNumber.StartsWith("075") && !signupDto.PhoneNumber.StartsWith("070") && !signupDto.PhoneNumber.StartsWith("078") && !signupDto.PhoneNumber.StartsWith("077"))
             {
                 ViewBag.ErrorMessage = "Invalid phone number";
-                return View("ClientSignup");
+                return View("AddUser");
             }
             if (!(int.TryParse(signupDto.PhoneNumber, out _)))
             {
                 ViewBag.ErrorMessage = "Invalid phone number digits";
-                return View("ClientSignup");
+                return View("AddUser");
             }
-
             AuthenticationService authenticationService = new AuthenticationService();
 
             if (authenticationService.SignUpUser(signupDto))
@@ -47,7 +45,7 @@ namespace KYC_WebPlatform.Controllers
             else
             {
                 ViewBag.ErrorMessage = "User already exists";
-                return View("ClientSignup");
+                return View("AddUser");
             }
         }
     }

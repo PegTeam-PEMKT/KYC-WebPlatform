@@ -11,6 +11,18 @@ namespace KYC_WebPlatform
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "Default",
+                url: "{controller}/{action}", //Login/Index
+                defaults: new { controller = "Login", action = "Index" }
+            );
+
+            routes.MapRoute(
+                name: "Login",
+                url: "Login/OtpView", //Login/Index
+                defaults: new { controller = "Login", action = "OtpView" }
+            );
+
+            routes.MapRoute(
                name: "DisplayApproval",
                url: "Approvals/DisplayApproval",
                defaults: new { controller = "Approvals", action = "DisplayApproval" }
@@ -32,6 +44,12 @@ namespace KYC_WebPlatform
                 name: "ViewBusiness",
                 url: "Business/ViewClients",
                 defaults: new { controller = "Business", action = "ViewClients" }
+            );
+
+            routes.MapRoute(
+                name: "Business",
+                url: "Business/CreateView",
+                defaults: new { controller = "Business", action = "CreateView" }
             );
 
             routes.MapRoute(
@@ -88,12 +106,19 @@ namespace KYC_WebPlatform
                 defaults: new { controller = "Client", action = "Help" }
             );
 
-            routes.MapRoute(
+           /* routes.MapRoute(
                 name: "Default",
-                url: "{controller}/{action}", //Login/Index
-                defaults: new { controller = "Login", action = "Index" }
-            );
+                url: "{controller}/{action}/{id}", //home/Index or About
+                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+            );*/
 
+
+            // Default route for Home page
+            routes.MapRoute(
+                name: "ClientSubmitDirector",
+                url: "Client/SubmitDirectorInfo",
+                defaults: new { controller = "Client", action = "SubmitDirectorInfo" }
+            );
             //routes.MapRoute(
             //    name: "Default",
             //    url: "{controller}/{action}/{id}", //home/Index or About
