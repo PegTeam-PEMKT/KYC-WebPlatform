@@ -1,11 +1,14 @@
 ﻿using KYC_WebPlatform.Services.Data.Interfaces;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
 using System.Web;
+using System.Web.Helpers;
+using System.Web.Security;
 
 namespace KYC_WebPlatform.Services.Data
 {
@@ -196,6 +199,38 @@ namespace KYC_WebPlatform.Services.Data
             return rowsAffected;
         }
 
+        internal int ExecuteGetIdQuery(string query, string TIN)
+        {
+            int businessId = 0;
 
+            try
+            {
+                using (SqlConnection sqlConnection = dbContext.GetConnection())
+                {
+
+                    SqlCommand command = new SqlCommand(query, sqlConnection);
+                    command.Parameters.AddWithValue("@BusinessTIN", TIN);
+
+                    Debug.WriteLine("From ExecuteGetIdQuery:" + TIN);
+
+                    sqlConnection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            reader.Read(); // Move to the first record
+                            businessId = reader.GetInt32(0);
+                        }
+                    }
+                    return businessId;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("From ExecuteGetIdQuery: " + ex.Message);
+            }
+            return businessId;
+            
+        }
     }
 }

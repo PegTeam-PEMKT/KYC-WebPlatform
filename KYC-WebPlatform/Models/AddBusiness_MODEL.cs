@@ -15,6 +15,7 @@ namespace KYC_WebPlatform.Models
         public string BusinessWebsite { get; set; }
         public string Businesslocation { get; set; }
         public string BusinessId { get; set; }
+        public string BusinessTIN { get; set; }
 
 
 

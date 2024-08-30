@@ -37,6 +37,7 @@ namespace KYC_WebPlatform.Controllers
         {
             try
             {
+                HttpContext.Session["TIN"] = model.BusinessTIN;
                 // Performing NIRA Validation (assuming it's a synchronous call)
                 model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurname);
 
@@ -69,7 +70,7 @@ namespace KYC_WebPlatform.Controllers
                         command.Parameters.AddWithValue("@TransactionTraffic", model.AmountEarnedPerMonth);
                         command.Parameters.AddWithValue("@Email", model.BusinessEmail);
                         command.Parameters.AddWithValue("@PhoneNumber", model.BusinessPhoneNumber);
-                        command.Parameters.AddWithValue("@Location", "Location_Value");
+                        command.Parameters.AddWithValue("@TIN", model.BusinessTIN);
 
                         // Input parameters for Director
                         command.Parameters.AddWithValue("@DirectorName", name);
@@ -125,6 +126,17 @@ namespace KYC_WebPlatform.Controllers
             {
                 var fileDic = "Files";
                 string filePath = Server.MapPath("~/") + fileDic;
+
+                string TIN = HttpContext.Session["TIN"] as string;
+
+                Debug.WriteLine($"=============TIN: {TIN}=============");
+
+                string query = "Select BusinessId from ClientBusiness where TIN = @BusinessTIN";
+                // Retrieve the BusinessId from the ClientBusiness table
+                int businessId = _storage.ExecuteGetIdQuery(query, TIN);
+
+                Debug.WriteLine($"++++++++FROM Upload: {businessId}++++++++++++");
+
                 if (!Directory.Exists(filePath))
                 {
                     Directory.CreateDirectory(filePath);
@@ -137,11 +149,11 @@ namespace KYC_WebPlatform.Controllers
 
                 SqlParameter[] parameters = new SqlParameter[]
                     {
-                        new SqlParameter("@FileId",randomText),
+                        new SqlParameter("@FileId", randomText),
                         new SqlParameter("@FileName", fileName),
-                        new SqlParameter("@BusinessId", '5'),
+                        new SqlParameter("@BusinessId", businessId),
                         new SqlParameter("@UploadedOn", DateTime.Now),
-                        new SqlParameter("@IsVerified",0),
+                        new SqlParameter("@IsVerified", false),
                         new SqlParameter("@Approval_Code","BUSINESS#001"),
                         new SqlParameter("@FilePath",filePath)
                     };

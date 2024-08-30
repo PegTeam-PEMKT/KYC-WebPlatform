@@ -76,6 +76,10 @@
                                         <label for="BusinessWebsite" class="form-label">Business Website</label>
                                         @Html.TextBoxFor(m => m.BusinessWebsite, new { @class = "form-control", type = "url" })
                                     </div>
+                                    <div class="mb-3">
+                                        <label for="TIN Number" class="form-label">TIN Number</label>
+                                        @Html.TextBoxFor(m => m.BusinessTIN, new { @class = "form-control", type = "text" })
+                                    </div>
                                     @*<button type="submit" class="btn app-btn-primary">Submit Business Info</button>*@
                                 </div>
                             </div>
