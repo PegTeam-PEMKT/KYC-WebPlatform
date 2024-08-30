@@ -43,7 +43,7 @@
                     <div class="auth-form-container text-start">
                         <div class="auth-form login-form">
                             <!--THIS VIEW IS FOR THE SUPER ADMIN IGNORE FOR NOW WILL BE IMPLEMENTED LATER, TO BE HANDLED BY SEPERATE CONTROLLER NOT SignupController-->
-                            @using (Html.BeginForm("Signup", "Signup", FormMethod.Post, new { @class = "auth-form login-form" }))
+                            @using (Html.BeginForm("Admin", "CreateUser", FormMethod.Post, new { @class = "auth-form login-form" }))
                             {
                                 @Html.AntiForgeryToken()
 
@@ -83,7 +83,7 @@
                                 </div>
 
                                 <div class="text-center">
-                                    <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Sign Up</button>
+                                    <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Create</button>
                                 </div>
 
                                 @if (ViewBag.ErrorMessage != null)

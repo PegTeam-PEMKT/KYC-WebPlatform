@@ -103,6 +103,7 @@ namespace KYC_WebPlatform.Controllers
                     if (dAO.RetrieveRole(userEmail) == 15)
                     {
                         ViewBag.SuccessMessage = "Logged In Successfully";
+                        TempData["Email"] = userEmail;
                         return RedirectToAction("ClientIndex", "Client"); // Redirect to client dashboard
                     }
                     if (dAO.RetrieveRole(userEmail) == 11)
