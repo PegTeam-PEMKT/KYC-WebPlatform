@@ -3,10 +3,12 @@ using KYC_WebPlatform.Services;
 using KYC_WebPlatform.Services.Data;
 using NiraApiIntegrationService;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -17,6 +19,7 @@ namespace KYC_WebPlatform.Controllers
     {
         private readonly PegPayService _pegPayService;
         private readonly ApiService _apiService;
+        private readonly ClientService _storage= new ClientService();
 
         public ClientController()
         {
@@ -37,15 +40,9 @@ namespace KYC_WebPlatform.Controllers
                 // Performing NIRA Validation (assuming it's a synchronous call)
                 model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurname);
 
-                /*// Performing Sanctions Validation (awaiting the asynchronous call)
-                model.SancationsValidation = await CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);*/
-
-                /*// Performing Sanctions Validation (awaiting the asynchronous call)
-                SanctionResponse sanctionresponse = await CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);*/
-
                 // Performing Sanctions Validation
                 SanctionResponse sanctionresponse = CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);
-
+                var name = model.DirectorSurname + " " + model.DirectorGivenName;
                 Debug.WriteLine("\n\n\n******\n\n");
                 Debug.WriteLine("SancCode: " + sanctionresponse.StatusCode + " SancDesc: " + sanctionresponse.StatusDescription + " IsSanc: " + sanctionresponse.Sanctioned + " SancScore: " + sanctionresponse.Score);
                 Debug.WriteLine("\n******\n\n");
@@ -75,12 +72,14 @@ namespace KYC_WebPlatform.Controllers
                         command.Parameters.AddWithValue("@Location", "Location_Value");
 
                         // Input parameters for Director
+                        command.Parameters.AddWithValue("@DirectorName", name);
                         command.Parameters.AddWithValue("@DirectorNIN", model.NIN);
                         command.Parameters.AddWithValue("@NiraValidation", model.NiraValidation);
                         /*command.Parameters.AddWithValue("@SanctionsValidation", model.SancationsValidation);*/
                         command.Parameters.AddWithValue("@SanctionScore", sanctionresponse.Score);
                         command.Parameters.AddWithValue("@SanctionStatusCode", sanctionresponse.StatusCode);
                         command.Parameters.AddWithValue("@SanctionStatusDescription", sanctionresponse.StatusDescription);
+                      
 
                         // Execute the stored procedure
                         command.ExecuteNonQuery();
@@ -134,6 +133,20 @@ namespace KYC_WebPlatform.Controllers
                 filePath = Path.Combine(filePath, fileName);
                 file.SaveAs(filePath);
                 Debug.WriteLine(filePath + "***success!");
+                string randomText = new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 15).Select(s => s[new Random().Next(s.Length)]).ToArray());
+
+                SqlParameter[] parameters = new SqlParameter[]
+                    {
+                        new SqlParameter("@FileId",randomText),
+                        new SqlParameter("@FileName", fileName),
+                        new SqlParameter("@BusinessId", '5'),
+                        new SqlParameter("@UploadedOn", DateTime.Now),
+                        new SqlParameter("@IsVerified",0),
+                        new SqlParameter("@Approval_Code","BUSINESS#001"),
+                        new SqlParameter("@FilePath",filePath)
+                    };
+                int rowsAffected =_storage.ExecuteInsertQuery("InsertCompanyDocument", parameters);
+                Debug.WriteLine("INSERTEEEED!!! "+rowsAffected);
                 return RedirectToAction("ViewStatus");
             }
             catch (System.NullReferenceException e)
@@ -186,6 +199,8 @@ namespace KYC_WebPlatform.Controllers
                 Debug.WriteLine($"StatusDescription: {jsonResponse.StatusDescription}");
                 Debug.WriteLine($"Sanctioned: {jsonResponse.Sanctioned}");
                 Debug.WriteLine($"Score: {jsonResponse.Score}");
+                Debug.WriteLine($"Score: {jsonResponse.Name}");
+                Debug.WriteLine($"Score: {jsonResponse.ActualName}");
                 // Add more as needed
 
                 return jsonResponse;

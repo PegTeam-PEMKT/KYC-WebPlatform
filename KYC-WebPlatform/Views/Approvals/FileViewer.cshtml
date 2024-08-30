@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewBag.Title = "FileViewer";
+    Layout = "~/Views/Shared/_BusinessLayout.cshtml";
+}
+@model  List<Object>
+
+<body class="app">
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+                <h1 class="app-page-title">Your Clients</h1>
+                <div class="row g-4 mb-4">
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+                    <h1>@Model[0] |||| @Model[1]  </h1>
+                    <iframe src="@Url.Action("GetFile", "File", new { fileName = "MMPegasus-PULL_FLOW.drawio.pdf" })" frameborder="0" width="100%" height="500"></iframe>
+
+                    <button id="approve-btn">Approve</button>
+                    <button id="reject-btn">Reject</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#approve-btn').click(function () {
+                var status = 0;
+                var approvalCode = '@Model[1]';  // Assuming @Model[1] is the approval code
+                $.post('/Approvals/UpdateApprovalCode', { status:status,approvalCode: approvalCode }, function (response) {
+                    alert('Client approved!');
+                    // Handle response if needed
+                });
+            });
+
+            $('#reject-btn').click(function () {
+                var status = 1;
+                var approvalCode = '@Model[1]';  // Assuming @Model[1] is the approval code
+                $.post('/Approvals/UpdateApprovalCode', { status: status, approvalCode: approvalCode }, function (response) {
+                    alert('Client rejected!');
+                    // Handle response if needed
+                });
+            });
+        });
+    </script>
+</body>
+@*                    <iframe src="pdflink.to/d3e89180" frameborder="0" width="100%" height="500"></iframe>
+*@
+@*<iframe src="@Url.Action("GetFile", "File")?filePath=@$(" #filePath").val()" frameborder="0" width="100%" height="500"></iframe>*@
+@*<a href="/ViewerJS/#../file:///C:/Users/bugsbunny/Downloads/week4_KevinAndEdith_DeviceFinancingAndExtraFloat.drawio.pdf">*@

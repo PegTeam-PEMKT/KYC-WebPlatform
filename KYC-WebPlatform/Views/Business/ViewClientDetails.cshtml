@@ -1,0 +1,61 @@
+﻿@{
+    ViewBag.Title = "ViewClientDetails";
+    Layout = "~/Views/Shared/_BusinessLayout.cshtml";
+}
+@model Dictionary<string, List<object>>
+
+<body class="app">
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+                <h1 class="app-page-title"> Pending Clients</h1>
+                <div class="row g-4 mb-4">
+
+                    <div class="tab-content" id="orders-table-tab-content">
+                        <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+                            <div class="app-card app-card-orders-table shadow-sm mb-5">
+                                <div class="app-card-body">
+                                    <div class="table-responsive">
+                                        <table class="table app-table-hover mb-0 text-left">
+                                            <thead>
+                                                <tr>
+                                                    <th class="cell">BusinessName</th>
+                                                    <th class="cell">Location</th>
+                                                    <th class="cell">DirectorName</th>
+                                                    <th class="cell">DirectorNIN</th>
+                                                    <th class="cell">IsNinValidated</th>
+                                                    <th class="cell">SanctionScore</th>
+                                                    <th class="cell">SanctionStatusDescription</th>
+                                                    <th class="cell"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var row in Model)
+                                                {
+                                                    <tr>
+                                                        <td class="cell">@row.Value[1]</td>
+
+                                                        <td class="cell">@row.Value[2]</td>
+                                                        <td class="cell">@row.Value[4]</td>
+                                                        <td class="cell">@row.Value[5]</td>
+                                                        <td class="cell">@row.Value[6]</td>
+                                                        <td class="cell">@row.Value[7]</td>
+                                                        <td class="cell">@row.Value[8]</td>
+
+
+                                                    </tr>
+
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+</body>
+

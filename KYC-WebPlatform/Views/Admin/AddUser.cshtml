@@ -43,7 +43,7 @@
                     <div class="auth-form-container text-start">
                         <div class="auth-form login-form">
                             <!--THIS VIEW IS FOR THE SUPER ADMIN IGNORE FOR NOW WILL BE IMPLEMENTED LATER, TO BE HANDLED BY SEPERATE CONTROLLER NOT SignupController-->
-                            @using (Html.BeginForm("Admin", "CreateUser", FormMethod.Post, new { @class = "auth-form login-form" }))
+                            @using (Html.BeginForm("CreateUser", "Admin", FormMethod.Post, new { @class = "auth-form login-form" }))
                             {
                                 @Html.AntiForgeryToken()
 
