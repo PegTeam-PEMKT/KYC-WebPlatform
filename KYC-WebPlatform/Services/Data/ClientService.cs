@@ -1,7 +1,9 @@
 ﻿using KYC_WebPlatform.Services.Data.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 
@@ -68,6 +70,46 @@ namespace KYC_WebPlatform.Services.Data
 
             return resultDictionary;
 
+        }
+
+
+        public DataTable ExecuteSelectQuery2(string query, SqlParameter[] parameters)
+        {
+            DataTable resultTable = new DataTable();
+
+            using (SqlConnection connection = dbContext.GetConnection())
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (SqlCommand command = new SqlCommand(query, connection))
+                    {
+                        if (parameters != null)
+                        {
+                            command.Parameters.AddRange(parameters);
+                        }
+
+                        command.ExecuteNonQuery();
+
+                        // Since NonQuery doesn't return data, we can't fill a DataTable
+                        // Instead, we can return an empty DataTable or a DataTable with some metadata
+                        // For example, we can add a column with the number of rows affected
+                        resultTable.Columns.Add("RowsAffected", typeof(int));
+                        resultTable.Rows.Add(command.ExecuteNonQuery());
+                    }
+                }
+                catch (SqlException ex)
+                {
+                    Console.WriteLine("SQL Error: " + ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            }
+            Debug.WriteLine(resultTable.ToString());
+            return resultTable;
         }
     }
 }

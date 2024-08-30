@@ -1418,6 +1418,7 @@
     <Content Include="Views\Shared\_ApprovalLayout.cshtml" />
     <Content Include="Views\Approvals\PendingBusinesses.cshtml" />
     <Content Include="Views\Login\View.cshtml" />
+    <Content Include="Views\Business\ViewClientDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -37,12 +37,6 @@ namespace KYC_WebPlatform.Controllers
                 // Performing NIRA Validation (assuming it's a synchronous call)
                 model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurname);
 
-                /*// Performing Sanctions Validation (awaiting the asynchronous call)
-                model.SancationsValidation = await CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);*/
-
-                /*// Performing Sanctions Validation (awaiting the asynchronous call)
-                SanctionResponse sanctionresponse = await CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);*/
-
                 // Performing Sanctions Validation
                 SanctionResponse sanctionresponse = CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);
 
