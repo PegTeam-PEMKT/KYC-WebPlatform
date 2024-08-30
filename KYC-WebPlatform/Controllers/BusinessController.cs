@@ -47,14 +47,18 @@ namespace KYC_WebPlatform.Controllers
 
 
 
-        public ActionResult ViewClientDetails()
+        public ActionResult ViewClientDetails(int BusinessId)
         {
             try
             {
-
-                string storedProcedure = "SELECT cb.BusinessId, cb.BusinessName, cb.Location, d.DirectorId, d.DirectorNIN, d.NinValidated, d.SanctionScore, d.SanctionStatusDescription FROM ClientBusiness cb LEFT JOIN Directors d ON cb.BusinessId = d.BusinessId WHERE cb.BusinessId = @BusinessId;";
-                // Fetch records from the database and map to ViewModel
-                Dictionary<string, List<object>> cards = _storage.ExecuteSelectQuery(storedProcedure);
+                Debug.WriteLine("POPOPOPOP:  "+BusinessId);
+               // Fetch records from the database and map to ViewModel
+                SqlParameter[] parameters = new SqlParameter[] {
+                    new SqlParameter("@BusinessId",BusinessId)
+                   
+                };
+                Dictionary<string, List<object>> cards = _storage.ExecuteSelectQuery("GetBusinessAndDirectorsInfo", parameters);
+                Debug.WriteLine("SOOO FAAAAARRRR WE HAVE GOT "+cards.Count+" RECORDS");
                 // Fetch records from the database and map to ViewModel
                 
                 Debug.WriteLine("\n\n\n*******"+cards.Count.ToString()+"n\n\n\n*****");
