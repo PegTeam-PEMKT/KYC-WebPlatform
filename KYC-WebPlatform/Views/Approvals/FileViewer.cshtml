@@ -27,7 +27,7 @@
         $(document).ready(function () {
             $('#approve-btn').click(function () {
                 var status = 0;
-                var approvalCode = '@Model[1]';  // Assuming @Model[1] is the approval code
+                var approvalCode = '@Model[0]'; 
                 $.post('/Approvals/UpdateApprovalCode', { status:status,approvalCode: approvalCode }, function (response) {
                     alert('Client approved!');
                     // Handle response if needed

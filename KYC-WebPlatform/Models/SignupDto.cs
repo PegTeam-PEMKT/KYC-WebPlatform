@@ -12,5 +12,6 @@ namespace KYC_WebPlatform.Models
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public UserRole Role { get; set; }
+        public DeptRole DeptRole { get; set; }
     }
 }

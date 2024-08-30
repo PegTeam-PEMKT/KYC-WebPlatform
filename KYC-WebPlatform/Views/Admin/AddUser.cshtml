@@ -77,9 +77,15 @@
                                 </div><!--//form-group-->
 
                                 <div class="email mb-3">
-                                    <label class="sr-only" for="signin-email">Role</label>
+                                    <label class="sr-only" for="signin-email">User Role</label>
                                     @Html.DropDownListFor(model => model.Role, new SelectList(Enum.GetValues(typeof(KYC_WebPlatform.Models.UserRole))), "Select a Role", new { @class = "form-control" })
                                     @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="email mb-3">
+                                    <label class="sr-only" for="signin-email">Department</label>
+                                    @Html.DropDownListFor(model => model.DeptRole, new SelectList(Enum.GetValues(typeof(KYC_WebPlatform.Models.DeptRole))), "Select a Department", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.DeptRole, "", new { @class = "text-danger" })
                                 </div>
 
                                 <div class="text-center">

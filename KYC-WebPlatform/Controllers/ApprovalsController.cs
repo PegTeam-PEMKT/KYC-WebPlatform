@@ -25,6 +25,8 @@ namespace KYC_WebPlatform.Controllers
         //for the businesses
         public ActionResult GetBusinesses()
         {
+            string Email = HttpContext.Session["Email"] as string;
+            Debug.WriteLine("From GetFiles: " + Email);
             try {
                 // Fetch records from the database and map to ViewModel
                 Dictionary<string, List<object>> pendingBusinesses = _storage.ExecuteSelectQuery("sp_GetInactiveBusinesses");
@@ -42,13 +44,15 @@ namespace KYC_WebPlatform.Controllers
         public ActionResult GetFiles(int BusinessId, string BusinessName, string Location, int fileCount)
         {
             try {
+                string Email = HttpContext.Session["Email"] as string;
+                Debug.WriteLine("From GetFiles: " +Email);
                 string UserEmail = "akulluedith2022@gmail.com";
                 Debug.WriteLine("BBBBBBBB" + BusinessId);
                 Debug.WriteLine("EEEEEEEE" + UserEmail);
                 SqlParameter[] parameters = new SqlParameter[]
                     {
                         new SqlParameter("@BusinessId", BusinessId),
-                        new SqlParameter("@UserEmail", UserEmail)
+                        new SqlParameter("@UserEmail", Email)
                     };
 
                 Dictionary<string, List<object>> pendingBusinessesFiles = _storage.ExecuteSelectQuery("sp_GetPendingBusinessFiles", parameters);
@@ -80,21 +84,30 @@ namespace KYC_WebPlatform.Controllers
         [HttpPost]
         public ActionResult DisplayApproval()
         {
-            string fileName = Request.Form["FileName"];
-            string businessName = Request.Form["BusinessName"];
-            DateTime uploadedDate = DateTime.Parse(Request.Form["UploadedDate"]);
-            string filePath = Request.Form["FilePath"];
-            string toBeApprovedBy = Request.Form["ToBeApprovedBy"];
-            if (System.IO.File.Exists(filePath))
-            {
-                return File(filePath, "application/pdf");
+            try {
+                string fileName = Request.Form["FileName"];
+                string businessName = Request.Form["BusinessName"];/*
+                Debug.WriteLine(Request.Form["UploadedDate"]);
+                DateTime uploadedDate = DateTime.Parse(Request.Form["UploadedDate"]);*/
+                string filePath = Request.Form["FilePath"];
+                string toBeApprovedBy = Request.Form["ToBeApprovedBy"];
+                /* if (System.IO.File.Exists(filePath))
+                 {
+                     return File(filePath, "application/pdf");
+                 }*/
+                // Use these values to display the view with the corresponding data
+                return View("FileViewer", new List<Object> { filePath, toBeApprovedBy, businessName, fileName });
+
+            } catch (Exception ee) { 
+            return View("Error");
             }
-            // Use these values to display the view with the corresponding data
-            return View("FileViewer",new List<Object> { filePath, toBeApprovedBy,businessName,fileName});
+           
         }
 
         public ActionResult UpdateApprovalCode(int status,string approvalCode)
         {
+            Debug.WriteLine("received status...." + status + "  approvalCode....." + approvalCode);
+
             SqlParameter[] parameters = new SqlParameter[]
                     {
                         new SqlParameter("@status", status),
@@ -102,7 +115,7 @@ namespace KYC_WebPlatform.Controllers
                     };
             Debug.WriteLine("received code...."+approvalCode);
             Dictionary<string, List<object>> currentApprovalCode = _storage.ExecuteSelectQuery("UpdateApprovalCode", parameters);
-            Debug.WriteLine("UPDATED code...." + currentApprovalCode);
+            Debug.WriteLine("UPDATED code...." + currentApprovalCode.Values.ToString());
             return View("PendingBusinessFiles", approvalCode);
         }
     }
