@@ -1403,7 +1403,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Login\SignIn.cshtml" />
     <Content Include="Views\Login\OtpView.cshtml" />
-    <Content Include="Views\Signup\SignUp.cshtml" />
+    <Content Include="Views\Signup\AddUser.cshtml" />
     <Content Include="Views\Shared\_ClientLayout.cshtml" />
     <Content Include="Views\Client\ClientIndex.cshtml" />
     <Content Include="Views\Client\ClientNotifications.cshtml" />
@@ -1417,7 +1417,7 @@
     <Content Include="Views\Client\AddBusiness.cshtml" />
     <Content Include="Views\Shared\_ApprovalLayout.cshtml" />
     <Content Include="Views\Approvals\PendingBusinesses.cshtml" />
-    <Content Include="Views\Login\View.cshtml" />
+    <Content Include="Views\Signup\ClientSignup.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
