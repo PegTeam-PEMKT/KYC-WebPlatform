@@ -23,6 +23,24 @@ namespace KYC_WebPlatform
             );
 
             routes.MapRoute(
+               name: "DisplayApproval",
+               url: "Approvals/DisplayApproval",
+               defaults: new { controller = "Approvals", action = "DisplayApproval" }
+           );
+
+            routes.MapRoute(
+               name: "GetFiles",
+               url: "Approvals/GetFiles",
+               defaults: new { controller = "Approvals", action = "GetFiles" }
+           );
+
+            routes.MapRoute(
+                name: "Approvals/GetBusinesses",
+                url: "Approvals/GetBusinesses",
+                defaults: new { controller = "Approvals", action = "GetBusinesses" }
+            );
+
+            routes.MapRoute(
                 name: "ViewBusiness",
                 url: "Business/ViewClients",
                 defaults: new { controller = "Business", action = "ViewClients" }

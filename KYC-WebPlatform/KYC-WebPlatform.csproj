@@ -167,7 +167,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AddBusiness_MODEL.cs" />
-    <Compile Include="Models\ApprovalsController.cs" />
     <Compile Include="Models\LoginDto.cs" />
     <Compile Include="Models\OtpViewModel.cs" />
     <Compile Include="Models\SignupDto.cs" />
@@ -1418,6 +1417,8 @@
     <Content Include="Views\Client\AddBusiness.cshtml" />
     <Content Include="Views\Shared\_ApprovalLayout.cshtml" />
     <Content Include="Views\Approvals\PendingBusinesses.cshtml" />
+    <Content Include="Views\Approvals\PendingBusinessFiles.cshtml" />
+    <Content Include="Views\Approvals\FileViewer.cshtml" />
     <Content Include="Views\Signup\ClientSignup.cshtml" />
   </ItemGroup>
   <ItemGroup>
