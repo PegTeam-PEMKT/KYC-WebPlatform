@@ -1,59 +1,10 @@
-﻿@model KYC_WebPlatform.Models.LoginDto
+﻿@model KYC_WebPlatform.Models.SignupDto
 
 @{
-    ViewBag.Title = "SignIn";
+    ViewBag.Title = "Sign Up";
     Layout = null;
 }
 
-<!--<h2>Sign In</h2>-->
-
-@*@using (Html.BeginForm())["Action", "Controller-name", Method]*@
-<!--@using (Html.BeginForm("Login", "Login", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10 mt-2">
-                <input type="submit" value="Sign In" class="btn btn-primary" />
-            </div>
-        </div>
-    </div>
-    if (ViewBag.ErrorMessage != null)
-    {
-        <div class="alert alert-danger">
-            @ViewBag.ErrorMessage
-        </div>
-    }
-    if (ViewBag.SuccessMessage != null)
-    {
-        <div class="alert alert-success">
-            @ViewBag.SuccessMessage
-        </div>
-    }
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>-->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -88,10 +39,10 @@
 
                         </a>
                     </div>
-                    <h2 class="auth-heading text-center mb-5">Log in to Portal</h2>
+                    <h2 class="auth-heading text-center mb-5">Create Account</h2>
                     <div class="auth-form-container text-start">
                         <div class="auth-form login-form">
-                            @using (Html.BeginForm("Login", "Login", FormMethod.Post, new { @class = "auth-form login-form" }))
+                            @using (Html.BeginForm("Signup", "Signup", FormMethod.Post, new { @class = "auth-form login-form" }))
                             {
                                 @Html.AntiForgeryToken()
 
@@ -99,8 +50,14 @@
                                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                                     <div class="email mb-3">
+                                        <label class="sr-only" for="signin-email">Username</label>
+                                        @Html.TextBoxFor(m => m.Username, new { @class = "form-control signin-email", id = "signin-email", placeholder = "Username", required = true })
+                                        @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                                    </div><!--//form-group-->
+
+                                    <div class="email mb-3">
                                         <label class="sr-only" for="signin-email">Email</label>
-                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control signin-email", id = "signin-email", placeholder = "Email address", required = true })
+                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control signin-email", id = "signin-email", placeholder = "Email address", type = "email", required = true })
                                         @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
                                     </div><!--//form-group-->
 
@@ -112,8 +69,14 @@
 
                                     </div><!--//form-group-->
 
+                                    <div class="email mb-3">
+                                        <label class="sr-only" for="signin-email">Phone Number</label>
+                                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control signin-email", id = "signin-email", placeholder = "Phone number", required = true })
+                                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+                                    </div><!--//form-group-->
+
                                     <div class="text-center">
-                                        <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Log In</button>
+                                        <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Sign Up</button>
                                     </div>
 
                                     @if (ViewBag.ErrorMessage != null)
@@ -132,13 +95,13 @@
                             }
 
                             <div class="auth-option text-center pt-5">
-                                No Account? Sign up <a class="text-link" href="/Signup/Index">here</a>.
+                                No Account? Sign up <a class="text-link" href="/Login/Index">here</a>.
                             </div>
-                         </div>
+                        </div>
                     </div>
                 </div><!--//auth-body-->
-                
-                </div><!--//flex-column-->
+
+            </div><!--//flex-column-->
         </div><!--//auth-main-col-->
 
         <div class="col-12 col-md-5 col-lg-6 h-100 auth-background-col">
