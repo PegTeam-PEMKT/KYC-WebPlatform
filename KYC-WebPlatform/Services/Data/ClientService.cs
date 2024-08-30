@@ -55,6 +55,7 @@ namespace KYC_WebPlatform.Services.Data
                             }
                         }
                     }
+                    connection.Close();
                 }
                 catch (SqlException ex)
                 {
@@ -73,43 +74,93 @@ namespace KYC_WebPlatform.Services.Data
         }
 
 
-        public DataTable ExecuteSelectQuery2(string query, SqlParameter[] parameters)
+        public Dictionary<string, List<object>> ExecuteSelectQuery(string query, params SqlParameter[] parameters)
         {
-            DataTable resultTable = new DataTable();
+            // Initialize the dictionary to hold the result
+            Dictionary<string, List<object>> resultDictionary = new Dictionary<string, List<object>>();
 
+            // Establish a connection to the database
             using (SqlConnection connection = dbContext.GetConnection())
             {
                 try
                 {
                     connection.Open();
 
+                    // Create a SqlCommand to execute the query and fill the DataTable
                     using (SqlCommand command = new SqlCommand(query, connection))
                     {
-                        if (parameters != null)
+                        command.CommandType = CommandType.StoredProcedure; // Assuming you are using a stored procedure
+
+                        // Add the parameters to the SqlCommand
+                        foreach (SqlParameter parameter in parameters)
                         {
-                            command.Parameters.AddRange(parameters);
+                            Debug.WriteLine("Adding parameter: " + parameter.ParameterName + " = " + parameter.Value);
+                            command.Parameters.Add(parameter);
                         }
 
-                        command.ExecuteNonQuery();
+                        // Create a SqlDataAdapter
+                        using (SqlDataAdapter adapter = new SqlDataAdapter(command))
+                        {
+                            // Create a DataTable to hold the results
+                            DataTable dataTable = new DataTable();
+                            try
+                            {
+                                // Fill the DataTable with data
+                                adapter.Fill(dataTable);
 
-                        // Since NonQuery doesn't return data, we can't fill a DataTable
-                        // Instead, we can return an empty DataTable or a DataTable with some metadata
-                        // For example, we can add a column with the number of rows affected
-                        resultTable.Columns.Add("RowsAffected", typeof(int));
-                        resultTable.Rows.Add(command.ExecuteNonQuery());
+                                Debug.WriteLine("Iterating through rows....");
+
+                                // Iterate through the rows in the DataTable
+                                int rowCount = 0;
+                                foreach (DataRow row in dataTable.Rows)
+                                {
+                                    // Create a list to hold the column values for this row
+                                    List<object> columnValues = new List<object>();
+
+                                    // Loop through each column in the row
+                                    foreach (DataColumn column in dataTable.Columns)
+                                    {
+                                        Debug.WriteLine("Getting column value: " + row[column]);
+                                        // Get the column value
+                                        object columnValue = row[column];
+
+                                        // Add the column value to the list
+                                        columnValues.Add(columnValue);
+                                    }
+
+                                    // Create a key for the row (e.g., "Row 1", "Row 2", etc.)
+                                    string rowKey = $"Row {rowCount + 1}";
+
+                                    // Add the row to the result dictionary
+                                    resultDictionary.Add(rowKey, columnValues);
+                                    rowCount++;
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine("An error occurred while filling the DataTable: " + ex.Message);
+                            }
+                        }
                     }
+
+                    connection.Close();
                 }
                 catch (SqlException ex)
                 {
+                    // Handle SQL errors
                     Console.WriteLine("SQL Error: " + ex.Message);
                 }
                 catch (Exception ex)
                 {
+
+                    // Handle other possible errors
                     Console.WriteLine("Error: " + ex.Message);
                 }
             }
-            Debug.WriteLine(resultTable.ToString());
-            return resultTable;
+
+            return resultDictionary;
         }
     }
+
+
 }

@@ -3,6 +3,7 @@ using KYC_WebPlatform.Services.Business;
 using KYC_WebPlatform.Services.Data;
 using System;
 using System.Diagnostics;
+using System.Web.Helpers;
 using System.Web.Mvc;
 
 namespace KYC_WebPlatform.Controllers
@@ -20,6 +21,7 @@ namespace KYC_WebPlatform.Controllers
 
             if (authenticationService.Authenticate(loginDto))
             {
+                HttpContext.Session["Email"] = loginDto.Email;
                 Debug.WriteLine("From Authenticate: " + loginDto.Email);
                 if (SendOTP(loginDto.Email))
                 {
@@ -29,13 +31,13 @@ namespace KYC_WebPlatform.Controllers
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = "Failed to send OTP.";
+                    ViewBag.ErrorMessage = "Failed to send OTP. (Email not found)";
                     return View("SignIn");
                 }
             }
             else
             {
-                ViewBag.ErrorMessage = "Failed to log in";
+                ViewBag.ErrorMessage = "Failed to log in (User credentials not found)";
                 return View("SignIn");
             }
         }
@@ -47,8 +49,7 @@ namespace KYC_WebPlatform.Controllers
             DateTime otpTimeStamp = DateTime.Now;
 
             HttpContext.Session["OTP"] = randomCode; // Store OTP in session
-            HttpContext.Session["OTPTime"] = otpTimeStamp;
-            HttpContext.Session["Email"] = email;
+            HttpContext.Session["OTPTime"] = otpTimeStamp;           
 
             string toEmail = email;
             string subject = "Your OTP Code";
@@ -102,6 +103,7 @@ namespace KYC_WebPlatform.Controllers
                     if (dAO.RetrieveRole(userEmail) == 15)
                     {
                         ViewBag.SuccessMessage = "Logged In Successfully";
+                        TempData["Email"] = userEmail;
                         return RedirectToAction("ClientIndex", "Client"); // Redirect to client dashboard
                     }
                     if (dAO.RetrieveRole(userEmail) == 11)

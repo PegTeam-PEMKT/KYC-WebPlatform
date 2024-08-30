@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "PendingBusinesses";
-    Layout = "~/Views/Shared/_ApprovalLayout.cshtml";
+    Layout = "~/Views/Shared/_BusinessLayout.cshtml";
 }
 @model Dictionary<string, List<object>>
 
@@ -13,21 +13,25 @@
                 <div class="row g-4 mb-4">
                     @foreach (var row in Model)
                     {
-                        <div class="col-12 col-lg-6">
+                        <a href="@Url.Action("GetFiles", "Approvals", new { BusinessId = row.Value[0], BusinessName = row.Value[1], Location = row.Value[2], fileCount = row.Value[3] })" class="col-12 col-lg-6">
+                            
                             <div class="app-card app-card-chart h-100 shadow-sm">
                                 <div class="app-card-header p-3 border-0">
                                     <h4 class="app-card-title">@{System.Diagnostics.Debug.WriteLine(row.Value.ToString()); }</h4>
                                 </div><!--//app-card-header-->
                                 <div class="app-card-body p-4">
                                     <div class="chart-container">
+                                        @row.Value[0];
+                                        <br />
                                         @row.Value[1];
                                         <br />
-                                        @row.Value[3];
+                                        @row.Value[2];
                                     </div>
                                 </div><!--//app-card-body-->
                             </div><!--//app-card-->
-                        </div>
+                        </a>
                     }
+
                 </div><!--//row-->
 
             </div>

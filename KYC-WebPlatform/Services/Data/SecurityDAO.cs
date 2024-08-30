@@ -2,6 +2,7 @@
 using System;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Web.Helpers;
 
 namespace KYC_WebPlatform.Services.Data
 {
@@ -15,6 +16,9 @@ namespace KYC_WebPlatform.Services.Data
             DateTime dateTime = DateTime.Now;
             int roleId = (int)signupDto.Role;
 
+            // Hash the password
+            string hashedPassword = Crypto.HashPassword(signupDto.Password);
+
             if (FindByEmail(signupDto.Email))
             {
                 userCreated = false;
@@ -24,7 +28,7 @@ namespace KYC_WebPlatform.Services.Data
             {
                 if (signupDto.Role == UserRole.Admin)
                 {
-                    if (InsertAdmin(signupDto.Username, signupDto.Password))
+                    if (InsertAdmin(signupDto.Username, hashedPassword))
                     {
                         Debug.WriteLine("Admin Created");
                     }
@@ -35,7 +39,7 @@ namespace KYC_WebPlatform.Services.Data
                 }
                 if (signupDto.Role == UserRole.DepartmentHead)
                 {
-                    if (InsertDepartmentHead(signupDto.Username, signupDto.Email, signupDto.Password))
+                    if (InsertDepartmentHead(signupDto.Username, signupDto.Email, hashedPassword))
                     {
                         Debug.WriteLine("DeptHead Created");
                     }
@@ -60,7 +64,7 @@ namespace KYC_WebPlatform.Services.Data
 
                         SqlCommand userCommand = new SqlCommand(userQuery, connection);
                         userCommand.Parameters.AddWithValue("@Username", signupDto.Username);
-                        userCommand.Parameters.AddWithValue("@Password", signupDto.Password);
+                        userCommand.Parameters.AddWithValue("@Password", hashedPassword);
                         userCommand.Parameters.AddWithValue("@Email", signupDto.Email);
                         userCommand.Parameters.AddWithValue("@PhoneNumber", signupDto.PhoneNumber);
                         userCommand.Parameters.AddWithValue("@RoleId", roleId); // Cast enum to int
@@ -80,29 +84,34 @@ namespace KYC_WebPlatform.Services.Data
             }
         }
 
-        internal bool FindByUser(string email, string password)
+        internal bool FindByUser(LoginDto loginDto)
         {
             bool isValidUser = false;
+            string storedHash = "";
 
-            Debug.WriteLine("From DBContext: " + email);
+            Debug.WriteLine("From DBContext: " + loginDto.Email);
             try
             {
                 using (SqlConnection sqlConnection = dbContext.GetConnection())
                 {
-                    string query = "SELECT * FROM dbo.users WHERE Email = @Email AND PasswordHash = @Password";
+                    string query = "SELECT * FROM dbo.users WHERE Email = @Email";
 
                     SqlCommand command = new SqlCommand(query, sqlConnection);
-                    command.Parameters.AddWithValue("@Email", email);
-                    command.Parameters.AddWithValue("@Password", password);
+                    command.Parameters.AddWithValue("@Email", loginDto.Email);
 
                     sqlConnection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
                         if (reader.HasRows)
                         {
-                            isValidUser = true; // If rows are returned, the user is valid
+                            reader.Read(); // Move to the first record
+                            storedHash = reader["PasswordHash"].ToString();                         
                         }
                     }
+                }
+                if(Crypto.VerifyHashedPassword(storedHash, loginDto.Password))
+                {
+                    isValidUser = true; // If unhashed password matches user inputed password, the user is valid
                 }
             }
             catch (System.Exception e)

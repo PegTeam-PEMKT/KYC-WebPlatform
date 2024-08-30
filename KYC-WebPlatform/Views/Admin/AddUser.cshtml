@@ -5,74 +5,6 @@
     Layout = null;
 }
 
-@*<h2>Create User</h2>
-
-@using (Html.BeginForm("Signup", "Signup", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Username, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Username, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.PhoneNumber, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.PhoneNumber, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.PhoneNumber, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Role, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Role, new SelectList(Enum.GetValues(typeof(KYC_WebPlatform.Models.UserRole))), "Select a Role", new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10 mt-2 mb-2">
-                <input type="submit" value="Sign Up" class="btn btn-primary" />
-            </div>
-        </div>
-    </div>
-    if (ViewBag.ErrorMessage != null)
-    {
-        <div class="alert alert-danger">
-            @ViewBag.ErrorMessage
-        </div>
-    }
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>*@
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -110,7 +42,8 @@
                     <h2 class="auth-heading text-center mb-5">Create Account</h2>
                     <div class="auth-form-container text-start">
                         <div class="auth-form login-form">
-                            @using (Html.BeginForm("Signup", "Signup", FormMethod.Post, new { @class = "auth-form login-form" }))
+                            <!--THIS VIEW IS FOR THE SUPER ADMIN IGNORE FOR NOW WILL BE IMPLEMENTED LATER, TO BE HANDLED BY SEPERATE CONTROLLER NOT SignupController-->
+                            @using (Html.BeginForm("CreateUser", "Admin", FormMethod.Post, new { @class = "auth-form login-form" }))
                             {
                                 @Html.AntiForgeryToken()
 
@@ -150,7 +83,7 @@
                                 </div>
 
                                 <div class="text-center">
-                                    <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Sign Up</button>
+                                    <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Create</button>
                                 </div>
 
                                 @if (ViewBag.ErrorMessage != null)
@@ -168,9 +101,6 @@
                             </div><!--//auth-form-container-->
                             }
 
-                            <div class="auth-option text-center pt-5">
-                                No Account? Sign up <a class="text-link" href="">here</a>.
-                            </div>
                         </div>
                     </div>
                 </div><!--//auth-body-->
@@ -185,10 +115,6 @@
             <div class="auth-background-overlay p-3 p-lg-5">
                 <div class="d-flex flex-column align-content-end h-100">
                     <div class="h-100"></div>
-                    <div class="overlay-content p-3 p-lg-4 rounded">
-                        <h5 class="mb-3 overlay-title">Explore Portal Admin Template</h5>
-                        <div>Portal is a free Bootstrap 5 admin dashboard template. You can download and view the template license <a href="https://themes.3rdwavemedia.com/bootstrap-templates/admin-dashboard/portal-free-bootstrap-admin-dashboard-template-for-developers/">here</a>.</div>
-                    </div>
                 </div>
             </div><!--//auth-background-overlay-->
         </div><!--//auth-background-col-->
