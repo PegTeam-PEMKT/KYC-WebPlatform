@@ -19,5 +19,10 @@ namespace KYC_WebPlatform.Services.Business
             Debug.WriteLine("From SignUpUser: " + signupDto.Email);
             return securityDAO.CreateUser(signupDto);
         }
+
+        public string GetNameByEmail(string email)
+        {
+            return securityDAO.RetrieveName(email);
+        }
     }
 }

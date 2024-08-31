@@ -278,5 +278,36 @@ namespace KYC_WebPlatform.Services.Data
             }
             return roleId;
         }
+
+        internal string RetrieveName(string email)
+        {
+            string userName = "";
+
+            try
+            {
+                using (SqlConnection sqlConnection = dbContext.GetConnection())
+                {
+                    string query = "SELECT * FROM dbo.users WHERE Email = @Email";
+
+                    SqlCommand command = new SqlCommand(query, sqlConnection);
+                    command.Parameters.AddWithValue("@Email", email);
+
+                    sqlConnection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            reader.Read(); // Move to the first record
+                            userName = reader["UserName"].ToString();
+                        }
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.WriteLine("From RetrieveName: " + e.Message);
+            }
+            return userName;
+        }
     }
 }
