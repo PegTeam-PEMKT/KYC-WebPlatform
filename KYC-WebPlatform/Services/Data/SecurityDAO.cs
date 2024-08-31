@@ -73,7 +73,7 @@ namespace KYC_WebPlatform.Services.Data
                 {
                     using (SqlConnection connection = dbContext.GetConnection())
                     {
-                        if((int)signupDto.Role == 0)
+                        if ((int)signupDto.Role == 0)
                         {
                             roleId = 15;
                         }
@@ -126,11 +126,11 @@ namespace KYC_WebPlatform.Services.Data
                         if (reader.HasRows)
                         {
                             reader.Read(); // Move to the first record
-                            storedHash = reader["PasswordHash"].ToString();                         
+                            storedHash = reader["PasswordHash"].ToString();
                         }
                     }
                 }
-                if(Crypto.VerifyHashedPassword(storedHash, loginDto.Password))
+                if (Crypto.VerifyHashedPassword(storedHash, loginDto.Password))
                 {
                     isValidUser = true; // If unhashed password matches user inputed password, the user is valid
                 }
@@ -258,7 +258,7 @@ namespace KYC_WebPlatform.Services.Data
                     SqlCommand command = new SqlCommand(query, sqlConnection);
                     command.Parameters.AddWithValue("@Email", email);
 
-                    Debug.WriteLine("From RetrieveRole"+email);
+                    Debug.WriteLine("From RetrieveRole" + email);
 
                     sqlConnection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())

@@ -86,6 +86,7 @@
 
     <!-- App CSS -->
     <link id="theme-style" rel="stylesheet" href="~/assets/css/portal.css">
+    <link id="theme-style" rel="stylesheet" href="~/assets/css/custom.css">
 </head>
 
 <body class="app">
@@ -141,7 +142,7 @@
                                 @Html.DropDownListFor(model => model.Role, new SelectList(Enum.GetValues(typeof(KYC_WebPlatform.Models.UserRole))), "Select a Role", new { @class = "form-control" })
                                 @Html.ValidationMessageFor(model => model.Role, "", new { @class = "text-danger" })
                             </div>*@
-                                    <button type="submit" class="btn app-btn-primary">Submit</button>
+                                    <button type="submit" class="btn btn-custom">Submit</button>
                                 </div>
                             </div>
                         </div>

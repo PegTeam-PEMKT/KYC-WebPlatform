@@ -1,8 +1,8 @@
+using KYC_WebPlatform.Areas.HelpPage.ModelDescriptions;
+using KYC_WebPlatform.Areas.HelpPage.Models;
 using System;
 using System.Web.Http;
 using System.Web.Mvc;
-using KYC_WebPlatform.Areas.HelpPage.ModelDescriptions;
-using KYC_WebPlatform.Areas.HelpPage.Models;
 
 namespace KYC_WebPlatform.Areas.HelpPage.Controllers
 {

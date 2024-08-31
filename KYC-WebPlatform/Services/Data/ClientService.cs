@@ -1,14 +1,9 @@
 ﻿using KYC_WebPlatform.Services.Data.Interfaces;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Linq;
-using System.Web;
-using System.Web.Helpers;
-using System.Web.Security;
 
 namespace KYC_WebPlatform.Services.Data
 {
@@ -167,7 +162,7 @@ namespace KYC_WebPlatform.Services.Data
         public int ExecuteInsertQuery(string query, params SqlParameter[] parameters)
         {
             int rowsAffected = 0;
-             using (SqlConnection connection = dbContext.GetConnection())
+            using (SqlConnection connection = dbContext.GetConnection())
             {
                 try
                 {
@@ -230,7 +225,7 @@ namespace KYC_WebPlatform.Services.Data
                 Debug.WriteLine("From ExecuteGetIdQuery: " + ex.Message);
             }
             return businessId;
-            
+
         }
     }
 }
