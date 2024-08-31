@@ -26,7 +26,7 @@
                                                     <th class="cell">IsNinValidated</th>
                                                     <th class="cell">SanctionScore</th>
                                                     <th class="cell">SanctionStatusDescription</th>
-                                                    <th class="cell">Action</th>
+                                                    @*<th class="cell">Action</th>*@
                                                     <th class="cell"></th>
                                                 </tr>
                                             </thead>
@@ -43,10 +43,10 @@
                                                         <td class="cell">@row.Value[5]</td>
                                                         <td class="cell">@row.Value[6]</td>
                                                         <td class="cell">@row.Value[7]</td>
-                                                        <td class="cell">
+                                                        @*<td class="cell">
                                                             <a class="btn app-btn-secondary" href="@Url.Action("ApproveClient", "Business", new { id = row.Value[0] })">Approve</a>
                                                             <a class="btn btn-outline-danger" href="">Reject</a>
-                                                        </td>
+                                                        </td>*@
 
 
                                                     </tr>
