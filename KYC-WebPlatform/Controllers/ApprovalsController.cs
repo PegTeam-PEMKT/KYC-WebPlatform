@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Mvc;
+using KYC_WebPlatform.Models;
 using KYC_WebPlatform.Services.Data;
 using KYC_WebPlatform.Services.Data.Interfaces;
 
@@ -41,9 +42,10 @@ namespace KYC_WebPlatform.Controllers
         }
 
         //for the files
-        public ActionResult GetFiles(int BusinessId, string BusinessName, string Location, int fileCount)
+        public ActionResult GetFiles(int BusinessId, string BusinessName, int fileCount)
         {
             try {
+                HttpContext.Session["BusinessId"] = BusinessId;
                 string Email = HttpContext.Session["Email"] as string;
                 Debug.WriteLine("From GetFiles: " +Email);
                 string UserEmail = "akulluedith2022@gmail.com";
@@ -85,6 +87,7 @@ namespace KYC_WebPlatform.Controllers
         public ActionResult DisplayApproval()
         {
             try {
+                string BusinessId = HttpContext.Session["BusinessId"] as string;
                 string fileName = Request.Form["FileName"];
                 string businessName = Request.Form["BusinessName"];/*
                 Debug.WriteLine(Request.Form["UploadedDate"]);
@@ -96,7 +99,7 @@ namespace KYC_WebPlatform.Controllers
                      return File(filePath, "application/pdf");
                  }*/
                 // Use these values to display the view with the corresponding data
-                return View("FileViewer", new List<Object> { filePath, toBeApprovedBy, businessName, fileName });
+                return View("FileViewer", new List<Object> { filePath, toBeApprovedBy, businessName, fileName, BusinessId });
 
             } catch (Exception ee) { 
             return View("Error");

@@ -17,7 +17,7 @@
                 }
                     @foreach (var row in Model)
                     {
-                        <a href="@Url.Action("GetFiles", "Approvals", new { BusinessId = row.Value[0], BusinessName = row.Value[1], Location = row.Value[2], fileCount = row.Value[3] })" class="col-12 col-lg-6">
+                        <a href="@Url.Action("GetFiles", "Approvals", new { BusinessId = row.Value[0], BusinessName = row.Value[1], fileCount = row.Value[2] @* fileCount = row.Value[3]*@ })" class="col-12 col-lg-6">
                             
                             <div class="app-card app-card-chart h-100 shadow-sm">
                                 <div class="app-card-header p-3 border-0">
