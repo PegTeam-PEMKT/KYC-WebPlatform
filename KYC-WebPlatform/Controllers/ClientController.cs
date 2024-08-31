@@ -3,7 +3,6 @@ using KYC_WebPlatform.Services;
 using KYC_WebPlatform.Services.Data;
 using NiraApiIntegrationService;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -19,7 +18,7 @@ namespace KYC_WebPlatform.Controllers
     {
         private readonly PegPayService _pegPayService;
         private readonly ApiService _apiService;
-        private readonly ClientService _storage= new ClientService();
+        private readonly ClientService _storage = new ClientService();
 
         public ClientController()
         {
@@ -33,7 +32,7 @@ namespace KYC_WebPlatform.Controllers
             return View("ClientIndex");
         }
 
-        public async Task<ActionResult> AddBusiness(AddBusiness_MODEL model)
+        public  ActionResult AddBusiness(AddBusiness_MODEL model)
         {
             try
             {
@@ -81,7 +80,7 @@ namespace KYC_WebPlatform.Controllers
                         command.Parameters.AddWithValue("@SanctionScore", sanctionresponse.Score);
                         command.Parameters.AddWithValue("@SanctionStatusCode", sanctionresponse.StatusCode);
                         command.Parameters.AddWithValue("@SanctionStatusDescription", sanctionresponse.StatusDescription);
-                      
+
 
                         // Execute the stored procedure
                         command.ExecuteNonQuery();
@@ -151,7 +150,7 @@ namespace KYC_WebPlatform.Controllers
                 var randomText = new string(Enumerable.Range(0, 15)
                     .Select(_ => characters[random.Next(characters.Length)])
                     .ToArray());
-                Debug.WriteLine("o0o0o0o0o0o0"+randomText);
+                Debug.WriteLine("o0o0o0o0o0o0" + randomText);
                 SqlParameter[] parameters = new SqlParameter[]
                     {
                         new SqlParameter("@FileId", randomText),
@@ -164,8 +163,8 @@ namespace KYC_WebPlatform.Controllers
                     };
                 Debug.WriteLine(parameters.Length);
                 string InsertQuery = "INSERT INTO CompanyDocument (FileId, FileName, BusinessId, UploadedOn, IsVerified, Approval_Code, FilePath)  VALUES (@FileId, @FileName, @BusinessId, @UploadedOn, @IsVerified, @Approval_Code, @FilePath)";
-                int rowsAffected =_storage.ExecuteInsertQuery(InsertQuery, parameters);
-                Debug.WriteLine("INSERTEEEED!!! "+rowsAffected);
+                int rowsAffected = _storage.ExecuteInsertQuery(InsertQuery, parameters);
+                Debug.WriteLine("INSERTEEEED!!! " + rowsAffected);
                 return RedirectToAction("ViewStatus");
             }
             catch (System.NullReferenceException e)

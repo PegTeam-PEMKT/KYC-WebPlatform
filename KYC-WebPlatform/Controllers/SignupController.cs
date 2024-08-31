@@ -1,10 +1,6 @@
 ﻿using KYC_WebPlatform.Models;
 using KYC_WebPlatform.Services.Business;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace KYC_WebPlatform.Controllers
@@ -19,8 +15,8 @@ namespace KYC_WebPlatform.Controllers
 
         public ActionResult Signup(SignupDto signupDto)
         {
-         
-            if (signupDto.PhoneNumber.Length < 10 || signupDto.PhoneNumber.Length > 10) 
+
+            if (signupDto.PhoneNumber.Length < 10 || signupDto.PhoneNumber.Length > 10)
             {
                 ViewBag.ErrorMessage = "Invalid phone number length";
                 return View("ClientSignup");

@@ -186,6 +186,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
+    <Content Include="assets\css\custom.css" />
     <Content Include="assets\css\portal.css" />
     <Content Include="assets\images\app-logo.svg" />
     <Content Include="assets\images\background\background-1.jpg" />

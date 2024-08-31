@@ -1,15 +1,9 @@
-﻿using System;
+﻿using KYC_WebPlatform.Services.Data;
+using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Web;
-using System.Web.Helpers;
 using System.Web.Mvc;
-using KYC_WebPlatform.Models;
-using KYC_WebPlatform.Services.Data;
-using KYC_WebPlatform.Services.Data.Interfaces;
 
 namespace KYC_WebPlatform.Controllers
 {
@@ -28,7 +22,8 @@ namespace KYC_WebPlatform.Controllers
         {
             string Email = HttpContext.Session["Email"] as string;
             Debug.WriteLine("From GetFiles: " + Email);
-            try {
+            try
+            {
                 // Fetch records from the database and map to ViewModel
                 Dictionary<string, List<object>> pendingBusinesses = _storage.ExecuteSelectQuery("sp_GetInactiveBusinesses");
                 Debug.WriteLine("AAAAAAA********" + pendingBusinesses.Values.Count);
@@ -36,7 +31,7 @@ namespace KYC_WebPlatform.Controllers
             }
             catch (SqlException sq)
             {
-                Debug.WriteLine(sq.LineNumber +"`````00000```````" + sq.ToString());
+                Debug.WriteLine(sq.LineNumber + "`````00000```````" + sq.ToString());
                 return View("Error");
             }
         }
@@ -44,10 +39,11 @@ namespace KYC_WebPlatform.Controllers
         //for the files
         public ActionResult GetFiles(int BusinessId, string BusinessName, int fileCount)
         {
-            try {
+            try
+            {
                 HttpContext.Session["BusinessId"] = BusinessId;
                 string Email = HttpContext.Session["Email"] as string;
-                Debug.WriteLine("From GetFiles: " +Email);
+                Debug.WriteLine("From GetFiles: " + Email);
                 string UserEmail = "akulluedith2022@gmail.com";
                 Debug.WriteLine("BBBBBBBB" + BusinessId);
                 Debug.WriteLine("EEEEEEEE" + UserEmail);
@@ -62,20 +58,23 @@ namespace KYC_WebPlatform.Controllers
                 return View("PendingBusinessFiles", pendingBusinessesFiles);
 
 
-            } catch (SqlException s) {
+            }
+            catch (SqlException s)
+            {
                 Debug.WriteLine(s.Message);
                 return View("Error");
-            }  
+            }
         }
 
-        public ActionResult DisplayApprovalllllll() {
+        public ActionResult DisplayApprovalllllll()
+        {
 
-            string filepath= "C:\\Users\\bugsbunny\\Downloads\\water.jpg";
+            string filepath = "C:\\Users\\bugsbunny\\Downloads\\water.jpg";
 
             if (filepath != null)
             {
                 //return File(filepath, "application/octet-stream", Path.GetFileName(filepath));
-                return View("FileViewer",filepath);
+                return View("FileViewer", filepath);
             }
             else
             {
@@ -86,7 +85,8 @@ namespace KYC_WebPlatform.Controllers
         [HttpPost]
         public ActionResult DisplayApproval()
         {
-            try {
+            try
+            {
                 string BusinessId = HttpContext.Session["BusinessId"] as string;
                 string fileName = Request.Form["FileName"];
                 string businessName = Request.Form["BusinessName"];/*
@@ -101,13 +101,15 @@ namespace KYC_WebPlatform.Controllers
                 // Use these values to display the view with the corresponding data
                 return View("FileViewer", new List<Object> { filePath, toBeApprovedBy, businessName, fileName, BusinessId });
 
-            } catch (Exception ee) { 
-            return View("Error");
             }
-           
+            catch (Exception ee)
+            {
+                return View("Error");
+            }
+
         }
 
-        public ActionResult UpdateApprovalCode(int status,string approvalCode)
+        public ActionResult UpdateApprovalCode(int status, string approvalCode)
         {
             Debug.WriteLine("received status...." + status + "  approvalCode....." + approvalCode);
 
@@ -116,7 +118,7 @@ namespace KYC_WebPlatform.Controllers
                         new SqlParameter("@status", status),
                         new SqlParameter("@approvalCode", approvalCode)
                     };
-            Debug.WriteLine("received code...."+approvalCode);
+            Debug.WriteLine("received code...." + approvalCode);
             Dictionary<string, List<object>> currentApprovalCode = _storage.ExecuteSelectQuery("UpdateApprovalCode", parameters);
             Debug.WriteLine("UPDATED code...." + currentApprovalCode.Values.ToString());
             return View("PendingBusinessFiles", approvalCode);
