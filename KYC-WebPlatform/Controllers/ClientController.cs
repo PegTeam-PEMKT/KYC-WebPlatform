@@ -38,6 +38,7 @@ namespace KYC_WebPlatform.Controllers
             try
             {
                 HttpContext.Session["TIN"] = model.BusinessTIN;
+                string clientEmail = HttpContext.Session["Email"] as string;
                 // Performing NIRA Validation (assuming it's a synchronous call)
                 model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurname);
 
@@ -65,10 +66,10 @@ namespace KYC_WebPlatform.Controllers
                         // Input parameters for Business
                         command.Parameters.AddWithValue("@BusinessName", model.BusinessName);
                         command.Parameters.AddWithValue("@ContactPerson", model.ContactName);
-                        command.Parameters.AddWithValue("@IsActive", true);
+                        command.Parameters.AddWithValue("@IsActive", false);
                         command.Parameters.AddWithValue("@TransactionVolume", model.NumberOfTransactions);
                         command.Parameters.AddWithValue("@TransactionTraffic", model.AmountEarnedPerMonth);
-                        command.Parameters.AddWithValue("@Email", model.BusinessEmail);
+                        command.Parameters.AddWithValue("@Email", clientEmail);
                         command.Parameters.AddWithValue("@PhoneNumber", model.BusinessPhoneNumber);
                         command.Parameters.AddWithValue("@TIN", model.BusinessTIN);
 
@@ -124,7 +125,7 @@ namespace KYC_WebPlatform.Controllers
         {
             try
             {
-                var fileDic = "Files";
+                var fileDic = "Content/Files";
                 string filePath = Server.MapPath("~/") + fileDic;
 
                 string TIN = HttpContext.Session["TIN"] as string;
@@ -145,8 +146,12 @@ namespace KYC_WebPlatform.Controllers
                 filePath = Path.Combine(filePath, fileName);
                 file.SaveAs(filePath);
                 Debug.WriteLine(filePath + "***success!");
-                string randomText = new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 15).Select(s => s[new Random().Next(s.Length)]).ToArray());
-
+                var random = new Random();
+                var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZab#c@defghijklmnopqrstuvwxyz0123456789";
+                var randomText = new string(Enumerable.Range(0, 15)
+                    .Select(_ => characters[random.Next(characters.Length)])
+                    .ToArray());
+                Debug.WriteLine("o0o0o0o0o0o0"+randomText);
                 SqlParameter[] parameters = new SqlParameter[]
                     {
                         new SqlParameter("@FileId", randomText),
@@ -157,7 +162,9 @@ namespace KYC_WebPlatform.Controllers
                         new SqlParameter("@Approval_Code","BUSINESS#001"),
                         new SqlParameter("@FilePath",filePath)
                     };
-                int rowsAffected =_storage.ExecuteInsertQuery("InsertCompanyDocument", parameters);
+                Debug.WriteLine(parameters.Length);
+                string InsertQuery = "INSERT INTO CompanyDocument (FileId, FileName, BusinessId, UploadedOn, IsVerified, Approval_Code, FilePath)  VALUES (@FileId, @FileName, @BusinessId, @UploadedOn, @IsVerified, @Approval_Code, @FilePath)";
+                int rowsAffected =_storage.ExecuteInsertQuery(InsertQuery, parameters);
                 Debug.WriteLine("INSERTEEEED!!! "+rowsAffected);
                 return RedirectToAction("ViewStatus");
             }
