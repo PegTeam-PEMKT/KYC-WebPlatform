@@ -167,8 +167,7 @@ namespace KYC_WebPlatform.Services.Data
         public int ExecuteInsertQuery(string query, params SqlParameter[] parameters)
         {
             int rowsAffected = 0;
-
-            using (SqlConnection connection = dbContext.GetConnection())
+             using (SqlConnection connection = dbContext.GetConnection())
             {
                 try
                 {
@@ -177,6 +176,7 @@ namespace KYC_WebPlatform.Services.Data
                     {
                         if (parameters != null)
                         {
+                            Debug.WriteLine(parameters.Length);
                             command.Parameters.AddRange(parameters);
                         }
 
