@@ -1,0 +1,16 @@
+﻿.btn-custom {
+    color: white;
+    background-color: #007bff; /* Bootstrap primary blue */
+    border-color: #007bff; /* Bootstrap primary blue */
+}
+
+    .btn-custom:hover {
+        color: white;
+        background-color: #0056b3; /* Darker blue for hover effect */
+        border-color: #004085; /* Even darker blue for border on hover */
+    }
+
+    .btn-custom:focus, .btn-custom.focus {
+        color: white;
+        box-shadow: 0 0 0 0.2rem rgba(38, 143, 255, 0.5); /* Adjust if necessary */
+    }

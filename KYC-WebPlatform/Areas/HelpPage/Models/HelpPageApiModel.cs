@@ -1,8 +1,8 @@
+using KYC_WebPlatform.Areas.HelpPage.ModelDescriptions;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http.Headers;
 using System.Web.Http.Description;
-using KYC_WebPlatform.Areas.HelpPage.ModelDescriptions;
 
 namespace KYC_WebPlatform.Areas.HelpPage.Models
 {
