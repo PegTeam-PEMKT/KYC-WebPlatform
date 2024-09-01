@@ -1,13 +1,8 @@
-﻿using KYC_WebPlatform.Models;
-using System;
-using System.Data.SqlClient;
-using System.Diagnostics;
-
-namespace KYC_WebPlatform.Services.Data
+﻿namespace KYC_WebPlatform.Services.Data
 {
     public class BusinessService
     {
-        public bool SaveBusinessInfo(AddBusiness_MODEL model)
+        /*public bool SaveBusinessInfo(AddBusiness_MODEL model)
         {
             bool businessInfoSaved = false;
             try
@@ -40,6 +35,6 @@ namespace KYC_WebPlatform.Services.Data
                 return businessInfoSaved;
             }
 
-        }
+        }*/
     }
 }
