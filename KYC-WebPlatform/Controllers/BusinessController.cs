@@ -158,5 +158,10 @@ namespace KYC_WebPlatform.Controllers
             return result;
         }
 
+        public ActionResult Help()
+        {
+            return View("BusinessHelp");
+        }
+
     }
 }
