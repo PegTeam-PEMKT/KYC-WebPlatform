@@ -37,7 +37,7 @@
                     <div class="app-auth-branding mb-4"><a class="app-logo" href="index.html"><img class="logo-icon me-2" src="~/assets/images/pegpay_logo.jpeg" alt="logo"></a></div>
                     <h2 class="auth-heading text-center mb-4">Verify your email address</h2>
 
-                    <div class="auth-intro mb-4 text-center">Enter the OTP we sent to your email address below. We'll email you a link to your page shortly afterwards. It expires in 5 minutes</div>
+                    <div class="auth-intro mb-4 text-center">Enter the OTP we sent to your email address below. We'll link you to your page shortly afterwards. It expires in 5 minutes</div>
 
                         <input type="hidden" name="Email" value="@ViewBag.Email" />
                         @using (Html.BeginForm("VerifyOtp", "Login", FormMethod.Post, new { @class = "auth-form resetpass-form" }))
@@ -69,6 +69,10 @@
                                         @ViewBag.SuccessMessage
                                     </div>
                                 }
+                                @*@if(ViewBag.ExpiredOtp == true)
+                                {
+                                    <a href="@Url.Action("ResendOtp", "Login")" class="btn btn-primary">Resend OTP</a>
+                                }*@
                             </div><!--//auth-form-container-->
                         }
 
