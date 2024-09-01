@@ -19,14 +19,14 @@
                                         <table class="table app-table-hover mb-0 text-left">
                                             <thead>
                                                 <tr>
-                                                    <th class="cell">BusinessName</th>
+                                                    <th class="cell">Business Name</th>
                                                     @*<th class="cell">Director</th>*@
-                                                    <th class="cell">DirectorName</th>
-                                                    <th class="cell">DirectorNIN</th>
-                                                    <th class="cell">IsNinValidated</th>
-                                                    <th class="cell">SanctionScore</th>
-                                                    <th class="cell">SanctionStatusDescription</th>
-                                                    <th class="cell">Action</th>
+                                                    <th class="cell">Director Name</th>
+                                                    <th class="cell">Director NIN</th>
+                                                    <th class="cell">Nin Validation</th>
+                                                    <th class="cell">Sanction Score</th>
+                                                    <th class="cell">Sanction Validation</th>
+                                                    @*<th class="cell">Action</th>*@
                                                     <th class="cell"></th>
                                                 </tr>
                                             </thead>
@@ -43,10 +43,10 @@
                                                         <td class="cell">@row.Value[5]</td>
                                                         <td class="cell">@row.Value[6]</td>
                                                         <td class="cell">@row.Value[7]</td>
-                                                        <td class="cell">
+                                                        @*<td class="cell">
                                                             <a class="btn app-btn-secondary" href="@Url.Action("ApproveClient", "Business", new { id = row.Value[0] })">Approve</a>
                                                             <a class="btn btn-outline-danger" href="">Reject</a>
-                                                        </td>
+                                                        </td>*@
 
 
                                                     </tr>
