@@ -27,6 +27,11 @@ namespace KYC_WebPlatform.Services.Data
             }
             else
             {
+                if(signupDto.Role == UserRole.Admin && signupDto.DeptRole == DeptRole.Business)
+                {
+                    Debug.WriteLine("Failure creating admin");
+                    return userCreated;
+                }
                 if (signupDto.Role == UserRole.Admin)
                 {
                     if (InsertAdmin(signupDto.Username, hashedPassword))
@@ -39,11 +44,13 @@ namespace KYC_WebPlatform.Services.Data
                         else
                         {
                             Debug.WriteLine("Failure creating DeptHead");
+                            return userCreated;
                         }
                     }
                     else
                     {
                         Debug.WriteLine("Failure creating admin");
+                        return userCreated;
                     }
                 }
                 if (signupDto.Role == UserRole.DepartmentHead)

@@ -94,12 +94,12 @@
                                     <table class="table app-table-hover mb-0 text-left">
                                         <thead>
                                             <tr>
-                                                <th class="cell">File ID</th>
+                                                @*<th class="cell">File ID</th>*@
                                                 <th class="cell">File Name</th>
                                                 <th class="cell">Business ID</th>
                                                 <th class="cell">Uploaded On</th>
                                                 <th class="cell">Status</th>
-                                                <th class="cell">Approval Code</th>
+                                                @*<th class="cell">Approval Code</th>*@
                                                 <th class="cell"></th>
                                             </tr>
                                         </thead>
@@ -107,10 +107,10 @@
                                             @foreach (var document in Model)
                                             {
                                                 <tr>
-                                                    <td class="cell">@document.FileId</td>
+                                                    @*<td class="cell">@document.FileId</td>*@
                                                     <td class="cell"><span class="truncate">@document.FileName</span></td>
                                                     <td class="cell">@document.BusinessId</td>
-                                                    <td class="cell"><span>@document.UploadedOn?.ToString("dd MMM")</span>@*<span class="note">@document.UploadedOn?.ToString("hh:mm tt")</span>*@</td>
+                                                    <td class="cell"><span>@document.UploadedOn</span>@*<span class="note">@document.UploadedOn?.ToString("hh:mm tt")</span>*@</td>
                                                     <td class="cell">
                                                         @if (document.IsVerified.HasValue && document.IsVerified.Value) //If the document was verified
                                                         {
@@ -121,7 +121,7 @@
                                                             <span class="badge bg-warning">Pending</span>
                                                         }
                                                     </td>
-                                                    <td class="cell">@document.ApprovalCode</td>
+                                                    @*<td class="cell">@document.ApprovalCode</td>*@
                                                     <td class="cell"><a class="btn-sm app-btn-secondary" href="#">View</a></td>
                                                 </tr>
                                             }
