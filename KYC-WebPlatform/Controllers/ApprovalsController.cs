@@ -1,11 +1,16 @@
-﻿using KYC_WebPlatform.Services.Data;
+﻿using KYC_WebPlatform.Services.Business;
+using KYC_WebPlatform.Services.Data;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Web.Helpers;
 using System.Web.Mvc;
 
 namespace KYC_WebPlatform.Controllers
+
+
 {
     public class ApprovalsController : Controller
     {
@@ -66,7 +71,7 @@ namespace KYC_WebPlatform.Controllers
             }
         }
 
-        public ActionResult DisplayApprovalllllll()
+/*        public ActionResult DisplayApprovalllllll()
         {
 
             string filepath = "C:\\Users\\bugsbunny\\Downloads\\water.jpg";
@@ -80,7 +85,7 @@ namespace KYC_WebPlatform.Controllers
             {
                 return View("Error");
             }
-        }
+        }*/
 
         [HttpPost]
         public ActionResult DisplayApproval()
@@ -121,7 +126,43 @@ namespace KYC_WebPlatform.Controllers
             Debug.WriteLine("received code...." + approvalCode);
             Dictionary<string, List<object>> currentApprovalCode = _storage.ExecuteSelectQuery("UpdateApprovalCode", parameters);
             Debug.WriteLine("UPDATED code...." + currentApprovalCode.Values.ToString());
-            return View("PendingBusinessFiles", approvalCode);
+            if (SendNotification(currentApprovalCode.Values.ToString()))
+            {
+                return View("PendingBusinessFiles", approvalCode);
+            }
+            else
+            {
+                return View("Error");
+            }
+        }
+
+        public bool SendNotification(string approvalCode) {
+            EmailService notifyEmail = new EmailService("jemimahsoulsister@outlook.com", "jemimah@soulsister", "smtp.office365.com", 587, true);
+            bool SentOk = false;
+            // Use a parameterized query to prevent SQL injection
+            string query = "SELECT Email FROM HeadOfDepartment WHERE DepartmentHeadId = @ApprovalCode";
+            SqlParameter[] parameters = new SqlParameter[]
+            {
+                 new SqlParameter("@ApprovalCode", approvalCode)
+            };
+            Dictionary<string, List<object>> receiver = _storage.ExecuteSelectQuery(query, parameters);
+            string toEmail = receiver.Values.ToString();
+            string subject = "Pending KYC Approval";
+            string body = "You have a pending File approval from the KYC platform";
+            string altHost = "smtp-mail.outlook.com";
+            bool SendOk = notifyEmail.SendEmail(toEmail, subject, body);
+
+            if (SentOk)
+            {
+                return true;
+            }
+
+            else
+            {
+                Debug.WriteLine("Hmmm the email dint go");
+                return false;
+            }
+        
         }
     }
 }
