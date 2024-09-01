@@ -51,10 +51,10 @@ namespace KYC_WebPlatform.Services.Data
                     var deptHeadIds = new Dictionary<int, string>
                     {
                         { 1, "TECH#001" },
-                        { 2, "HR#002" },
-                        { 3, "FIN#003" },
-                        { 4, "MKT#004" },
-                        { 5, "OPS#005" },
+                        { 2, "HRLEGAL#001" },
+                        { 3, "SUPPORT#001" },
+                        { 4, "FINANCE#001" },
+                        { 5, "BUSINESS#001" },
                         { 6, "SALES#006" }
                     };
 

@@ -121,6 +121,11 @@ namespace KYC_WebPlatform.Controllers
                         ViewBag.SuccessMessage = "Logged In Successfully";
                         return RedirectToAction("ViewClients", "Business"); // Redirect to admin dashboard
                     }
+                    if (dAO.RetrieveRole(userEmail) == 13)
+                    {
+                        ViewBag.SuccessMessage = "Logged In Successfully";
+                        return RedirectToAction("ViewClients", "Business"); // Redirect to admin dashboard
+                    }
                 }
                 else
                 {

@@ -164,47 +164,51 @@ namespace KYC_WebPlatform.Controllers
                     { "FINANCE#001", "MDAPPROVE#001" }
                 };
 
-                /*//below we are going to get the next expected approval code
                 if (approvalSequence.TryGetValue(approvalCode, out var currentApprovalCode) && currentApprovalCode == updatedApprovalCode)
                 {
-                    // Prepare parameters for the stored procedure
-                    var parameters = new SqlParameter[]
+                }
+
+                    /*//below we are going to get the next expected approval code
+                    if (approvalSequence.TryGetValue(approvalCode, out var currentApprovalCode) && currentApprovalCode == updatedApprovalCode)
                     {
-                    new SqlParameter("@DepartmentHeadId", updatedApprovalCode)
-                    };
-
-                    // Execute the stored procedure and retrieve results
-                    var results = _storage.ExecuteSelectQuery("GetDeptHeadEmail", parameters);
-
-                    // Retrieve the first value from the results if available
-                    if (results.Count > 0)
-                    {
-                        var firstKey = results.Keys.First();
-                        var values = results[firstKey];
-
-                        if (values.Count > 0 && values[0] is string DestinationEmailAddress)
+                        // Prepare parameters for the stored procedure
+                        var parameters = new SqlParameter[]
                         {
-                            Debug.WriteLine("Email Address: " + DestinationEmailAddress);
-                            return View("NotifyView", DestinationEmailAddress);
+                        new SqlParameter("@DepartmentHeadId", updatedApprovalCode)
+                        };
+
+                        // Execute the stored procedure and retrieve results
+                        var results = _storage.ExecuteSelectQuery("GetDeptHeadEmail", parameters);
+
+                        // Retrieve the first value from the results if available
+                        if (results.Count > 0)
+                        {
+                            var firstKey = results.Keys.First();
+                            var values = results[firstKey];
+
+                            if (values.Count > 0 && values[0] is string DestinationEmailAddress)
+                            {
+                                Debug.WriteLine("Email Address: " + DestinationEmailAddress);
+                                return View("NotifyView", DestinationEmailAddress);
+                            }
+                            else
+                            {
+                                return View("Error", "No valid email address found.");
+                            }
                         }
                         else
                         {
-                            return View("Error", "No valid email address found.");
+                            return View("Error", "The dictionary is empty.");
                         }
                     }
                     else
                     {
-                        return View("Error", "The dictionary is empty.");
-                    }
-                }
-                else
-                {
-                    // Handle cases where the approval code is invalid or doesn't match
-                    return View("Error", "The approval code is not valid or does not match.");
-                }*/
+                        // Handle cases where the approval code is invalid or doesn't match
+                        return View("Error", "The approval code is not valid or does not match.");
+                    }*/
 
 
-                return View("NotifyView", SourceEmailAddress);
+                    return View("NotifyView", SourceEmailAddress);
             } catch (Exception e) {
 
                 return View("Error", e.Message);
