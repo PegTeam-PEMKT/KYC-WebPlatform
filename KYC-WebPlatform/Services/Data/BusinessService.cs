@@ -1,11 +1,7 @@
 ﻿using KYC_WebPlatform.Models;
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
-using System.Web;
 
 namespace KYC_WebPlatform.Services.Data
 {
@@ -43,7 +39,7 @@ namespace KYC_WebPlatform.Services.Data
                 Debug.WriteLine(e.Message);
                 return businessInfoSaved;
             }
-            
+
         }
     }
 }

@@ -167,6 +167,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AddBusiness_MODEL.cs" />
+    <Compile Include="Models\DeptRole.cs" />
+    <Compile Include="Models\Document.cs" />
     <Compile Include="Models\LoginDto.cs" />
     <Compile Include="Models\OtpViewModel.cs" />
     <Compile Include="Models\SignupDto.cs" />
@@ -185,6 +187,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HelpPage\HelpPage.css" />
+    <Content Include="assets\css\custom.css" />
     <Content Include="assets\css\portal.css" />
     <Content Include="assets\images\app-logo.svg" />
     <Content Include="assets\images\background\background-1.jpg" />
@@ -1422,6 +1425,7 @@
     <Content Include="Views\Approvals\PendingBusinessFiles.cshtml" />
     <Content Include="Views\Approvals\FileViewer.cshtml" />
     <Content Include="Views\Signup\ClientSignup.cshtml" />
+    <Content Include="Views\Business\BusinessHelp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

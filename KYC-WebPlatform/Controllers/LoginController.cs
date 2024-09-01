@@ -3,7 +3,6 @@ using KYC_WebPlatform.Services.Business;
 using KYC_WebPlatform.Services.Data;
 using System;
 using System.Diagnostics;
-using System.Web.Helpers;
 using System.Web.Mvc;
 
 namespace KYC_WebPlatform.Controllers
@@ -15,6 +14,13 @@ namespace KYC_WebPlatform.Controllers
             return View("SignIn");
         }
 
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Remove("Email");
+            HttpContext.Session.Remove("Username");
+            return View("SignIn");
+        }
+
         public ActionResult Login(LoginDto loginDto)
         {
             AuthenticationService authenticationService = new AuthenticationService();
@@ -22,12 +28,16 @@ namespace KYC_WebPlatform.Controllers
             if (authenticationService.Authenticate(loginDto))
             {
                 HttpContext.Session["Email"] = loginDto.Email;
+                string name = authenticationService.GetNameByEmail(loginDto.Email);
+
+                HttpContext.Session["Username"] = name;
+                TempData["Username"] = name;
+
                 Debug.WriteLine("From Authenticate: " + loginDto.Email);
                 if (SendOTP(loginDto.Email))
                 {
                     ViewBag.Email = loginDto.Email;
                     return View("OtpView");
-
                 }
                 else
                 {
@@ -37,7 +47,7 @@ namespace KYC_WebPlatform.Controllers
             }
             else
             {
-                ViewBag.ErrorMessage = "Failed to log in (User credentials not found)";
+                ViewBag.ErrorMessage = "Failed to log in (Invalid User Credentials)";
                 return View("SignIn");
             }
         }
@@ -49,13 +59,13 @@ namespace KYC_WebPlatform.Controllers
             DateTime otpTimeStamp = DateTime.Now;
 
             HttpContext.Session["OTP"] = randomCode; // Store OTP in session
-            HttpContext.Session["OTPTime"] = otpTimeStamp;           
+            HttpContext.Session["OTPTime"] = otpTimeStamp;
 
             string toEmail = email;
             string subject = "Your OTP Code";
             string body = "Your OTP code is " + randomCode + " it will expire in 5 minutes";
             string altHost = "smtp-mail.outlook.com";
-            
+
             EmailService emailService = new EmailService("jemimahsoulsister@outlook.com", "jemimah@soulsister", "smtp.office365.com", 587, true);
             bool emailSent = emailService.SendEmail(toEmail, subject, body);
 
@@ -80,7 +90,7 @@ namespace KYC_WebPlatform.Controllers
                 string userEmail = HttpContext.Session["Email"] as string;
 
                 Debug.WriteLine(userEmail);
-                Debug.WriteLine("OTP: "+ model.Otp);
+                Debug.WriteLine("OTP: " + model.Otp);
                 Debug.WriteLine("Stored OTP: " + storedOtp);
 
                 DateTime otpTimeStamp = storedOtpTimeStamp ?? DateTime.MinValue;
@@ -98,7 +108,7 @@ namespace KYC_WebPlatform.Controllers
                 {
                     Session.Remove("OTP"); // Remove OTP from session after successful verification
                     Session.Remove("OTPTime");
-                    
+
 
                     if (dAO.RetrieveRole(userEmail) == 15)
                     {
@@ -149,7 +159,7 @@ namespace KYC_WebPlatform.Controllers
                     return View("SignIn");
                 }
             }
-         
+
         }
     }
 }

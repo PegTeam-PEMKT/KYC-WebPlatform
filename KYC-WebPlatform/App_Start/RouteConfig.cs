@@ -78,11 +78,17 @@ namespace KYC_WebPlatform
                 defaults: new { controller = "Client", action = "ClientNotifications" }
             );
 
-            // Custom Route for Client Status View
+/*            // Custom Route for Client Status View
             routes.MapRoute(
                 name: "ViewStatus",
                 url: "Client/Status",
                 defaults: new { controller = "Client", action = "ViewStatus" }
+            );*/
+
+            routes.MapRoute(
+                 name: "ViewStatus",
+                 url: "Client/{tab}",
+                 defaults: new { controller = "Client", action = "ViewStatus", tab = UrlParameter.Optional }
             );
 
             // Custom Route for Adding a Business
@@ -106,11 +112,11 @@ namespace KYC_WebPlatform
                 defaults: new { controller = "Client", action = "Help" }
             );
 
-           /* routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}", //home/Index or About
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
-            );*/
+            /* routes.MapRoute(
+                 name: "Default",
+                 url: "{controller}/{action}/{id}", //home/Index or About
+                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+             );*/
 
 
             // Default route for Home page

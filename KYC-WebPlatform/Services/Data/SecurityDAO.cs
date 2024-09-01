@@ -1,5 +1,6 @@
 ﻿using KYC_WebPlatform.Models;
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Web.Helpers;
@@ -26,20 +27,47 @@ namespace KYC_WebPlatform.Services.Data
             }
             else
             {
+                if(signupDto.Role == UserRole.Admin && signupDto.DeptRole == DeptRole.Business)
+                {
+                    Debug.WriteLine("Failure creating admin");
+                    return userCreated;
+                }
                 if (signupDto.Role == UserRole.Admin)
                 {
                     if (InsertAdmin(signupDto.Username, hashedPassword))
                     {
                         Debug.WriteLine("Admin Created");
+                        if (InsertDepartmentHead("BUSINESS#001", signupDto.Username, 5, signupDto.Email, signupDto.PhoneNumber))
+                        {
+                            Debug.WriteLine("DeptHead Created");
+                        }
+                        else
+                        {
+                            Debug.WriteLine("Failure creating DeptHead");
+                            return userCreated;
+                        }
                     }
                     else
                     {
                         Debug.WriteLine("Failure creating admin");
+                        return userCreated;
                     }
                 }
                 if (signupDto.Role == UserRole.DepartmentHead)
                 {
-                    if (InsertDepartmentHead(signupDto.Username, signupDto.Email, hashedPassword))
+                    var deptHeadIds = new Dictionary<int, string>
+                    {
+                        { 1, "TECH#001" },
+                        { 2, "HR#002" },
+                        { 3, "FIN#003" },
+                        { 4, "MKT#004" },
+                        { 5, "OPS#005" },
+                        { 6, "SALES#006" }
+                    };
+
+                    string deptHeadId = deptHeadIds.TryGetValue((int)signupDto.DeptRole, out var id) ? id : "DEFAULT_ID";
+
+                    if (InsertDepartmentHead(deptHeadId, signupDto.Username, (int)signupDto.DeptRole, signupDto.Email, signupDto.PhoneNumber))
                     {
                         Debug.WriteLine("DeptHead Created");
                     }
@@ -52,7 +80,7 @@ namespace KYC_WebPlatform.Services.Data
                 {
                     using (SqlConnection connection = dbContext.GetConnection())
                     {
-                        if((int)signupDto.Role == 0)
+                        if ((int)signupDto.Role == 0)
                         {
                             roleId = 15;
                         }
@@ -105,11 +133,11 @@ namespace KYC_WebPlatform.Services.Data
                         if (reader.HasRows)
                         {
                             reader.Read(); // Move to the first record
-                            storedHash = reader["PasswordHash"].ToString();                         
+                            storedHash = reader["PasswordHash"].ToString();
                         }
                     }
                 }
-                if(Crypto.VerifyHashedPassword(storedHash, loginDto.Password))
+                if (Crypto.VerifyHashedPassword(storedHash, loginDto.Password))
                 {
                     isValidUser = true; // If unhashed password matches user inputed password, the user is valid
                 }
@@ -190,18 +218,18 @@ namespace KYC_WebPlatform.Services.Data
             }
         }
 
-        internal bool InsertDepartmentHead(string name, string email, string phone)
+        internal bool InsertDepartmentHead(string deptHeadId, string name, int deptId, string email, string phone)
         {
             Random rand = new Random();
-            int deptId = rand.Next(999);
             bool deptHeadCreated = false;
             try
             {
                 using (SqlConnection connection = dbContext.GetConnection())
                 {
                     connection.Open();
-                    SqlCommand command = new SqlCommand("INSERT INTO dbo.HeadOfDepartment (PersonName, DepartmentId, Email, Telephone) VALUES (@PersonName, @DepartmentId, @Email, @Telephone)", connection);
+                    SqlCommand command = new SqlCommand("INSERT INTO dbo.HeadOfDepartment (DepartmentHeadId, PersonName, DepartmentId, Email, Telephone) VALUES (@DeptHeadId, @PersonName, @DepartmentId, @Email, @Telephone)", connection);
 
+                    command.Parameters.AddWithValue("@DeptHeadId", deptHeadId);
                     command.Parameters.AddWithValue("@PersonName", name);
                     command.Parameters.AddWithValue("@DepartmentId", deptId.ToString());
                     command.Parameters.AddWithValue("@Email", email);
@@ -237,7 +265,7 @@ namespace KYC_WebPlatform.Services.Data
                     SqlCommand command = new SqlCommand(query, sqlConnection);
                     command.Parameters.AddWithValue("@Email", email);
 
-                    Debug.WriteLine("From RetrieveRole"+email);
+                    Debug.WriteLine("From RetrieveRole" + email);
 
                     sqlConnection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -256,6 +284,37 @@ namespace KYC_WebPlatform.Services.Data
                 Debug.WriteLine("From RetrieveRole: " + e.Message);
             }
             return roleId;
+        }
+
+        internal string RetrieveName(string email)
+        {
+            string userName = "";
+
+            try
+            {
+                using (SqlConnection sqlConnection = dbContext.GetConnection())
+                {
+                    string query = "SELECT * FROM dbo.users WHERE Email = @Email";
+
+                    SqlCommand command = new SqlCommand(query, sqlConnection);
+                    command.Parameters.AddWithValue("@Email", email);
+
+                    sqlConnection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            reader.Read(); // Move to the first record
+                            userName = reader["UserName"].ToString();
+                        }
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.WriteLine("From RetrieveName: " + e.Message);
+            }
+            return userName;
         }
     }
 }

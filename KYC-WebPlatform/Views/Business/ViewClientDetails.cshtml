@@ -8,7 +8,7 @@
     <div class="app-wrapper">
         <div class="app-content pt-3 p-md-3 p-lg-4">
             <div class="container-xl">
-                <h1 class="app-page-title"> Pending Clients</h1>
+                <h1 class="app-page-title"> Validation Details</h1>
                 <div class="row g-4 mb-4">
 
                     <div class="tab-content" id="orders-table-tab-content">
@@ -19,28 +19,34 @@
                                         <table class="table app-table-hover mb-0 text-left">
                                             <thead>
                                                 <tr>
-                                                    <th class="cell">BusinessName</th>
-                                                    <th class="cell">Location</th>
-                                                    <th class="cell">DirectorName</th>
-                                                    <th class="cell">DirectorNIN</th>
-                                                    <th class="cell">IsNinValidated</th>
-                                                    <th class="cell">SanctionScore</th>
-                                                    <th class="cell">SanctionStatusDescription</th>
+                                                    <th class="cell">Business Name</th>
+                                                    @*<th class="cell">Director</th>*@
+                                                    <th class="cell">Director Name</th>
+                                                    <th class="cell">Director NIN</th>
+                                                    <th class="cell">Nin Validation</th>
+                                                    <th class="cell">Sanction Score</th>
+                                                    <th class="cell">Sanction Validation</th>
+                                                    @*<th class="cell">Action</th>*@
                                                     <th class="cell"></th>
                                                 </tr>
                                             </thead>
                                             <tbody>
                                                 @foreach (var row in Model)
                                                 {
+                                                    
                                                     <tr>
                                                         <td class="cell">@row.Value[1]</td>
 
-                                                        <td class="cell">@row.Value[2]</td>
+                                                        @*<td class="cell">@row.Value[2]</td>*@
+                                                        <td class="cell">@row.Value[3]</td>
                                                         <td class="cell">@row.Value[4]</td>
                                                         <td class="cell">@row.Value[5]</td>
                                                         <td class="cell">@row.Value[6]</td>
                                                         <td class="cell">@row.Value[7]</td>
-                                                        <td class="cell">@row.Value[8]</td>
+                                                        @*<td class="cell">
+                                                            <a class="btn app-btn-secondary" href="@Url.Action("ApproveClient", "Business", new { id = row.Value[0] })">Approve</a>
+                                                            <a class="btn btn-outline-danger" href="">Reject</a>
+                                                        </td>*@
 
 
                                                     </tr>

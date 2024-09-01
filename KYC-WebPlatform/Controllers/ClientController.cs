@@ -19,7 +19,7 @@ namespace KYC_WebPlatform.Controllers
     {
         private readonly PegPayService _pegPayService;
         private readonly ApiService _apiService;
-        private readonly ClientService _storage= new ClientService();
+        private readonly ClientService _storage = new ClientService();
 
         public ClientController()
         {
@@ -33,10 +33,12 @@ namespace KYC_WebPlatform.Controllers
             return View("ClientIndex");
         }
 
-        public async Task<ActionResult> AddBusiness(AddBusiness_MODEL model)
+        public  ActionResult AddBusiness(AddBusiness_MODEL model)
         {
             try
             {
+                HttpContext.Session["TIN"] = model.BusinessTIN;
+                string clientEmail = HttpContext.Session["Email"] as string;
                 // Performing NIRA Validation (assuming it's a synchronous call)
                 model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurname);
 
@@ -64,12 +66,12 @@ namespace KYC_WebPlatform.Controllers
                         // Input parameters for Business
                         command.Parameters.AddWithValue("@BusinessName", model.BusinessName);
                         command.Parameters.AddWithValue("@ContactPerson", model.ContactName);
-                        command.Parameters.AddWithValue("@IsActive", true);
+                        command.Parameters.AddWithValue("@IsActive", false);
                         command.Parameters.AddWithValue("@TransactionVolume", model.NumberOfTransactions);
                         command.Parameters.AddWithValue("@TransactionTraffic", model.AmountEarnedPerMonth);
-                        command.Parameters.AddWithValue("@Email", model.BusinessEmail);
+                        command.Parameters.AddWithValue("@Email", clientEmail);
                         command.Parameters.AddWithValue("@PhoneNumber", model.BusinessPhoneNumber);
-                        command.Parameters.AddWithValue("@Location", "Location_Value");
+                        command.Parameters.AddWithValue("@TIN", model.BusinessTIN);
 
                         // Input parameters for Director
                         command.Parameters.AddWithValue("@DirectorName", name);
@@ -79,7 +81,7 @@ namespace KYC_WebPlatform.Controllers
                         command.Parameters.AddWithValue("@SanctionScore", sanctionresponse.Score);
                         command.Parameters.AddWithValue("@SanctionStatusCode", sanctionresponse.StatusCode);
                         command.Parameters.AddWithValue("@SanctionStatusDescription", sanctionresponse.StatusDescription);
-                      
+
 
                         // Execute the stored procedure
                         command.ExecuteNonQuery();
@@ -99,9 +101,74 @@ namespace KYC_WebPlatform.Controllers
             return View("AddBusiness", model);
         }
 
-        public ActionResult ViewStatus()
+        //ViewStatus with tab
+        public ActionResult ViewStatus(string tab)
         {
-            return View("ViewStatus");
+            string clientEmail = HttpContext.Session["Email"] as string;
+
+            List<Document> documents = new List<Document>();
+            /*List<Document> documents = dbContext.GetClientDocuments(clientEmail);*/
+
+            // Get the database context instance
+            DBContext dbContext = DBContext.GetInstance();
+
+            // Open the connection
+            using (SqlConnection connection = dbContext.GetConnection())
+            {
+                // Open the connection
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand("GetClientDocuments", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Add input parameter for the stored procedure
+                    command.Parameters.AddWithValue("@ClientEmail", clientEmail);
+
+                    // Execute the command and read the data
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            // Create a new Document object and populate it with the data
+                            Document document = new Document
+                            {
+                                FileId = reader["FileId"] != DBNull.Value ? reader["FileId"].ToString() : null,
+                                FileName = reader["FileName"] != DBNull.Value ? reader["FileName"].ToString() : null,
+                                BusinessId = reader["BusinessId"] != DBNull.Value ? (int?)reader["BusinessId"] : null,
+                                UploadedOn = reader["UploadedOn"] != DBNull.Value ? (DateTime?)reader["UploadedOn"] : null,
+                                IsVerified = reader["IsVerified"] != DBNull.Value ? (bool?)reader["IsVerified"] : null,
+                                ApprovalCode = reader["Approval_Code"] != DBNull.Value ? reader["Approval_Code"].ToString() : null,
+                                FilePath = reader["FilePath"] != DBNull.Value ? reader["FilePath"].ToString() : null,
+                            };
+
+                            // Add the document to the list
+                            documents.Add(document);
+                        }
+                    }
+                }
+
+                // Close the connection
+                connection.Close();
+            }
+
+            switch (tab) //sorting the documents according to the tab selected (All, Pending, Approved, Rejected)
+            {
+                case "orders-paid":
+                    documents = documents.Where(d => d.IsVerified.HasValue && d.IsVerified.Value).ToList();
+                    break;
+                case "orders-pending":
+                    documents = documents.Where(d => !d.IsVerified.HasValue || !d.IsVerified.Value).ToList();
+                    break;
+                case "orders-cancelled":
+                    documents = documents.Where(d => d.ApprovalCode == "Cancelled").ToList(); //To change to correct Approval Code
+                    break;
+                default:
+                    // Show all documents
+                    break;
+            }
+
+            return View("ViewStatus", documents);
         }
 
         public ActionResult ClientNotifications()
@@ -123,8 +190,19 @@ namespace KYC_WebPlatform.Controllers
         {
             try
             {
-                var fileDic = "Files";
+                var fileDic = "Content/Files";
                 string filePath = Server.MapPath("~/") + fileDic;
+
+                string TIN = HttpContext.Session["TIN"] as string;
+
+                Debug.WriteLine($"=============TIN: {TIN}=============");
+
+                string query = "Select BusinessId from ClientBusiness where TIN = @BusinessTIN";
+                // Retrieve the BusinessId from the ClientBusiness table
+                int businessId = _storage.ExecuteGetIdQuery(query, TIN);
+
+                Debug.WriteLine($"++++++++FROM Upload: {businessId}++++++++++++");
+
                 if (!Directory.Exists(filePath))
                 {
                     Directory.CreateDirectory(filePath);
@@ -133,20 +211,26 @@ namespace KYC_WebPlatform.Controllers
                 filePath = Path.Combine(filePath, fileName);
                 file.SaveAs(filePath);
                 Debug.WriteLine(filePath + "***success!");
-                string randomText = new string(Enumerable.Repeat("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789", 15).Select(s => s[new Random().Next(s.Length)]).ToArray());
-
+                var random = new Random();
+                var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZab#c@defghijklmnopqrstuvwxyz0123456789";
+                var randomText = new string(Enumerable.Range(0, 15)
+                    .Select(_ => characters[random.Next(characters.Length)])
+                    .ToArray());
+                Debug.WriteLine("o0o0o0o0o0o0" + randomText);
                 SqlParameter[] parameters = new SqlParameter[]
                     {
-                        new SqlParameter("@FileId",randomText),
+                        new SqlParameter("@FileId", randomText),
                         new SqlParameter("@FileName", fileName),
-                        new SqlParameter("@BusinessId", '5'),
+                        new SqlParameter("@BusinessId", businessId),
                         new SqlParameter("@UploadedOn", DateTime.Now),
-                        new SqlParameter("@IsVerified",0),
+                        new SqlParameter("@IsVerified", false),
                         new SqlParameter("@Approval_Code","BUSINESS#001"),
                         new SqlParameter("@FilePath",filePath)
                     };
-                int rowsAffected =_storage.ExecuteInsertQuery("InsertCompanyDocument", parameters);
-                Debug.WriteLine("INSERTEEEED!!! "+rowsAffected);
+                Debug.WriteLine(parameters.Length);
+                string InsertQuery = "INSERT INTO CompanyDocument (FileId, FileName, BusinessId, UploadedOn, IsVerified, Approval_Code, FilePath)  VALUES (@FileId, @FileName, @BusinessId, @UploadedOn, @IsVerified, @Approval_Code, @FilePath)";
+                int rowsAffected = _storage.ExecuteInsertQuery(InsertQuery, parameters);
+                Debug.WriteLine("INSERTEEEED!!! " + rowsAffected);
                 return RedirectToAction("ViewStatus");
             }
             catch (System.NullReferenceException e)
@@ -213,4 +297,6 @@ namespace KYC_WebPlatform.Controllers
         }
     }
 }
+
+
 

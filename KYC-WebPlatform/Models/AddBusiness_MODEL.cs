@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace KYC_WebPlatform.Models
+﻿namespace KYC_WebPlatform.Models
 {
     public class AddBusiness_MODEL
     {
@@ -15,6 +10,7 @@ namespace KYC_WebPlatform.Models
         public string BusinessWebsite { get; set; }
         public string Businesslocation { get; set; }
         public string BusinessId { get; set; }
+        public string BusinessTIN { get; set; }
 
 
 

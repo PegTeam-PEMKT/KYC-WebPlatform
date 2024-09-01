@@ -1,13 +1,10 @@
 ﻿using KYC_WebPlatform.Models;
 using KYC_WebPlatform.Services.Business;
 using KYC_WebPlatform.Services.Data;
-using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace KYC_WebPlatform.Controllers
@@ -41,9 +38,9 @@ namespace KYC_WebPlatform.Controllers
           *//*  // Or, you can convert the DataTable to a list or other model as needed:
             List<AddBusiness_MODEL> model = ConvertDataTableToYourModel(businessAndDirectorsInfo);*/
 
-            /*Debug.WriteLine(model);
-            return View("ViewClientDetails", model);*//*
-        }*/
+        /*Debug.WriteLine(model);
+        return View("ViewClientDetails", model);*//*
+    }*/
 
 
 
@@ -51,17 +48,17 @@ namespace KYC_WebPlatform.Controllers
         {
             try
             {
-                Debug.WriteLine("POPOPOPOP:  "+BusinessId);
-               // Fetch records from the database and map to ViewModel
+                Debug.WriteLine("POPOPOPOP:  " + BusinessId);
+                // Fetch records from the database and map to ViewModel
                 SqlParameter[] parameters = new SqlParameter[] {
                     new SqlParameter("@BusinessId",BusinessId)
-                   
+
                 };
                 Dictionary<string, List<object>> cards = _storage.ExecuteSelectQuery("GetBusinessAndDirectorsInfo", parameters);
-                Debug.WriteLine("SOOO FAAAAARRRR WE HAVE GOT "+cards.Count+" RECORDS");
+                Debug.WriteLine("SOOO FAAAAARRRR WE HAVE GOT " + cards.Count + " RECORDS");
                 // Fetch records from the database and map to ViewModel
-                
-                Debug.WriteLine("\n\n\n*******"+cards.Count.ToString()+"n\n\n\n*****");
+
+                Debug.WriteLine("\n\n\n*******" + cards.Count.ToString() + "n\n\n\n*****");
                 return View("ViewClientDetails", cards);
             }
             catch (SqlException e)
@@ -78,7 +75,7 @@ namespace KYC_WebPlatform.Controllers
                 // Fetch records from the database and map to ViewModel
                 Dictionary<string, List<object>> cards = _storage.ExecuteSelectQuery("Select * from ClientBusiness");
                 // Fetch records from the database and map to ViewModel
-                
+
                 return View("ViewClients", cards);
             }
             catch (SqlException e)
@@ -93,7 +90,7 @@ namespace KYC_WebPlatform.Controllers
             return View("ViewStatus");
         }
 
-        public ActionResult CreateView() 
+        public ActionResult CreateView()
         {
             return View("CreateView");
         }
@@ -139,7 +136,7 @@ namespace KYC_WebPlatform.Controllers
 
                 AddBusiness_MODEL model = new AddBusiness_MODEL
                 {
-                    
+
                     BusinessName = row["BusinessName"].ToString(),
                     ContactName = row["ContactPerson"].ToString(),
                     BusinessPhoneNumber = row["PhoneNumber"].ToString(),
@@ -148,17 +145,22 @@ namespace KYC_WebPlatform.Controllers
                     BusinessId = row["BusinessId"].ToString(),
 
                     DirectorSurname = row["DirectorName"].ToString(),
-                    DirectorGivenName = row["DirectorName"].ToString(),    
+                    DirectorGivenName = row["DirectorName"].ToString(),
                     NIN = row["DirectorNIN"].ToString(),
                     NiraValidation = row["NinValidated"].ToString(),
                     SanctionScore = row["SanctionScore"].ToString(),
                     SanctionDescription = row["SanctionStatusDescription"].ToString()
-                    
+
 
                 };
                 result.Add(model);
             }
             return result;
+        }
+
+        public ActionResult Help()
+        {
+            return View("BusinessHelp");
         }
 
     }

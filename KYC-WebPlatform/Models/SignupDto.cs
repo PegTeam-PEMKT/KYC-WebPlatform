@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace KYC_WebPlatform.Models
+﻿namespace KYC_WebPlatform.Models
 {
     public class SignupDto
     {
@@ -12,5 +7,6 @@ namespace KYC_WebPlatform.Models
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public UserRole Role { get; set; }
+        public DeptRole DeptRole { get; set; }
     }
 }

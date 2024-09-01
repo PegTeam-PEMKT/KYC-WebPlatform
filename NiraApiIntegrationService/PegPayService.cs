@@ -1,5 +1,5 @@
-﻿using System;
-using NiraApiIntegrationService.ug.co.pegasus.test;
+﻿using NiraApiIntegrationService.ug.co.pegasus.test;
+using System;
 
 namespace NiraApiIntegrationService
 {
