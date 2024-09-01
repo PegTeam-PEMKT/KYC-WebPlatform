@@ -190,11 +190,10 @@ namespace KYC_WebPlatform.Services.Data
 
             using (SqlConnection connection = dbContext.GetConnection())
             {
-                string query = "INSERT INTO Admin (AdminUserName, AdminHashPassword) VALUES (@AdminUserName, @AdminHashPassword)";
+                string query = "INSERT INTO Admin (AdminUserName) VALUES (@AdminUserName)";
 
                 SqlCommand command = new SqlCommand(query, connection);
                 command.Parameters.AddWithValue("@AdminUserName", adminUserName);
-                command.Parameters.AddWithValue("@AdminHashPassword", adminHashPassword);
 
                 try
                 {
@@ -315,6 +314,47 @@ namespace KYC_WebPlatform.Services.Data
                 Debug.WriteLine("From RetrieveName: " + e.Message);
             }
             return userName;
+        }
+
+        internal bool ChangePasswordForEmail(LoginDto loginDto)
+        {
+            string hashedPassword = Crypto.HashPassword(loginDto.Password);
+            bool updatedPassword = false;
+
+            try
+            {
+                using (SqlConnection sqlConnection = dbContext.GetConnection())
+                {
+                    // Define the query to update the password
+                    string query = "UPDATE dbo.users SET PasswordHash = @Password WHERE Email = @Email";
+
+                    SqlCommand command = new SqlCommand(query, sqlConnection);
+                    command.Parameters.AddWithValue("@Email", loginDto.Email);
+                    command.Parameters.AddWithValue("@Password", hashedPassword); // assuming newPassword is the new password you want to set
+
+                    sqlConnection.Open();
+
+                    // Execute the update command
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        Debug.WriteLine("Password updated successfully.");
+                        updatedPassword = true;
+                        return updatedPassword;
+                    }
+                    else
+                    {
+                        Debug.WriteLine("No user found with the specified email.");
+                        return updatedPassword;
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.WriteLine("From UpdatePassword: " + e.Message);
+                return updatedPassword;
+            }
         }
     }
 }
