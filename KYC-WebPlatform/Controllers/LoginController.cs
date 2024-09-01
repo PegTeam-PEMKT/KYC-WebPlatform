@@ -14,6 +14,13 @@ namespace KYC_WebPlatform.Controllers
             return View("SignIn");
         }
 
+        public ActionResult Logout()
+        {
+            HttpContext.Session.Remove("Email");
+            HttpContext.Session.Remove("Username");
+            return View("SignIn");
+        }
+
         public ActionResult Login(LoginDto loginDto)
         {
             AuthenticationService authenticationService = new AuthenticationService();
@@ -21,12 +28,16 @@ namespace KYC_WebPlatform.Controllers
             if (authenticationService.Authenticate(loginDto))
             {
                 HttpContext.Session["Email"] = loginDto.Email;
+                string name = authenticationService.GetNameByEmail(loginDto.Email);
+
+                HttpContext.Session["Username"] = name;
+                TempData["Username"] = name;
+
                 Debug.WriteLine("From Authenticate: " + loginDto.Email);
                 if (SendOTP(loginDto.Email))
                 {
                     ViewBag.Email = loginDto.Email;
                     return View("OtpView");
-
                 }
                 else
                 {
