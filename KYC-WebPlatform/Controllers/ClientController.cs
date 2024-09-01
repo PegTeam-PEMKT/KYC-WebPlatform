@@ -3,6 +3,7 @@ using KYC_WebPlatform.Services;
 using KYC_WebPlatform.Services.Data;
 using NiraApiIntegrationService;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
@@ -100,9 +101,74 @@ namespace KYC_WebPlatform.Controllers
             return View("AddBusiness", model);
         }
 
-        public ActionResult ViewStatus()
+        //ViewStatus with tab
+        public ActionResult ViewStatus(string tab)
         {
-            return View("ViewStatus");
+            string clientEmail = HttpContext.Session["Email"] as string;
+
+            List<Document> documents = new List<Document>();
+            /*List<Document> documents = dbContext.GetClientDocuments(clientEmail);*/
+
+            // Get the database context instance
+            DBContext dbContext = DBContext.GetInstance();
+
+            // Open the connection
+            using (SqlConnection connection = dbContext.GetConnection())
+            {
+                // Open the connection
+                connection.Open();
+
+                using (SqlCommand command = new SqlCommand("GetClientDocuments", connection))
+                {
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Add input parameter for the stored procedure
+                    command.Parameters.AddWithValue("@ClientEmail", clientEmail);
+
+                    // Execute the command and read the data
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            // Create a new Document object and populate it with the data
+                            Document document = new Document
+                            {
+                                FileId = reader["FileId"] != DBNull.Value ? reader["FileId"].ToString() : null,
+                                FileName = reader["FileName"] != DBNull.Value ? reader["FileName"].ToString() : null,
+                                BusinessId = reader["BusinessId"] != DBNull.Value ? (int?)reader["BusinessId"] : null,
+                                UploadedOn = reader["UploadedOn"] != DBNull.Value ? (DateTime?)reader["UploadedOn"] : null,
+                                IsVerified = reader["IsVerified"] != DBNull.Value ? (bool?)reader["IsVerified"] : null,
+                                ApprovalCode = reader["Approval_Code"] != DBNull.Value ? reader["Approval_Code"].ToString() : null,
+                                FilePath = reader["FilePath"] != DBNull.Value ? reader["FilePath"].ToString() : null,
+                            };
+
+                            // Add the document to the list
+                            documents.Add(document);
+                        }
+                    }
+                }
+
+                // Close the connection
+                connection.Close();
+            }
+
+            switch (tab) //sorting the documents according to the tab selected (All, Pending, Approved, Rejected)
+            {
+                case "orders-paid":
+                    documents = documents.Where(d => d.IsVerified.HasValue && d.IsVerified.Value).ToList();
+                    break;
+                case "orders-pending":
+                    documents = documents.Where(d => !d.IsVerified.HasValue || !d.IsVerified.Value).ToList();
+                    break;
+                case "orders-cancelled":
+                    documents = documents.Where(d => d.ApprovalCode == "Cancelled").ToList(); //To change to correct Approval Code
+                    break;
+                default:
+                    // Show all documents
+                    break;
+            }
+
+            return View("ViewStatus", documents);
         }
 
         public ActionResult ClientNotifications()
@@ -231,4 +297,6 @@ namespace KYC_WebPlatform.Controllers
         }
     }
 }
+
+
 
