@@ -168,6 +168,7 @@
     </Compile>
     <Compile Include="Models\AddBusiness_MODEL.cs" />
     <Compile Include="Models\DeptRole.cs" />
+    <Compile Include="Models\Document.cs" />
     <Compile Include="Models\LoginDto.cs" />
     <Compile Include="Models\OtpViewModel.cs" />
     <Compile Include="Models\SignupDto.cs" />
