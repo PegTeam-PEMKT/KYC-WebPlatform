@@ -1424,6 +1424,7 @@
     <Content Include="Views\Approvals\PendingBusinessFiles.cshtml" />
     <Content Include="Views\Approvals\FileViewer.cshtml" />
     <Content Include="Views\Signup\ClientSignup.cshtml" />
+    <Content Include="Views\Approvals\NotifyView.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
