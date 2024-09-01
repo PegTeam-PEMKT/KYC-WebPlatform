@@ -10,6 +10,12 @@ namespace KYC_WebPlatform
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
+            /*routes.MapRoute(
+                name: "Notify",
+                url: "{Approvals}/{NotifyNextApprover}", //Login/Index
+                defaults: new { controller = "Approvals", action = "NotifyNextApprover" }
+            );*/
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}", //Login/Index

@@ -12,9 +12,24 @@
                 <div class="row g-4 mb-4">
                     @if (Model == null)
                     {
-                        <div class="alert alert-info">
-                            No pending approvals at the moment.
-                        </div>
+
+                        <a href="@Url.Action("GetFiles", "Approvals", new { BusinessId = row.Value[0], BusinessName = row.Value[1], fileCount = row.Value[2] @* fileCount = row.Value[3]*@ })" class="col-12 col-lg-6">
+                            
+                            <div class="app-card app-card-chart h-100 shadow-sm">
+                                <div class="app-card-header p-3 border-0">
+                                    <h4 class="app-card-title">@{System.Diagnostics.Debug.WriteLine(row.Value.ToString()); }</h4>
+                                </div><!--//app-card-header-->
+                                <div class="app-card-body p-4">
+                                    <div class="chart-container">
+                                        BusinessId: @row.Value[0]
+                                        <br />
+                                        BusinessName: @row.Value[1]
+                                        <br />
+                                        Pending file count: @row.Value[2]
+                                    </div>
+                                </div><!--//app-card-body-->
+                            </div><!--//app-card-->
+                        </a>
                     }
                 </div><!--//row-->
 
