@@ -2,11 +2,9 @@
 using KYC_WebPlatform.Services.Data;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Linq;
-using System.Web.Helpers;
 using System.Web.Mvc;
 
 namespace KYC_WebPlatform.Controllers
@@ -80,15 +78,15 @@ namespace KYC_WebPlatform.Controllers
                 string BusinessId;
                 string fileName = Request.Form["FileName"];
                 string businessName = Request.Form["BusinessName"];
-                SqlParameter[] parameters = new SqlParameter[] { new SqlParameter ("@BusinessName", businessName) };
+                SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@BusinessName", businessName) };
                 Dictionary<string, List<object>> result = _storage.ExecuteSelectQuery("sp_GetBusinessId", parameters);
-                
-                    List<object> firstList = result.Values.First();
-                    
-                        BusinessId = firstList.First().ToString();
-                        Debug.WriteLine("BUSINESS ID HERE HERE HERE: " + BusinessId);
-                
-                
+
+                List<object> firstList = result.Values.First();
+
+                BusinessId = firstList.First().ToString();
+                Debug.WriteLine("BUSINESS ID HERE HERE HERE: " + BusinessId);
+
+
                 /*
                 Debug.WriteLine(Request.Form["UploadedDate"]);
                 DateTime uploadedDate = DateTime.Parse(Request.Form["UploadedDate"]);*/
@@ -109,7 +107,7 @@ namespace KYC_WebPlatform.Controllers
 
         }
 
-        public ActionResult UpdateApprovalCode(int status, string approvalCode,int businessId, string fileName)
+        public ActionResult UpdateApprovalCode(int status, string approvalCode, int businessId, string fileName)
         {
             Debug.WriteLine("received status...." + status + "  approvalCode....." + approvalCode + " businessId...." + businessId + "  fileName....." + fileName);
 
@@ -126,7 +124,7 @@ namespace KYC_WebPlatform.Controllers
             // Assuming you know the key (e.g., "ApprovalCode")
             // Get the first key-value pair in the dictionary
             var firstKeyValuePair = results.FirstOrDefault();
-            object firstElement= new object();
+            object firstElement = new object();
             string updatedApprovalCode = firstElement.ToString();
             // Check if the dictionary is not empty
             if (firstKeyValuePair.Key != null)
@@ -160,7 +158,8 @@ namespace KYC_WebPlatform.Controllers
 
         public ActionResult NotifyNextApprover(string approvalCode, string updatedApprovalCode)
         {
-            try {
+            try
+            {
                 string SourceEmailAddress = HttpContext.Session["Email"] as string;
                 Debug.WriteLine("Inside the notifier a.k.a the rumourMonger: " + SourceEmailAddress);
 
@@ -172,7 +171,7 @@ namespace KYC_WebPlatform.Controllers
                     { "FINANCE#001", "MDAPPROVE#001" }
                 };
 
-                
+
                 if (SendNotification(updatedApprovalCode))
                 {
                     return View("PendingBusinessFiles", approvalCode);
@@ -182,16 +181,19 @@ namespace KYC_WebPlatform.Controllers
                     return View("Error");
                 }
 
-            } catch (Exception e) {
+            }
+            catch (Exception e)
+            {
 
                 return View("Error", e.Message);
 
             }
-        
-            
+
+
         }
 
-        public bool SendNotification(string approvalCode) {
+        public bool SendNotification(string approvalCode)
+        {
             EmailService notifyEmail = new EmailService("jemimahsoulsister@outlook.com", "jemimah@soulsister", "smtp.office365.com", 587, true);
             bool SentOk = false;
             // Use a parameterized query to prevent SQL injection
@@ -217,7 +219,7 @@ namespace KYC_WebPlatform.Controllers
                 Debug.WriteLine("Hmmm the email dint go");
                 return false;
             }
-        
+
         }
     }
 }
