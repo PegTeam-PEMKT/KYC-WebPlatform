@@ -1,4 +1,5 @@
 ﻿using KYC_WebPlatform.Models;
+using KYC_WebPlatform.Services;
 using KYC_WebPlatform.Services.Business;
 using KYC_WebPlatform.Services.Data;
 using System;
@@ -13,6 +14,12 @@ namespace KYC_WebPlatform.Controllers
     public class BusinessController : Controller
     {
         private ClientService _storage = new ClientService();
+        private readonly ApiService _apiService;
+        public BusinessController()
+        {
+            _apiService = new ApiService(); // For Open Sanctions validation
+
+        }
 
         // GET: Business
         public ActionResult Index()
@@ -41,7 +48,8 @@ namespace KYC_WebPlatform.Controllers
 
         /*Debug.WriteLine(model);
         return View("ViewClientDetails", model);*//*
-    }*/
+    
+        */
 
 
 
@@ -203,11 +211,39 @@ namespace KYC_WebPlatform.Controllers
             return result;
         }
 
+        [HttpPost]
+        public ActionResult NINValidation(string dateOfBirth, string givenName, string nationalId, string surname, string cardnumber)
+        {
+            var response = _apiService.NiraValidation(dateOfBirth, cardnumber , givenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", nationalId, surname);
+            ViewBag.NINResult = response;
+            Debug.WriteLine(response.ToString());
+            return View("Validations");
+        }
+
+        [HttpPost]
+        public ActionResult SanctionsCheck(string PassedName, string PassedSchema)
+        {
+            var response = _apiService.SendRequestAsync(PassedName, PassedSchema);
+            ViewBag.SanctionResult = response;
+            return View("Validations");
+        }
+
+        public ActionResult Validations()
+        {
+            return View("Validations");
+        }
+
 
         public ActionResult Help()
         {
             return View("BusinessHelp");
         }
 
+
+
+
+
+
     }
+
 }

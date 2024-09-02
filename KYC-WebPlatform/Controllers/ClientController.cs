@@ -192,7 +192,7 @@ namespace KYC_WebPlatform.Controllers
 
 
                         // Performing Sanctions Validation for each director
-                        SanctionResponse sanctionResponse = CheckSanctions(director.DirectorSurname + " " + director.DirectorGivenName);
+                        SanctionResponse sanctionResponse = CheckSanctions(director.DirectorSurname + " " + director.DirectorGivenName, "Person");
                         var name = director.DirectorSurname + " " + director.DirectorGivenName;
 
                         // Create an XML element for each director
@@ -443,6 +443,26 @@ namespace KYC_WebPlatform.Controllers
         }
 
 
+        [HttpPost]
+        public SanctionResponse CheckSanctions(string name, string schema)
+        {
+            try
+            {
+                var jsonResponse = _apiService.SendRequestAsync(name, schema);
+                Debug.WriteLine(jsonResponse);
+
+                if (jsonResponse == null)
+                {
+                    return new SanctionResponse { StatusCode = "Error", StatusDescription = "Error occurred while processing the request." };
+                }
+
+                Debug.WriteLine($"StatusCode: {jsonResponse.StatusCode}");
+                Debug.WriteLine($"StatusDescription: {jsonResponse.StatusDescription}");
+                Debug.WriteLine($"Sanctioned: {jsonResponse.Sanctioned}");
+                Debug.WriteLine($"Score: {jsonResponse.Score}");
+                Debug.WriteLine($"Score: {jsonResponse.Name}");
+                Debug.WriteLine($"Score: {jsonResponse.ActualName}");
+                // Add more as needed
 
         /* public SanctionResponse CheckSanctions(string name)
          {
