@@ -159,6 +159,7 @@
     <Compile Include="Controllers\ApprovalsController.cs" />
     <Compile Include="Controllers\BusinessController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
+    <Compile Include="Controllers\DocumentsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\SignupController.cs" />
@@ -169,6 +170,7 @@
     <Compile Include="Models\AddBusiness_MODEL.cs" />
     <Compile Include="Models\DeptRole.cs" />
     <Compile Include="Models\Document.cs" />
+    <Compile Include="Models\DocumentViewModel.cs" />
     <Compile Include="Models\LoginDto.cs" />
     <Compile Include="Models\OtpViewModel.cs" />
     <Compile Include="Models\SignupDto.cs" />
@@ -1434,6 +1436,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Documents\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\bootstrap.min.js.map" />

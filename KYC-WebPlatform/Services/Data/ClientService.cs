@@ -1,4 +1,5 @@
-﻿using KYC_WebPlatform.Services.Data.Interfaces;
+﻿using KYC_WebPlatform.Models;
+using KYC_WebPlatform.Services.Data.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -227,5 +228,38 @@ namespace KYC_WebPlatform.Services.Data
             return businessId;
 
         }
+
+
+
+        public List<DocumentViewModel> GetDocuments()
+        {
+            List<DocumentViewModel> documents = new List<DocumentViewModel>();
+            string query = "SELECT Id, DocumentName FROM Documents"; 
+
+            using (SqlConnection connection = dbContext.GetConnection())
+            {
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(query, connection))
+                {
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            var document = new DocumentViewModel
+                            {
+                                Id = reader.GetInt32(0), // Assuming Id is the first column
+                                DocumentName = reader.GetString(1) // Assuming DocumentName is the second column
+                            };
+                            documents.Add(document);
+                        }
+                    }
+                }
+                connection.Close();
+            }
+
+            return documents;
+        }
+
+
     }
 }

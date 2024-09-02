@@ -35,6 +35,138 @@ namespace KYC_WebPlatform.Controllers
             return View("ClientIndex");
         }
 
+
+        [HttpPost]
+        public SanctionResponse CheckSanctions(string name)
+        {
+            try
+            {
+                var jsonResponse = _apiService.SendRequestAsync(name);
+                Debug.WriteLine(jsonResponse);
+
+                if (jsonResponse == null)
+                {
+                    return new SanctionResponse { StatusCode = "Error", StatusDescription = "Error occurred while processing the request." };
+                }
+
+                Debug.WriteLine($"StatusCode: {jsonResponse.StatusCode}");
+                Debug.WriteLine($"StatusDescription: {jsonResponse.StatusDescription}");
+                Debug.WriteLine($"Sanctioned: {jsonResponse.Sanctioned}");
+                Debug.WriteLine($"Score: {jsonResponse.Score}");
+                Debug.WriteLine($"Score: {jsonResponse.Name}");
+                Debug.WriteLine($"Score: {jsonResponse.ActualName}");
+                // Add more as needed
+
+                return jsonResponse;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return new SanctionResponse { StatusCode = "Error", StatusDescription = "Error occurred while processing the request." };
+            }
+        }
+
+        [HttpPost]
+        public ActionResult Upload(HttpPostedFileBase file, int? SelectedDocumentId)
+        {
+            try
+            {
+                if (file != null && file.ContentLength > 0)
+                {
+                    string fileDic = "Content/Files";
+                    string filePath = Server.MapPath("~/") + fileDic;
+
+                    string TIN = HttpContext.Session["TIN"] as string;
+                    string Email = HttpContext.Session["Email"] as string;
+                    Debug.WriteLine($"=============TIN: {TIN}=============");
+
+                    // Retrieve the BusinessId from the ClientBusiness table using email
+                    SqlParameter[] param = new SqlParameter[]
+                    {
+                new SqlParameter("@Email", Email)
+                    };
+                    Dictionary<string, List<object>> results = _storage.ExecuteSelectQuery("sp_GetBusinessIdByEmail", param);
+                    int businessId = (int)(results.Values.First().FirstOrDefault() ?? default(int));
+
+                    Debug.WriteLine($"++++++++FROM Upload: {Email}++++++++++++");
+
+                    if (!Directory.Exists(filePath))
+                    {
+                        Directory.CreateDirectory(filePath);
+                    }
+
+                    var fileName = file.FileName;
+                    filePath = Path.Combine(filePath, fileName);
+                    file.SaveAs(filePath);
+                    Debug.WriteLine(filePath + "***success!");
+
+                    var random = new Random();
+                    var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZab#c@defghijklmnopqrstuvwxyz0123456789";
+                    var randomText = new string(Enumerable.Range(0, 15)
+                        .Select(_ => characters[random.Next(characters.Length)])
+                        .ToArray());
+                    Debug.WriteLine("o0o0o0o0o0o0" + randomText);
+                 
+                    SqlParameter[] parameters = new SqlParameter[]
+                    {
+    new SqlParameter("@FileId", randomText),
+    new SqlParameter("@FileName", fileName),
+    new SqlParameter("@BusinessId", businessId),
+    new SqlParameter("@UploadedOn", DateTime.Now),
+    new SqlParameter("@IsVerified", false),
+    new SqlParameter("@Approval_Code", "BUSINESS#001"),
+    new SqlParameter("@FilePath", filePath),
+    // Add parameters for the new fields
+    new SqlParameter("@IsBusinessApproved", false),
+    new SqlParameter("@IsLegalApproved", false),
+    new SqlParameter("@IsFinanceApproved", false),
+    new SqlParameter("@IsMDApproved", false),
+    new SqlParameter("@SubmissionId", false) // Insert a default value
+                    };
+
+                    // Update the query to insert into NewCompanyDocument
+                    string InsertQuery = "INSERT INTO NewCompanyDocuments (FileId, FileName, BusinessId, UploadedOn, IsVerified, Approval_Code, FilePath, IsBusinessApproved, IsLegalApproved, IsFinanceApproved, IsMDApproved, SubmissionId) VALUES (@FileId, @FileName, @BusinessId, @UploadedOn, @IsVerified, @Approval_Code, @FilePath, @IsBusinessApproved, @IsLegalApproved, @IsFinanceApproved, @IsMDApproved, @SubmissionId)";
+                    Debug.WriteLine("SelectedDOcumentid!!! " + SelectedDocumentId);
+
+                    Debug.WriteLine(parameters.Length);
+                    // Update the query to insert into NewCompanyDocument
+                    //string InsertQuery = "INSERT INTO NewCompanyDocuments (FileId, FileName, BusinessId, UploadedOn, IsVerified, Approval_Code, FilePath, IsBusinessApproved, IsLegalApproved, IsFinanceApproved, IsMDApproved) VALUES (@FileId, @FileName, @BusinessId, @UploadedOn, @IsVerified, @Approval_Code, @FilePath, @IsBusinessApproved, @IsLegalApproved, @IsFinanceApproved, @IsMDApproved)";
+                    int rowsAffected = _storage.ExecuteInsertQuery(InsertQuery, parameters);
+                    Debug.WriteLine("INSERTEEEED!!! " + rowsAffected);
+
+                    // Update the IsSubmitted flag in the Documents table (if necessary)
+                    if (SelectedDocumentId.HasValue)
+                    {
+                        string updateQuery = "UPDATE Documents SET IsSubmitted = 1 WHERE Id = @Id";
+                        _storage.ExecuteSelectQuery(updateQuery.Replace("@Id", SelectedDocumentId.ToString()));
+                    }
+
+                    return RedirectToAction("ViewStatus"); // Redirecting to the same action to reload the documents
+                }
+
+                return Json(new { success = false, message = "No file uploaded" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
+       
+
+        public ActionResult Upload()
+        {
+            var clientService = new ClientService();
+            var documents = clientService.GetDocuments(); // Fetch the documents
+            return View(documents); // Pass the documents to the view
+        }
+
+        private string GenerateApprovalCode()
+        {
+            // Implement your logic to generate an approval code
+            return "SomeCode";
+        }
+
+        
         public ActionResult AddBusiness(AddBusiness_MODEL model)
         {
             if (model.Directors == null)
@@ -55,8 +187,8 @@ namespace KYC_WebPlatform.Controllers
                     /*foreach (var director in model.Director_MODEL)*/
                     {
                         // Performing NIRA Validation for each director
-                       string niraValidation = QueryCustomer(director.DirectorDOB, "000092564", director.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", director.NIN, director.DirectorSurname);
-                       // string niraValidation = QueryCustomer(director.DirectorDOB, "000092475", director.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", director.NIN, director.DirectorSurname);
+                        //string niraValidation = QueryCustomer(director.DirectorDOB, "000092564", director.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", director.NIN, director.DirectorSurname);
+                        string niraValidation = QueryCustomer(director.DirectorDOB, "000092475", director.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", director.NIN, director.DirectorSurname);
 
 
                         // Performing Sanctions Validation for each director
@@ -208,7 +340,20 @@ namespace KYC_WebPlatform.Controllers
 
         public ActionResult UploadKYC()
         {
-            return View("UploadKYC");
+
+            try
+            {
+                // Fetch records from the database and map to ViewModel
+                Dictionary<string, List<object>> documents = _storage.ExecuteSelectQuery("sp_GetDocuments");
+                Debug.WriteLine("AAAAAAA********" + documents.Values.Count);
+                return View("UploadKYC", documents);
+            }
+            catch (SqlException sq)
+            {
+                Debug.WriteLine(sq.LineNumber + "`````00000```````" + sq.ToString());
+                return View("Error");
+            }
+
         }
 
         public async Task<ActionResult> Upload(HttpPostedFileBase file)
@@ -226,7 +371,7 @@ namespace KYC_WebPlatform.Controllers
                 // Retrieve the BusinessId from the ClientBusiness table
                 SqlParameter[] param = new SqlParameter[]
                     {
-                        new SqlParameter("@Email", Email)
+                               new SqlParameter("@Email", Email)
                     };
                 Dictionary<string, List<object>> results = _storage.ExecuteSelectQuery("sp_GetBusinessIdByEmail", param);
                 int businessId = (int)(results.Values.First().FirstOrDefault() ?? default(int));
@@ -250,13 +395,13 @@ namespace KYC_WebPlatform.Controllers
                 Debug.WriteLine("o0o0o0o0o0o0" + randomText);
                 SqlParameter[] parameters = new SqlParameter[]
                     {
-                        new SqlParameter("@FileId", randomText),
-                        new SqlParameter("@FileName", fileName),
-                        new SqlParameter("@BusinessId", businessId),
-                        new SqlParameter("@UploadedOn", DateTime.Now),
-                        new SqlParameter("@IsVerified", false),
-                        new SqlParameter("@Approval_Code","BUSINESS#001"),
-                        new SqlParameter("@FilePath",filePath)
+                               new SqlParameter("@FileId", randomText),
+                               new SqlParameter("@FileName", fileName),
+                               new SqlParameter("@BusinessId", businessId),
+                               new SqlParameter("@UploadedOn", DateTime.Now),
+                               new SqlParameter("@IsVerified", false),
+                               new SqlParameter("@Approval_Code","BUSINESS#001"),
+                               new SqlParameter("@FilePath",filePath)
                     };
                 Debug.WriteLine(parameters.Length);
                 string InsertQuery = "INSERT INTO CompanyDocument (FileId, FileName, BusinessId, UploadedOn, IsVerified, Approval_Code, FilePath)  VALUES (@FileId, @FileName, @BusinessId, @UploadedOn, @IsVerified, @Approval_Code, @FilePath)";
@@ -270,6 +415,7 @@ namespace KYC_WebPlatform.Controllers
                 return View("ErrorView", e);
             }
         }
+
 
         //NIRA Validation method
         public string QueryCustomer(string dateOfBirth, string documentId, string givenName,
@@ -297,36 +443,38 @@ namespace KYC_WebPlatform.Controllers
         }
 
 
-        [HttpPost]
-        public SanctionResponse CheckSanctions(string name)
-        {
-            try
-            {
-                var jsonResponse = _apiService.SendRequestAsync(name);
-                Debug.WriteLine(jsonResponse);
 
-                if (jsonResponse == null)
-                {
-                    return new SanctionResponse { StatusCode = "Error", StatusDescription = "Error occurred while processing the request." };
-                }
+        /* public SanctionResponse CheckSanctions(string name)
+         {
+             try
+             {
+                 var jsonResponse = _apiService.SendRequestAsync(name);
+                 Debug.WriteLine(jsonResponse);
 
-                Debug.WriteLine($"StatusCode: {jsonResponse.StatusCode}");
-                Debug.WriteLine($"StatusDescription: {jsonResponse.StatusDescription}");
-                Debug.WriteLine($"Sanctioned: {jsonResponse.Sanctioned}");
-                Debug.WriteLine($"Score: {jsonResponse.Score}");
-                Debug.WriteLine($"Score: {jsonResponse.Name}");
-                Debug.WriteLine($"Score: {jsonResponse.ActualName}");
-                // Add more as needed
+                 if (jsonResponse == null)
+                 {
+                     return new SanctionResponse { StatusCode = "Error", StatusDescription = "Error occurred while processing the request." };
+                 }
 
-                return jsonResponse;
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return new SanctionResponse { StatusCode = "Error", StatusDescription = "Error occurred while processing the request." };
-            }
-        }
-    }
+                 Debug.WriteLine($"StatusCode: {jsonResponse.StatusCode}");
+                 Debug.WriteLine($"StatusDescription: {jsonResponse.StatusDescription}");
+                 Debug.WriteLine($"Sanctioned: {jsonResponse.Sanctioned}");
+                 Debug.WriteLine($"Score: {jsonResponse.Score}");
+                 Debug.WriteLine($"Score: {jsonResponse.Name}");
+                 Debug.WriteLine($"Score: {jsonResponse.ActualName}");
+                 // Add more as needed
+
+                 return jsonResponse;
+             }
+             catch (Exception ex)
+             {
+                 Debug.WriteLine(ex.Message);
+                 return new SanctionResponse { StatusCode = "Error", StatusDescription = "Error occurred while processing the request." };
+             }
+         }
+     }*/
+
+    } 
 }
 
 
