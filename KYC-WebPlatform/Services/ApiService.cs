@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using KYC_WebPlatform.Models;
+using Newtonsoft.Json;
+using NiraApiIntegrationService;
 using System;
 using System.Diagnostics;
 using System.Net.Http;
@@ -10,10 +12,12 @@ namespace KYC_WebPlatform.Services
     public class ApiService
     {
         private readonly HttpClient _httpClient;
+        private readonly PegPayService _pegPayService;
 
         public ApiService()
         {
             _httpClient = new HttpClient();
+            _pegPayService = new PegPayService();
         }
 
         /*public async Task<string> SendRequestAsync(string Name)
@@ -65,10 +69,9 @@ namespace KYC_WebPlatform.Services
         }*/
 
 
-        public SanctionResponse SendRequestAsync(string Name)
+        public SanctionResponse SendRequestAsync(string PassedName, string PassedSchema)
         {
             string url = "https://test.pegasus.co.ug:9108/testpegasusaggregation/sanctionLV1/"; // Replace with your actual endpoint URL
-
 
 
             try
@@ -77,8 +80,8 @@ namespace KYC_WebPlatform.Services
                 // Create the request object
                 SanctionRequest request = new SanctionRequest()
                 {
-                    Schema = "Person",
-                    Name = Name,
+                    Schema = PassedSchema,
+                    Name = PassedName,
                     RequestType = "Sanction",
                     Threshold = "0.9"
                 };
@@ -162,6 +165,35 @@ namespace KYC_WebPlatform.Services
             }
         }
 
+        public BusinessValidation_MODEL NiraValidation(string dateOfBirth, string documentId, string givenName,
+                                           string utility, string vendorCode, string password,
+                                           string nationalId, string surname)
+        {
+
+            try
+            {
+
+                var response = _pegPayService.NiraValidation(dateOfBirth, documentId, givenName,
+                                            utility, vendorCode, password,
+                                          nationalId, surname);
+
+                Debug.WriteLine("\n\n\n\n*****The response fields ***\n\n"+response.ResponseField6+"\n" + response.ResponseField7 + "\n" + response.ResponseField7 + "\n*****\n\n\n");
+                return new BusinessValidation_MODEL
+                {
+                    ResponseField6 = response.ResponseField6,
+                    ResponseField7 = response.ResponseField7,
+                    ResponseField27 = response.ResponseField27
+                };
+            }
+            catch (Exception ex)
+            {
+
+                return new BusinessValidation_MODEL
+                {
+                    ErrorMessage = ex.Message
+                };
+            }
+        }
 
     }
 }
