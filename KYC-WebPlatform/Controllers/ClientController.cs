@@ -206,7 +206,19 @@ namespace KYC_WebPlatform.Controllers
 
         public ActionResult UploadKYC()
         {
-            return View("UploadKYC");
+            try
+            {
+                // Fetch records from the database and map to ViewModel
+                Dictionary<string, List<object>> documents = _storage.ExecuteSelectQuery("sp_GetDocuments");
+                Debug.WriteLine("AAAAAAA********" + documents.Values.Count);
+                return View("UploadKYC", documents);
+            }
+            catch (SqlException sq)
+            {
+                Debug.WriteLine(sq.LineNumber + "`````00000```````" + sq.ToString());
+                return View("Error");
+            }
+         
         }
 
         public async Task<ActionResult> Upload(HttpPostedFileBase file)
