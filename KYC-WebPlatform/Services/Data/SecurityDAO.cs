@@ -27,7 +27,7 @@ namespace KYC_WebPlatform.Services.Data
             }
             else
             {
-                if(signupDto.Role == UserRole.Admin && signupDto.DeptRole == DeptRole.Business)
+                if (signupDto.Role == UserRole.Admin && signupDto.DeptRole == DeptRole.Business)
                 {
                     Debug.WriteLine("Failure creating admin");
                     return userCreated;

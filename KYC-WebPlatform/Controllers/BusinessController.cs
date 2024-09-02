@@ -1,6 +1,7 @@
 ﻿using KYC_WebPlatform.Models;
 using KYC_WebPlatform.Services.Business;
 using KYC_WebPlatform.Services.Data;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
@@ -128,7 +129,7 @@ namespace KYC_WebPlatform.Controllers
             }
         }
 
-        private List<AddBusiness_MODEL> ConvertDataTableToYourModel(DataTable dataTable)
+        /*private List<AddBusiness_MODEL> ConvertDataTableToYourModel(DataTable dataTable)
         {
             List<AddBusiness_MODEL> result = new List<AddBusiness_MODEL>();
             foreach (DataRow row in dataTable.Rows)
@@ -156,7 +157,52 @@ namespace KYC_WebPlatform.Controllers
                 result.Add(model);
             }
             return result;
+        }*/
+
+        private List<AddBusiness_MODEL> ConvertDataToBusinessModel(Dictionary<string, List<object>> data)
+        {
+            List<AddBusiness_MODEL> result = new List<AddBusiness_MODEL>();
+
+            foreach (var businessEntry in data)
+            {
+                AddBusiness_MODEL model = new AddBusiness_MODEL
+                {
+                    BusinessName = businessEntry.Key,
+                    Directors = new List<Director_MODEL>()
+                };
+
+                foreach (var directorObj in businessEntry.Value)
+                {
+                    // Assuming directorObj is of type DataRow or a similar structure
+                    var directorData = (DataRow)directorObj;
+
+                    Director_MODEL director = new Director_MODEL
+                    {
+                        DirectorSurname = directorData["DirectorSurname"].ToString(),
+                        DirectorGivenName = directorData["DirectorGivenName"].ToString(),
+                        DirectorDOB = directorData["DirectorDOB"].ToString(),
+                        NIN = directorData["NIN"].ToString(),
+                        DirectorPhoneNumber = directorData["DirectorPhoneNumber"].ToString(),
+                        NiraValidation = directorData["NiraValidation"].ToString(),
+                        SancationsValidation = directorData["SancationsValidation"].ToString(),
+                        Sanctioned = Convert.ToBoolean(directorData["Sanctioned"]),
+                        SanctionScore = directorData["SanctionScore"].ToString(),
+                        SanctionDescription = directorData["SanctionDescription"].ToString(),
+                        DirectorEmail = directorData["DirectorEmail"].ToString(),
+                        DirectorUtility = directorData["DirectorUtility"].ToString(),
+                        DirectorVendorCode = directorData["DirectorVendorCode"].ToString(),
+                        DirectorDocumentID = directorData["DirectorDocumentID"].ToString()
+                    };
+
+                    model.Directors.Add(director);
+                }
+
+                result.Add(model);
+            }
+
+            return result;
         }
+
 
         public ActionResult Help()
         {
