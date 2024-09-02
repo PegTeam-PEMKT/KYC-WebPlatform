@@ -58,7 +58,7 @@ namespace KYC_WebPlatform.Controllers
                         string niraValidation = QueryCustomer(director.DirectorDOB, "000092564", director.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", director.NIN, director.DirectorSurname);
 
                         // Performing Sanctions Validation for each director
-                        SanctionResponse sanctionResponse = CheckSanctions(director.DirectorSurname + " " + director.DirectorGivenName);
+                        SanctionResponse sanctionResponse = CheckSanctions(director.DirectorSurname + " " + director.DirectorGivenName, "Person");
                         var name = director.DirectorSurname + " " + director.DirectorGivenName;
 
                         // Create an XML element for each director
@@ -206,7 +206,19 @@ namespace KYC_WebPlatform.Controllers
 
         public ActionResult UploadKYC()
         {
-            return View("UploadKYC");
+            try
+            {
+                // Fetch records from the database and map to ViewModel
+                Dictionary<string, List<object>> documents = _storage.ExecuteSelectQuery("sp_GetDocuments");
+                Debug.WriteLine("AAAAAAA********" + documents.Values.Count);
+                return View("UploadKYC", documents);
+            }
+            catch (SqlException sq)
+            {
+                Debug.WriteLine(sq.LineNumber + "`````00000```````" + sq.ToString());
+                return View("Error");
+            }
+         
         }
 
         public async Task<ActionResult> Upload(HttpPostedFileBase file)
@@ -299,11 +311,11 @@ namespace KYC_WebPlatform.Controllers
 
 
         [HttpPost]
-        public SanctionResponse CheckSanctions(string name)
+        public SanctionResponse CheckSanctions(string name, string schema)
         {
             try
             {
-                var jsonResponse = _apiService.SendRequestAsync(name);
+                var jsonResponse = _apiService.SendRequestAsync(name, schema);
                 Debug.WriteLine(jsonResponse);
 
                 if (jsonResponse == null)
