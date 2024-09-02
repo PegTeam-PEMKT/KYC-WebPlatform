@@ -12,7 +12,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
+using System.Xml.Linq;
+
 
 namespace KYC_WebPlatform.Controllers
 {
@@ -34,22 +35,53 @@ namespace KYC_WebPlatform.Controllers
             return View("ClientIndex");
         }
 
-        public  ActionResult AddBusiness(AddBusiness_MODEL model)
+        public ActionResult AddBusiness(AddBusiness_MODEL model)
         {
+            if (model.Directors == null)
+            {
+                model.Directors = new List<Director_MODEL>();
+            }
             try
             {
                 HttpContext.Session["TIN"] = model.BusinessTIN;
                 string clientEmail = HttpContext.Session["Email"] as string;
-                // Performing NIRA Validation (assuming it's a synchronous call)
-                model.NiraValidation = QueryCustomer(model.DirectorDOB, "000092564", model.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", model.NIN, model.DirectorSurname);
 
-                // Performing Sanctions Validation
-                SanctionResponse sanctionresponse = CheckSanctions(model.DirectorSurname + " " + model.DirectorGivenName);
-                var name = model.DirectorSurname + " " + model.DirectorGivenName;
-                Debug.WriteLine("\n\n\n******\n\n");
-                Debug.WriteLine("SancCode: " + sanctionresponse.StatusCode + " SancDesc: " + sanctionresponse.StatusDescription + " IsSanc: " + sanctionresponse.Sanctioned + " SancScore: " + sanctionresponse.Score);
-                Debug.WriteLine("\n******\n\n");
-                Debug.WriteLine("Nira: " + model.NiraValidation + " Sanctions: " + model.SancationsValidation);
+                // Create an XML element to store the list of directors
+                XElement directorsXml = new XElement("Directors");
+
+                if (model.Directors != null)
+                {
+                    foreach (var director in model.Directors)
+                    /*foreach (var director in model.Director_MODEL)*/
+                    {
+                        // Performing NIRA Validation for each director
+                       string niraValidation = QueryCustomer(director.DirectorDOB, "000092564", director.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", director.NIN, director.DirectorSurname);
+                       // string niraValidation = QueryCustomer(director.DirectorDOB, "000092475", director.DirectorGivenName, "NIRA", "NIRA-TEST_BILLPAYMENTS", "10F57BQ754", director.NIN, director.DirectorSurname);
+
+
+                        // Performing Sanctions Validation for each director
+                        SanctionResponse sanctionResponse = CheckSanctions(director.DirectorSurname + " " + director.DirectorGivenName);
+                        var name = director.DirectorSurname + " " + director.DirectorGivenName;
+
+                        // Create an XML element for each director
+                        XElement directorXml = new XElement("Director");
+                        directorXml.Add(new XElement("DirectorName", name));
+                        directorXml.Add(new XElement("DirectorNIN", director.NIN));
+                        directorXml.Add(new XElement("NiraValidation", niraValidation));
+                        directorXml.Add(new XElement("SanctionScore", sanctionResponse.Score));
+                        directorXml.Add(new XElement("SanctionStatusCode", sanctionResponse.StatusCode));
+                        directorXml.Add(new XElement("SanctionStatusDescription", sanctionResponse.StatusDescription));
+
+                        // Add the director XML element to the list of directors
+                        directorsXml.Add(directorXml);
+                    }
+
+                }
+                else
+                {
+                    Debug.WriteLine("\n\n\n****Directors are Empty\n\n\n\n**");
+                }
+
 
                 // Doing database operations
                 DBContext dbContext = DBContext.GetInstance();
@@ -57,10 +89,9 @@ namespace KYC_WebPlatform.Controllers
                 {
                     // Open the connection
                     connection.Open();
-                    Debug.WriteLine("NIN: " + model.NIN + " BusinessName: " + model.BusinessName);
-                    Debug.WriteLine("Nira: " + model.NiraValidation + " Sanctions: " + model.SancationsValidation);
 
-                    using (SqlCommand command = new SqlCommand("AddBusinessAndDirector", connection))
+                    using (SqlCommand command = new SqlCommand("AddBusinessAndDirector2", connection))
+                    /*using (SqlCommand command = new SqlCommand("AddBusinessAndDirector", connection))*/
                     {
                         command.CommandType = CommandType.StoredProcedure;
 
@@ -74,15 +105,8 @@ namespace KYC_WebPlatform.Controllers
                         command.Parameters.AddWithValue("@PhoneNumber", model.BusinessPhoneNumber);
                         command.Parameters.AddWithValue("@TIN", model.BusinessTIN);
 
-                        // Input parameters for Director
-                        command.Parameters.AddWithValue("@DirectorName", name);
-                        command.Parameters.AddWithValue("@DirectorNIN", model.NIN);
-                        command.Parameters.AddWithValue("@NiraValidation", model.NiraValidation);
-                        /*command.Parameters.AddWithValue("@SanctionsValidation", model.SancationsValidation);*/
-                        command.Parameters.AddWithValue("@SanctionScore", sanctionresponse.Score);
-                        command.Parameters.AddWithValue("@SanctionStatusCode", sanctionresponse.StatusCode);
-                        command.Parameters.AddWithValue("@SanctionStatusDescription", sanctionresponse.StatusDescription);
-
+                        // Input parameter for Directors (XML)
+                        command.Parameters.AddWithValue("@Directors", directorsXml.ToString());
 
                         // Execute the stored procedure
                         command.ExecuteNonQuery();
