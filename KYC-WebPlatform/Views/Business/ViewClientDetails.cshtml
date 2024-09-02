@@ -33,7 +33,7 @@
                                             <tbody>
                                                 @foreach (var row in Model)
                                                 {
-                                                    
+
                                                     <tr>
                                                         <td class="cell">@row.Value[1]</td>
 
@@ -44,9 +44,9 @@
                                                         <td class="cell">@row.Value[6]</td>
                                                         <td class="cell">@row.Value[7]</td>
                                                         @*<td class="cell">
-                                                            <a class="btn app-btn-secondary" href="@Url.Action("ApproveClient", "Business", new { id = row.Value[0] })">Approve</a>
-                                                            <a class="btn btn-outline-danger" href="">Reject</a>
-                                                        </td>*@
+                                                    <a class="btn app-btn-secondary" href="@Url.Action("ApproveClient", "Business", new { id = row.Value[0] })">Approve</a>
+                                                    <a class="btn btn-outline-danger" href="">Reject</a>
+                                                </td>*@
 
 
                                                     </tr>
@@ -59,8 +59,8 @@
                             </div>
                         </div>
                     </div>
-                                    </div>
-                                </div>
+                </div>
+            </div>
                             </div>
                         </div>
 </body>
