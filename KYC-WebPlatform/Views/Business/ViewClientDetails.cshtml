@@ -11,55 +11,71 @@
                 <h1 class="app-page-title"> Validation Details</h1>
                 <div class="row g-4 mb-4">
 
-                    <div class="tab-content" id="orders-table-tab-content">
-                        <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
-                            <div class="app-card app-card-orders-table shadow-sm mb-5">
-                                <div class="app-card-body">
-                                    <div class="table-responsive">
-                                        <table class="table app-table-hover mb-0 text-left">
-                                            <thead>
-                                                <tr>
-                                                    <th class="cell">Business Name</th>
-                                                    @*<th class="cell">Director</th>*@
-                                                    <th class="cell">Director Name</th>
-                                                    <th class="cell">Director NIN</th>
-                                                    <th class="cell">Nin Validation</th>
-                                                    <th class="cell">Sanction Score</th>
-                                                    <th class="cell">Sanction Validation</th>
-                                                    @*<th class="cell">Action</th>*@
-                                                    <th class="cell"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @foreach (var row in Model)
-                                                {
-                                                    
+                    @using (Html.BeginForm("ApproveOrReject", "Approvals", FormMethod.Post))
+                    {
+                        <div class="tab-content" id="orders-table-tab-content">
+                            <div class="tab-pane fade show active" id="orders-all" role="tabpanel" aria-labelledby="orders-all-tab">
+                                <div class="app-card app-card-orders-table shadow-sm mb-5">
+                                    <div class="app-card-body">
+                                        <div class="table-responsive">
+                                            <table class="table app-table-hover mb-0 text-left">
+                                                <thead>
                                                     <tr>
-                                                        <td class="cell">@row.Value[1]</td>
-
-                                                        @*<td class="cell">@row.Value[2]</td>*@
-                                                        <td class="cell">@row.Value[3]</td>
-                                                        <td class="cell">@row.Value[4]</td>
-                                                        <td class="cell">@row.Value[5]</td>
-                                                        <td class="cell">@row.Value[6]</td>
-                                                        <td class="cell">@row.Value[7]</td>
-                                                        @*<td class="cell">
-                                                            <a class="btn app-btn-secondary" href="@Url.Action("ApproveClient", "Business", new { id = row.Value[0] })">Approve</a>
-                                                            <a class="btn btn-outline-danger" href="">Reject</a>
-                                                        </td>*@
-
-
+                                                        <th class="cell">Business Name</th>
+                                                        @*<th class="cell">Director</th>*@
+                                                        <th class="cell">Director Name</th>
+                                                        <th class="cell">Director NIN</th>
+                                                        <th class="cell">Nin Validation</th>
+                                                        <th class="cell">Sanction Score</th>
+                                                        <th class="cell">Sanction Validation</th>
+                                                        @*<th class="cell">Action</th>*@
+                                                        <th class="cell"></th>
                                                     </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @{ 
+                                                        int index = 0;
+                                                    }
+                                                    @foreach (var row in Model)
+                                                    {
 
-                                                }
-                                            </tbody>
-                                        </table>
+                                                        <tr>
+                                                            @Html.Hidden($"BusinessDetails[{index}].BusinessID", row.Value[0])
+                                                            @Html.Hidden($"BusinessDetails[{index}].BusinessName", row.Value[1])
+                                                            @Html.Hidden($"BusinessDetails[{index}].DirectorName", row.Value[3])
+                                                            @Html.Hidden($"BusinessDetails[{index}].DirectorNIN", row.Value[4])
+                                                            @Html.Hidden($"BusinessDetails[{index}].IsNINValid", row.Value[5])
+                                                            @Html.Hidden($"BusinessDetails[{index}].SanctionScore", row.Value[6])
+                                                            @Html.Hidden($"BusinessDetails[{index}].IsSanctionValid", row.Value[7])
+
+                                                            <td class="cell">@row.Value[1]</td>
+
+                                                            @*<td class="cell">@row.Value[2]</td>*@
+                                                            <td class="cell">@row.Value[3]</td>
+                                                            <td class="cell">@row.Value[4]</td>
+                                                            <td class="cell">@row.Value[5]</td>
+                                                            <td class="cell">@row.Value[6]</td>
+                                                            <td class="cell">@row.Value[7]</td>
+                                                            @*<a class="btn app-btn-secondary" href="@Url.Action("Approve", "Business", new { id = row.Value[0] })">Approve</a>*@
+
+
+                                                        </tr>
+
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                                    </div>
+                        <div class="col">
+                            <button class="btn app-btn-secondary" type="submit" name="action" value="approve">Approve</button>
+                            <button class="btn btn-outline-danger" type="submit" name="action" value="reject">Reject</button>
+                            
+                        </div>
+                    }
+                </div>
                                 </div>
                             </div>
                         </div>

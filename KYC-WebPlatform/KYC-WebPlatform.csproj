@@ -167,6 +167,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AddBusiness_MODEL.cs" />
+    <Compile Include="Models\ApprovalViewModel.cs" />
+    <Compile Include="Models\BusinessViewModel.cs" />
     <Compile Include="Models\DeptRole.cs" />
     <Compile Include="Models\Document.cs" />
     <Compile Include="Models\LoginDto.cs" />
@@ -179,6 +181,7 @@
     <Compile Include="Services\ApiService.cs" />
     <Compile Include="Services\Business\AuthenticationService.cs" />
     <Compile Include="Services\Business\EmailService.cs" />
+    <Compile Include="Services\Data\ApproveService.cs" />
     <Compile Include="Services\Data\BusinessService.cs" />
     <Compile Include="Services\Data\ClientService.cs" />
     <Compile Include="Services\Data\DBContext.cs" />
