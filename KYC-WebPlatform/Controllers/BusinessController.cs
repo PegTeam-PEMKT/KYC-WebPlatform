@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Reflection;
 using System.Web.Mvc;
 
 namespace KYC_WebPlatform.Controllers

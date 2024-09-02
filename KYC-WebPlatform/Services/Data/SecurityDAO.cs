@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Diagnostics;
 using System.Web.Helpers;
+using System.Web.Security;
 
 namespace KYC_WebPlatform.Services.Data
 {
@@ -28,6 +29,11 @@ namespace KYC_WebPlatform.Services.Data
             else
             {
                 if (signupDto.Role == UserRole.Admin && signupDto.DeptRole == DeptRole.Business)
+                {
+                    Debug.WriteLine("Failure creating admin");
+                    return userCreated;
+                }
+                if (signupDto.Role == UserRole.Admin && !(signupDto.DeptRole == DeptRole.Business))
                 {
                     Debug.WriteLine("Failure creating admin");
                     return userCreated;
@@ -76,6 +82,18 @@ namespace KYC_WebPlatform.Services.Data
                         Debug.WriteLine("Failure creating DeptHead");
                     }
                 }
+                if (signupDto.Role == UserRole.Client)
+                {
+                    if (InsertClient(signupDto))
+                    {
+                        Debug.WriteLine("Client inserted successfully");
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Client not inserted!!");
+                        return userCreated;
+                    }
+                }
                 try
                 {
                     using (SqlConnection connection = dbContext.GetConnection())
@@ -83,6 +101,14 @@ namespace KYC_WebPlatform.Services.Data
                         if ((int)signupDto.Role == 0)
                         {
                             roleId = 15;
+                            if (InsertClient(signupDto))
+                            {
+                                Debug.WriteLine("Client inserted successfully");
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Client not inserted!!");
+                            }
                         }
                         connection.Open();
 
@@ -122,7 +148,7 @@ namespace KYC_WebPlatform.Services.Data
             {
                 using (SqlConnection sqlConnection = dbContext.GetConnection())
                 {
-                    string query = "SELECT * FROM dbo.users WHERE Email = @Email";
+                    string query = "SELECT * FROM dbo.Users WHERE Email = @Email";
 
                     SqlCommand command = new SqlCommand(query, sqlConnection);
                     command.Parameters.AddWithValue("@Email", loginDto.Email);
@@ -160,7 +186,7 @@ namespace KYC_WebPlatform.Services.Data
             {
                 using (SqlConnection sqlConnection = dbContext.GetConnection())
                 {
-                    string query = "SELECT * FROM dbo.users WHERE Email = @Email";
+                    string query = "SELECT * FROM dbo.Users WHERE Email = @Email";
 
                     SqlCommand command = new SqlCommand(query, sqlConnection);
                     command.Parameters.AddWithValue("@Email", email);
@@ -259,12 +285,12 @@ namespace KYC_WebPlatform.Services.Data
             {
                 using (SqlConnection sqlConnection = dbContext.GetConnection())
                 {
-                    string query = "SELECT RoleId FROM dbo.users WHERE Email = @Email";
+                    string query = "SELECT RoleId FROM dbo.Users WHERE Email = @Email";
 
                     SqlCommand command = new SqlCommand(query, sqlConnection);
                     command.Parameters.AddWithValue("@Email", email);
 
-                    Debug.WriteLine("From RetrieveRole" + email);
+                    Debug.WriteLine("From RetrieveRole: " + email);
 
                     sqlConnection.Open();
                     using (SqlDataReader reader = command.ExecuteReader())
@@ -293,7 +319,7 @@ namespace KYC_WebPlatform.Services.Data
             {
                 using (SqlConnection sqlConnection = dbContext.GetConnection())
                 {
-                    string query = "SELECT * FROM dbo.users WHERE Email = @Email";
+                    string query = "SELECT * FROM dbo.Users WHERE Email = @Email";
 
                     SqlCommand command = new SqlCommand(query, sqlConnection);
                     command.Parameters.AddWithValue("@Email", email);
@@ -326,7 +352,7 @@ namespace KYC_WebPlatform.Services.Data
                 using (SqlConnection sqlConnection = dbContext.GetConnection())
                 {
                     // Define the query to update the password
-                    string query = "UPDATE dbo.users SET PasswordHash = @Password WHERE Email = @Email";
+                    string query = "UPDATE dbo.Users SET PasswordHash = @Password WHERE Email = @Email";
 
                     SqlCommand command = new SqlCommand(query, sqlConnection);
                     command.Parameters.AddWithValue("@Email", loginDto.Email);
@@ -355,6 +381,41 @@ namespace KYC_WebPlatform.Services.Data
                 Debug.WriteLine("From UpdatePassword: " + e.Message);
                 return updatedPassword;
             }
+        }
+
+        internal bool InsertClient (SignupDto signupDto)
+        {
+            bool isClientCreated = false;
+            DateTime dateTime = DateTime.Now;
+
+            try
+            {
+                using (SqlConnection connection = dbContext.GetConnection())
+                {
+
+                    connection.Open();
+
+                    // Insert into Users table
+                    string userQuery = "INSERT INTO Clients (Username, ClientEmail, PhoneNumber, CreatedDate) " +
+                                       "VALUES (@Username, @Email, @PhoneNumber, @CreatedDate)";
+
+                    SqlCommand userCommand = new SqlCommand(userQuery, connection);
+                    userCommand.Parameters.AddWithValue("@Username", signupDto.Username);
+                    userCommand.Parameters.AddWithValue("@Email", signupDto.Email);
+                    userCommand.Parameters.AddWithValue("@PhoneNumber", signupDto.PhoneNumber);
+                    userCommand.Parameters.AddWithValue("@CreatedDate", dateTime);
+
+                    userCommand.ExecuteNonQuery();
+                    isClientCreated = true;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("From CreateUser: " + e.Message);
+                return isClientCreated;
+            }
+
+            return isClientCreated;
         }
     }
 }

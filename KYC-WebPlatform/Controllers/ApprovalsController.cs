@@ -1,4 +1,5 @@
-﻿using KYC_WebPlatform.Services.Business;
+﻿using KYC_WebPlatform.Models;
+using KYC_WebPlatform.Services.Business;
 using KYC_WebPlatform.Services.Data;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,83 @@ namespace KYC_WebPlatform.Controllers
                 Debug.WriteLine(sq.LineNumber + "`````00000```````" + sq.ToString());
                 return View("Error");
             }
+        }
+
+        public string ApproveOrReject(ApprovalViewModel model, string action)
+        {
+            ApproveService approveService = new ApproveService();
+            string name = "";
+            int id = 0;
+
+            string businessUserEmail = HttpContext.Session["Email"].ToString();
+
+            Debug.WriteLine("From ApproveOrReject: " + businessUserEmail);
+
+            foreach (var detail in model.BusinessDetails)
+            {
+                // Process each business detail here
+                var businessId = detail.BusinessID;
+                var businessName = detail.BusinessName;
+                var directorName = detail.DirectorName;
+                var directorNIN = detail.DirectorNIN;
+                var isNINValid = detail.IsNINValid;
+                var sanctionScore = detail.SanctionScore;
+                var isSanctionValid = detail.IsSanctionValid;
+
+                name = businessName;
+                id = businessId;
+            }
+
+            if (action == "approve")
+            {
+                string email = approveService.GetBusinessEmailByIdToApprove(id);
+                if (email != null)
+                {
+                    if (approveService.ApproveClientByEmail(email))
+                    {
+                        if(approveService.ApproveBusinessByEmail(email, businessUserEmail))
+                        {
+                            return "Approved Client & Business";
+                        }
+                        else
+                        {
+                            return "Not approved";
+                        }
+                    }
+                    else
+                    {
+                        return "Not approved";
+                    }
+                }
+                else
+                {
+                    return "Email not found";
+                }
+            }
+            else if (action == "reject")
+            {
+                string email = approveService.GetBusinessEmailByIdToApprove(id);
+                if (email != null)
+                {
+                    if (approveService.RejectClientByEmail(email))
+                    {
+                        if(approveService.RejectBusinessByEmail(email, businessUserEmail))
+                        {
+                            return "Rejected Client & Business";
+                        }
+                        else
+                        {
+                            return "Not rejected";
+                        }
+                    }
+                }
+                else
+                {
+                    return "Email not found";
+                }
+            }
+
+            return "Not found";
         }
 
         //for the files
