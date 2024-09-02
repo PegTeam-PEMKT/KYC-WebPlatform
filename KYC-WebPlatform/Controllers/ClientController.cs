@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.UI.WebControls;
 
 namespace KYC_WebPlatform.Controllers
 {
@@ -194,12 +195,18 @@ namespace KYC_WebPlatform.Controllers
                 string filePath = Server.MapPath("~/") + fileDic;
 
                 string TIN = HttpContext.Session["TIN"] as string;
+                string Email = HttpContext.Session["Email"] as string;
+                Debug.WriteLine($"=============TIN: {Email}=============");
 
-                Debug.WriteLine($"=============TIN: {TIN}=============");
-
-                string query = "Select BusinessId from ClientBusiness where TIN = @BusinessTIN";
+                string query = "Select BusinessId from ClientBusiness where Email = @BusinessTIN";
                 // Retrieve the BusinessId from the ClientBusiness table
-                int businessId = _storage.ExecuteGetIdQuery(query, TIN);
+                SqlParameter[] param = new SqlParameter[]
+                    {
+                        new SqlParameter("@Email", Email)
+                    };
+                Dictionary<string, List<object>> results = _storage.ExecuteSelectQuery("sp_GetBusinessIdByEmail", param);
+                int businessId = (int)(results.Values.First().FirstOrDefault() ?? default(int));
+
 
                 Debug.WriteLine($"++++++++FROM Upload: {businessId}++++++++++++");
 

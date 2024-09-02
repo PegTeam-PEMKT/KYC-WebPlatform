@@ -1,5 +1,6 @@
 ﻿using KYC_WebPlatform.Models;
 using KYC_WebPlatform.Services.Data;
+using System;
 using System.Diagnostics;
 
 namespace KYC_WebPlatform.Services.Business
@@ -23,6 +24,11 @@ namespace KYC_WebPlatform.Services.Business
         public string GetNameByEmail(string email)
         {
             return securityDAO.RetrieveName(email);
+        }
+
+        public bool ChangePassword(LoginDto loginDto)
+        {
+            return securityDAO.ChangePasswordForEmail(loginDto);
         }
     }
 }
