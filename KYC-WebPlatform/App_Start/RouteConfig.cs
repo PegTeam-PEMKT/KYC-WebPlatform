@@ -131,6 +131,12 @@ namespace KYC_WebPlatform
                 url: "Client/SubmitDirectorInfo",
                 defaults: new { controller = "Client", action = "SubmitDirectorInfo" }
             );
+
+            routes.MapRoute(
+                name: "BusinessValidations",
+                url: "Business/Validations",
+                defaults: new { controller = "Business", action = "Validations" }
+            );
             //routes.MapRoute(
             //    name: "Default",
             //    url: "{controller}/{action}/{id}", //home/Index or About
