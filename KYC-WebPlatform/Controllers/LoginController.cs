@@ -262,7 +262,7 @@ namespace KYC_WebPlatform.Controllers
                 }
             }
 
-            return View("OtpView", model);
+            return View("ForgotOtpView", model);
         }
 
         public ActionResult UpdatePassword(LoginDto loginDto)
