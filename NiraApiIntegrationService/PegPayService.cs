@@ -35,5 +35,39 @@ namespace NiraApiIntegrationService
                 return $"Error: {ex.Message}";
             }
         }
+
+
+        public Response NiraValidation(string dateOfBirth, string documentId, string givenName,
+                                           string utility, string vendorCode, string password,
+                                           string nationalId, string surname)
+        {
+            /*            try
+                        {*/
+            var client = new PegPay();
+            var request = new QueryRequest
+            {
+                QueryField1 = dateOfBirth,
+                QueryField2 = documentId,
+                QueryField3 = givenName,
+                QueryField4 = utility,
+                QueryField5 = vendorCode,
+                QueryField6 = password,
+                QueryField7 = nationalId,
+                QueryField10 = surname
+            };
+
+            var response = client.QueryCustomerDetails(request);
+
+            return response;
+            /*           }
+                       catch (Exception ex)
+                       {
+                          *//* return $"Error: {ex.Message}";*//*
+                          To implement catch with on of attriutes from response
+                       }*/
+        }
+
+
+
     }
 }
