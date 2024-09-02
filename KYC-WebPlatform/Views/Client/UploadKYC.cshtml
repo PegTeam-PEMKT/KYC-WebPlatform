@@ -3,8 +3,7 @@
     ViewBag.Title = "UploadKYC";
     Layout = "~/Views/Shared/_ClientLayout.cshtml";
 }
-
-
+@model Dictionary<string, List<object>>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -43,14 +42,14 @@
                         <div class="row g-4 settings-section">
                             <div class="col-12 col-md-4">
                                 <div class="section-intro">
-                                   
+
                                     Upload your files using the form below. Accepted file types: .pdf, .doc, .docx, .jpg, .png
                                 </div>
                             </div>
                             <div class="col-12 col-md-8">
                                 <div class="app-card app-card-settings shadow-sm p-4">
                                     <div class="app-card-body">
-                                        <form id="form" method="post" enctype="multipart/form-data" class="dropzone" action="/File/Upload" >
+                                        <form id="form" method="post" enctype="multipart/form-data" class="dropzone" action="/File/Upload">
                                             <div class="dz-message">
                                                 <span>Drop files here or click to upload</span>
                                             </div>
@@ -65,14 +64,13 @@
 
             </div><!--//container-fluid-->
         </div><!--//app-content-->
-
         <!--<footer class="app-footer">
             <div class="container text-center py-3">-->
-                <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
-                <!--<small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart" style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> for developers</small>
-
+        <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
+        <!--<small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart" style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com" target="_blank">Xiaoying Riley</a> for developers</small>
             </div>
-        </footer>--><!--//app-footer-->
+        </footer>-->
+        <!--//app-footer-->
 
     </div><!--//app-wrapper-->
     <!-- Javascript -->
@@ -86,7 +84,6 @@
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
     <script type="text/javascript">
         Dropzone.autoDiscover = false;
-
         var myDropzone = new Dropzone("#form", {
             url: "/Client/Upload", // This points to the Upload action in your FileController
             paramName: "file", // The name that will be used to transfer the file
@@ -106,5 +103,3 @@
     </script>
 </body>
 </html>
-
-

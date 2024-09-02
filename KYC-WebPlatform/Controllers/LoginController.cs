@@ -3,7 +3,6 @@ using KYC_WebPlatform.Services.Business;
 using KYC_WebPlatform.Services.Data;
 using System;
 using System.Diagnostics;
-using System.Reflection;
 using System.Web.Mvc;
 
 namespace KYC_WebPlatform.Controllers
