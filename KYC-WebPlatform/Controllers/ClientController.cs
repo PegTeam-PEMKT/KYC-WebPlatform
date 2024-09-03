@@ -1,5 +1,6 @@
 ﻿using KYC_WebPlatform.Models;
 using KYC_WebPlatform.Services;
+using KYC_WebPlatform.Services.Business;
 using KYC_WebPlatform.Services.Data;
 using NiraApiIntegrationService;
 using System;
@@ -28,6 +29,7 @@ namespace KYC_WebPlatform.Controllers
             _pegPayService = new PegPayService(); // For the NIRA validation
             _apiService = new ApiService(); // For Open Sanctions validation
         }
+
 
         // GET: Client
         public ActionResult ClientIndex()
@@ -111,7 +113,15 @@ namespace KYC_WebPlatform.Controllers
                     }
                     //Close the connection
                     connection.Close();
+
                 }
+
+                // Notifying all the business department people.
+
+
+                SendBusinessNotification();
+
+
 
                 return View("ClientIndex");
             }
@@ -228,7 +238,7 @@ namespace KYC_WebPlatform.Controllers
                 var fileDic = "Content/Files";
                 string filePath = Server.MapPath("~/") + fileDic;
 
-                string TIN = HttpContext.Session["TIN"] as string;
+                //string TIN = HttpContext.Session["TIN"] as string;
                 string Email = HttpContext.Session["Email"] as string;
                 Debug.WriteLine($"=============TIN: {TIN}=============");
 
@@ -339,7 +349,43 @@ namespace KYC_WebPlatform.Controllers
                 return new SanctionResponse { StatusCode = "Error", StatusDescription = "Error occurred while processing the request." };
             }
         }
+
+       public bool SendBusinessNotification()
+        {
+            EmailService notifyEmail = new EmailService("jemimahsoulsister@outlook.com", "jemimah@soulsister", "smtp.office365.com", 587, true);
+            bool sentOk = false;
+
+            // Use a parameterized query to prevent SQL injection
+            string query = "SELECT Email FROM Departments where DeptCode = 'BUSINESS#001'";
+           
+            Dictionary<string, List<object>> receiver = _storage.ExecuteSelectQuery(query);
+
+            // Get the list of email addresses from the query results
+            List<string> emailAddresses = new List<string>();
+            foreach (var value in receiver.Values)
+            {
+                foreach (var email in value)
+                {
+                    emailAddresses.Add(email.ToString());
+                }
+            }
+
+            // Send an email to each recipient
+            string subject = "New KYC Application";
+            string body = "A new business has registered. Login to the platform to approve.";
+            foreach (var toEmail in emailAddresses)
+            {
+                sentOk = notifyEmail.SendEmail(toEmail, subject, body);
+                if (!sentOk)
+                {
+                    Debug.WriteLine($"Failed to send email to {toEmail}");
+                }
+            }
+
+            return sentOk;
+        }
     }
+
 }
 
 
