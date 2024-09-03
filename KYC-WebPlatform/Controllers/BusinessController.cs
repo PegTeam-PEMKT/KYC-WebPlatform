@@ -133,7 +133,8 @@ namespace KYC_WebPlatform.Controllers
 
                             string toEmail = email;
                             string subject = "Pegasus Client Review";
-                            string body = "We've reviewed your business details. You can now upload your KYC documents. Please contact "+businessUserEmail;
+                            string body = "We've reviewed your business details. You can now upload your KYC documents. The following are the requirements required to be onboarded onto the platform.\r\n\r\n- Contract with Pegasus Technologies\r\n- Valid Trading License.\r\n- Tax registration Certificate\r\n- Memorandum & Articles of Association\r\n- Company form 20 (certified)\r\n- Certificate of incorporation(certified)\r\n- Directors IDs\r\n- Company profile\r\n- Board resolution to apply for and use Pegasus services.\r\n- Proof of Address\r\n- Letter from official banker.\r\n- Bank statement for 6 months\r\n- 6 months' revenue projections\r\n- Beneficiaries form (form 1)(certified)\r\nThank you . Regards Please contact " + businessUserEmail;
+
 
                             emailService.SendEmail(toEmail, subject, body);
 
