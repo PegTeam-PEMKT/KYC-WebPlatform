@@ -41,7 +41,7 @@ namespace KYC_WebPlatform.Controllers
             }
         }
 
-        public string ApproveOrReject(ApprovalViewModel model, string action)
+        /*public ActionResult ApproveOrReject(ApprovalViewModel model, string action)
         {
             ApproveService approveService = new ApproveService();
             string name = "";
@@ -75,21 +75,24 @@ namespace KYC_WebPlatform.Controllers
                     {
                         if(approveService.ApproveBusinessByEmail(email, businessUserEmail))
                         {
-                            return "Approved Client & Business";
+                            ViewBag.SuccessMessage = "Client has been approved";
+                            return View("ViewClientDetails");
                         }
                         else
                         {
-                            return "Not approved";
+                            ViewBag.ErrorMessage = "Client has not been approved";
+                            return View("ViewClientDetails");
                         }
                     }
                     else
                     {
-                        return "Not approved";
+                        Debug.WriteLine("ApproveClientByEmail did not execute");
                     }
                 }
                 else
                 {
-                    return "Email not found";
+                    ViewBag.ErrorMessage = "Client email not found";
+                    return View("ViewClientDetails");
                 }
             }
             else if (action == "reject")
@@ -101,22 +104,26 @@ namespace KYC_WebPlatform.Controllers
                     {
                         if(approveService.RejectBusinessByEmail(email, businessUserEmail))
                         {
-                            return "Rejected Client & Business";
+                            ViewBag.SuccessMessage = "Client has been rejected";
+                            return View("ViewClientDetails");
                         }
                         else
                         {
-                            return "Not rejected";
+                            ViewBag.ErrorMessage = "Client has not been rejected";
+                            return View("ViewClientDetails");
                         }
                     }
                 }
                 else
                 {
-                    return "Email not found";
+                    ViewBag.ErrorMessage = "Client email not found";
+                    return View("ViewClientDetails");
                 }
             }
 
-            return "Not found";
-        }
+            ViewBag.ErrorMessage = "Action not recognized";
+            return View("ViewClientDetails"); ;
+        }*/
 
         //for the files
         public ActionResult GetFiles(int BusinessId, string BusinessName, int fileCount)

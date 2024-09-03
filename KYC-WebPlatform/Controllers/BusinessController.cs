@@ -95,6 +95,104 @@ namespace KYC_WebPlatform.Controllers
             }
         }
 
+        public ActionResult ApproveOrReject(ApprovalViewModel model, string action)
+        {
+            ApproveService approveService = new ApproveService();
+            EmailService emailService = new EmailService("jemimahsoulsister@outlook.com", "jemimah@soulsister", "smtp.office365.com", 587, true);
+            string name = "";
+            int id = 0;
+
+            string businessUserEmail = HttpContext.Session["Email"].ToString();
+
+            Debug.WriteLine("From ApproveOrReject: " + businessUserEmail);
+
+            foreach (var detail in model.BusinessDetails)
+            {
+                // Process each business detail here
+                var businessId = detail.BusinessID;
+                var businessName = detail.BusinessName;
+                var directorName = detail.DirectorName;
+                var directorNIN = detail.DirectorNIN;
+                var isNINValid = detail.IsNINValid;
+                var sanctionScore = detail.SanctionScore;
+                var isSanctionValid = detail.IsSanctionValid;
+
+                name = businessName;
+                id = businessId;
+            }
+
+            if (action == "approve")
+            {
+                string email = approveService.GetBusinessEmailByIdToApprove(id);
+                if (email != null)
+                {
+                    if (approveService.ApproveClientByEmail(email))
+                    {
+                        if (approveService.ApproveBusinessByEmail(email, businessUserEmail))
+                        {
+
+                            string toEmail = email;
+                            string subject = "Pegasus Client Review";
+                            string body = "We've reviewed your business details. You can now upload your KYC documents. Please contact "+businessUserEmail;
+
+                            emailService.SendEmail(toEmail, subject, body);
+
+                            TempData["SuccessMessage"] = "Client has been approved";
+                            return RedirectToAction("ViewClients", "Business");
+                        }
+                        else
+                        {
+                            TempData["ErrorMessage"] = "Client has not been approved";
+                            return RedirectToAction("ViewClients", "Business");
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine("ApproveClientByEmail did not execute");
+                    }
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Client email not found";
+                    return RedirectToAction("ViewClients", "Business");
+                }
+            }
+            else if (action == "reject")
+            {
+                string email = approveService.GetBusinessEmailByIdToApprove(id);
+                if (email != null)
+                {
+                    if (approveService.RejectClientByEmail(email))
+                    {
+                        if (approveService.RejectBusinessByEmail(email, businessUserEmail))
+                        {
+                            string toEmail = email;
+                            string subject = "Pegasus Client Review";
+                            string body = "We've reviewed your business info and it's not within our requirements. Please contact " + businessUserEmail +" for more details";
+
+                            emailService.SendEmail(toEmail, subject, body);
+
+                            TempData["SuccessMessage"] = "Client has been rejected";
+                            return RedirectToAction("ViewClients", "Business");
+                        }
+                        else
+                        {
+                            TempData["ErrorMessage"] = "Client has not been rejected";
+                            return RedirectToAction("ViewClients", "Business");
+                        }
+                    }
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Client email not found";
+                    return RedirectToAction("ViewClients", "Business");
+                }
+            }
+
+            TempData["ErrorMessage"] = "Action not recognized";
+            return RedirectToAction("ViewClients", "Business");
+        }
+
         public ActionResult ViewStatus()
         {
             return View("ViewStatus");
