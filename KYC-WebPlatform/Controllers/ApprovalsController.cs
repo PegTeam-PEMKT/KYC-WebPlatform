@@ -23,6 +23,7 @@ namespace KYC_WebPlatform.Controllers
         }*/
 
         //for the businesses
+
         public ActionResult GetBusinesses()
         {
             string Email = HttpContext.Session["Email"] as string;
@@ -142,7 +143,7 @@ namespace KYC_WebPlatform.Controllers
                         new SqlParameter("@UserEmail", Email)
                     };
 
-                Dictionary<string, List<object>> pendingBusinessesFiles = _storage.ExecuteSelectQuery("sp_GetPendingBusinessFiles", parameters);
+                Dictionary<string, List<object>> pendingBusinessesFiles = _storage.ExecuteSelectQuery("sp_NewGetPendingBusinessFiles", parameters);
                 Debug.WriteLine("BBBBBBBB" + pendingBusinessesFiles.Count);
                 return View("PendingBusinessFiles", pendingBusinessesFiles);
 
@@ -282,7 +283,7 @@ namespace KYC_WebPlatform.Controllers
             EmailService notifyEmail = new EmailService("jemimahsoulsister@outlook.com", "jemimah@soulsister", "smtp.office365.com", 587, true);
             bool SentOk = false;
             // Use a parameterized query to prevent SQL injection
-            string query = "SELECT Email FROM HeadOfDepartment WHERE DepartmentHeadId = @ApprovalCode";
+            string query = "SELECT Email FROM Departments WHERE DeptCode = @ApprovalCode";
             SqlParameter[] parameters = new SqlParameter[]
             {
                  new SqlParameter("@ApprovalCode", approvalCode)

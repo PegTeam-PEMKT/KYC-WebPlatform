@@ -128,7 +128,7 @@ namespace KYC_WebPlatform.Controllers
                     {
                         ViewBag.SuccessMessage = "Logged In Successfully";
                         HttpContext.Session["Role"] = dAO.RetrieveRole(userEmail);
-                        return RedirectToAction("Legal", "Approvals"); // Redirect to legal dashboard
+                        return RedirectToAction("Legal", "Legal"); // Redirect to legal dashboard
                     }
                 }
                 else

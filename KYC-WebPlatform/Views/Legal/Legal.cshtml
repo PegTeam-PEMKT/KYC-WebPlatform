@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "Legal";
-    Layout = "~/Views/Shared/_BusinessLayout.cshtml";
+    Layout = "~/Views/Shared/_LegalLayout.cshtml";
 
 }
 
@@ -17,28 +17,21 @@
                 <div class="row g-4 mb-4">
                     @if (Model == null)
                     {
-                        foreach (var row in Model)
-                        {
-                            <a href="@Url.Action("GetFiles", "Approvals", new { BusinessId = row.Value[0], BusinessName = row.Value[1], fileCount = row.Value[2] @* fileCount = row.Value[3]*@ })" class="col-12 col-lg-6">
-
-                                <div class="app-card app-card-chart h-100 shadow-sm">
-                                    <div class="app-card-header p-3 border-0">
-                                        <h4 class="app-card-title">@{System.Diagnostics.Debug.WriteLine(row.Value.ToString()); }</h4>
-                                    </div><!--//app-card-header-->
-                                    <div class="app-card-body p-4">
-                                        <div class="chart-container">
-                                            BusinessId: @row.Value[0]
-                                            <br />
-                                            BusinessName: @row.Value[1]
-                                            <br />
-                                            Pending file count: @row.Value[2]
+                        <div class="container mb-5">
+                            <div class="row">
+                                <div class="col-12 col-md-11 col-lg-7 col-xl-6 mx-auto">
+                                    <div class="app-branding text-center mb-5">
+                                    </div><!--//app-branding-->
+                                    <div class="app-card p-5 text-center shadow-sm">
+                                        <h3 class="page-title mb-4"><span class="font-weight-light">No pending approvals found</span></h3>
+                                        <div class="mb-4">
+                                            There are no pending approvals that require your action at the moment
                                         </div>
-                                    </div><!--//app-card-body-->
-                                </div><!--//app-card-->
-                            </a>
-
-                        }
-
+                                        <button class="btn app-btn-primary" type="button" onclick="window.history.back();">Back</button>
+                                    </div>
+                                </div><!--//col-->
+                            </div><!--//row-->
+                        </div><!--//container-->
                     }
                 </div><!--//row-->
 
