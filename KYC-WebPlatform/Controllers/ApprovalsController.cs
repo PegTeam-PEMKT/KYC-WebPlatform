@@ -1,4 +1,5 @@
-﻿using KYC_WebPlatform.Services.Business;
+﻿using KYC_WebPlatform.Models;
+using KYC_WebPlatform.Services.Business;
 using KYC_WebPlatform.Services.Data;
 using System;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace KYC_WebPlatform.Controllers
         }*/
 
         //for the businesses
+
         public ActionResult GetBusinesses()
         {
             string Email = HttpContext.Session["Email"] as string;
@@ -40,6 +42,90 @@ namespace KYC_WebPlatform.Controllers
             }
         }
 
+        /*public ActionResult ApproveOrReject(ApprovalViewModel model, string action)
+        {
+            ApproveService approveService = new ApproveService();
+            string name = "";
+            int id = 0;
+
+            string businessUserEmail = HttpContext.Session["Email"].ToString();
+
+            Debug.WriteLine("From ApproveOrReject: " + businessUserEmail);
+
+            foreach (var detail in model.BusinessDetails)
+            {
+                // Process each business detail here
+                var businessId = detail.BusinessID;
+                var businessName = detail.BusinessName;
+                var directorName = detail.DirectorName;
+                var directorNIN = detail.DirectorNIN;
+                var isNINValid = detail.IsNINValid;
+                var sanctionScore = detail.SanctionScore;
+                var isSanctionValid = detail.IsSanctionValid;
+
+                name = businessName;
+                id = businessId;
+            }
+
+            if (action == "approve")
+            {
+                string email = approveService.GetBusinessEmailByIdToApprove(id);
+                if (email != null)
+                {
+                    if (approveService.ApproveClientByEmail(email))
+                    {
+                        if(approveService.ApproveBusinessByEmail(email, businessUserEmail))
+                        {
+                            ViewBag.SuccessMessage = "Client has been approved";
+                            return View("ViewClientDetails");
+                        }
+                        else
+                        {
+                            ViewBag.ErrorMessage = "Client has not been approved";
+                            return View("ViewClientDetails");
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine("ApproveClientByEmail did not execute");
+                    }
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Client email not found";
+                    return View("ViewClientDetails");
+                }
+            }
+            else if (action == "reject")
+            {
+                string email = approveService.GetBusinessEmailByIdToApprove(id);
+                if (email != null)
+                {
+                    if (approveService.RejectClientByEmail(email))
+                    {
+                        if(approveService.RejectBusinessByEmail(email, businessUserEmail))
+                        {
+                            ViewBag.SuccessMessage = "Client has been rejected";
+                            return View("ViewClientDetails");
+                        }
+                        else
+                        {
+                            ViewBag.ErrorMessage = "Client has not been rejected";
+                            return View("ViewClientDetails");
+                        }
+                    }
+                }
+                else
+                {
+                    ViewBag.ErrorMessage = "Client email not found";
+                    return View("ViewClientDetails");
+                }
+            }
+
+            ViewBag.ErrorMessage = "Action not recognized";
+            return View("ViewClientDetails"); ;
+        }*/
+
         //for the files
         public ActionResult GetFiles(int BusinessId, string BusinessName, int fileCount)
         {
@@ -57,7 +143,7 @@ namespace KYC_WebPlatform.Controllers
                         new SqlParameter("@UserEmail", Email)
                     };
 
-                Dictionary<string, List<object>> pendingBusinessesFiles = _storage.ExecuteSelectQuery("sp_GetPendingBusinessFiles", parameters);
+                Dictionary<string, List<object>> pendingBusinessesFiles = _storage.ExecuteSelectQuery("sp_NewGetPendingBusinessFiles", parameters);
                 Debug.WriteLine("BBBBBBBB" + pendingBusinessesFiles.Count);
                 return View("PendingBusinessFiles", pendingBusinessesFiles);
 
@@ -197,7 +283,9 @@ namespace KYC_WebPlatform.Controllers
             EmailService notifyEmail = new EmailService("jemimahsoulsister@outlook.com", "jemimah@soulsister", "smtp.office365.com", 587, true);
             bool SentOk = false;
             // Use a parameterized query to prevent SQL injection
+
             //string query = "SELECT Email FROM Departments WHERE DeptCode = @ApprovalCode";
+
             SqlParameter[] parameters = new SqlParameter[]
             {
                  new SqlParameter("@ApprovalCode", approvalCode)

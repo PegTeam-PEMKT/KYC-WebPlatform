@@ -100,7 +100,7 @@ namespace KYC_WebPlatform.Controllers
                 {
                     ViewBag.ErrorMessage = "OTP has expired. Would you like to resend it?";
                     ViewBag.ExpiredOtp = true;
-                    TempData["OTPEmail"] = userEmail;
+                    Session["OTPEmail"] = userEmail;
                     //ViewBag.Email = userEmail;
                     return View("OtpView", model); // Re-render the view with an option to resend the OTP
                 }
@@ -124,11 +124,11 @@ namespace KYC_WebPlatform.Controllers
                         HttpContext.Session["Role"] = dAO.RetrieveRole(userEmail);
                         return RedirectToAction("ViewClients", "Business"); // Redirect to admin dashboard
                     }
-                    if (dAO.RetrieveRole(userEmail) == 13)
+                    if (dAO.RetrieveRole(userEmail) == 14)
                     {
                         ViewBag.SuccessMessage = "Logged In Successfully";
                         HttpContext.Session["Role"] = dAO.RetrieveRole(userEmail);
-                        return RedirectToAction("ViewClients", "Business"); // Redirect to admin dashboard
+                        return RedirectToAction("Legal", "Legal"); // Redirect to legal dashboard
                     }
                 }
                 else
@@ -148,8 +148,7 @@ namespace KYC_WebPlatform.Controllers
         /// <returns></returns>
         public ActionResult ResendOtp()
         {
-            string userEmail = Session["UserEmail"] as string;
-            userEmail = TempData["OTPEmail"] as string;
+            string userEmail = Session["OTPEmail"] as string;
 
             Debug.WriteLine("From ResendOtp: " + userEmail);
 

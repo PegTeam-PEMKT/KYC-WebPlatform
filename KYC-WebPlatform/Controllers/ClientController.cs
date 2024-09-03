@@ -216,21 +216,36 @@ namespace KYC_WebPlatform.Controllers
 
         public ActionResult UploadKYC()
         {
-            return View("UploadKYC");
+            try
+            {
+                // Fetch records from the database and map to ViewModel
+                Dictionary<string, List<object>> documents = _storage.ExecuteSelectQuery("sp_GetDocuments");
+                Debug.WriteLine("AAAAAAA********" + documents.Values.Count);
+                return View("UploadKYC", documents);
+            }
+            catch (SqlException sq)
+            {
+                Debug.WriteLine(sq.LineNumber + "`````00000```````" + sq.ToString());
+                return View("Error");
+            }
+         
         }
 
         public async Task<ActionResult> Upload(HttpPostedFileBase file)
         {
             try
-            {
+            {                
                 var fileDic = "Content/Files";
                 string filePath = Server.MapPath("~/") + fileDic;
 
                 //string TIN = HttpContext.Session["TIN"] as string;
                 string Email = HttpContext.Session["Email"] as string;
-                Debug.WriteLine($"=============TIN: {Email}=============");
+                Debug.WriteLine($"=============TIN: {TIN}=============");
 
-                string query = "Select BusinessId from ClientBusiness where Email = @BusinessTIN";
+                /*string query = "Select BusinessId from ClientBusiness where TIN = @BusinessTIN";
+                int businessID = _storage.ExecuteGetIdQuery(query, TIN);*/
+
+                // developer chose to use email instead of TIN to retrieve BusinessID(because we use the client's email as the business email when they sign up)
                 // Retrieve the BusinessId from the ClientBusiness table
                 SqlParameter[] param = new SqlParameter[]
                     {
@@ -240,7 +255,7 @@ namespace KYC_WebPlatform.Controllers
                 int businessId = (int)(results.Values.First().FirstOrDefault() ?? default(int));
 
 
-                Debug.WriteLine($"++++++++FROM Upload: {businessId}++++++++++++");
+                Debug.WriteLine($"++++++++FROM Upload: {Email}++++++++++++");
 
                 if (!Directory.Exists(filePath))
                 {

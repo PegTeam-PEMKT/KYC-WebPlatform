@@ -1,7 +1,12 @@
-﻿@{
-    ViewBag.Title = "PendingBusinesses";
-    Layout = "~/Views/Shared/_BusinessLayout.cshtml";
+﻿
+@{
+    ViewBag.Title = "Legal";
+    Layout = "~/Views/Shared/_LegalLayout.cshtml";
+
 }
+
+<h2>Legal</h2>
+
 @model Dictionary<string, List<object>>
 
 <body class="app">
@@ -22,7 +27,7 @@
                                         <div class="mb-4">
                                             There are no pending approvals that require your action at the moment
                                         </div>
-                                        <button class ="btn app-btn-primary" type="button" onclick="window.history.back();">Back</button>
+                                        <button class="btn app-btn-primary" type="button" onclick="window.history.back();">Back</button>
                                     </div>
                                 </div><!--//col-->
                             </div><!--//row-->
@@ -80,7 +85,7 @@
                             </div><!--//app-card-body-->
 
                             <div class="app-card-footer p-4 mt-auto">
-                                <a href="@Url.Action("GetFiles", "Approvals", new { BusinessId = row.Value[0], BusinessName = row.Value[1], fileCount = row.Value[2] })" class="btn app-btn-secondary"> Pending Files</a>
+                                <a href="@Url.Action("GetFiles", "Approvals", new { BusinessId = row.Value[0], BusinessName = row.Value[1], fileCount = row.Value[2] })" class="btn app-btn-secondary">Approve File</a>
                             </div><!--//app-card-footer-->
 
                         </div><!--//app-card-->

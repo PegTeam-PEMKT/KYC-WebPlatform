@@ -1,0 +1,183 @@
+﻿
+@{
+    ViewBag.Title = "LegalValidations";
+    Layout = "~/Views/Shared/_LegalLayout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Portal</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- FontAwesome JS-->
+    <script defer src="~/assets/plugins/fontawesome/js/all.min.js"></script>
+
+    <!-- App CSS -->
+    <link id="theme-style" rel="stylesheet" href="~/assets/css/portal.css">
+    <link id="theme-style" rel="stylesheet" href="~/assets/css/custom.css">
+</head>
+
+<body class="app">
+
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+
+                <!-- NIN Validation Form -->
+                <h1 class="app-page-title">NIN Validation</h1>
+                <hr class="mb-4">
+                @using (Html.BeginForm("NINValidation", "Business", FormMethod.Post, new { @class = "settings-form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-4 settings-section">
+                        <div class="col-12 col-md-4">
+                            <h3 class="section-title">NIN Validation</h3>
+                            <div class="section-intro">Enter the details for NIN validation</div>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <div class="app-card app-card-settings shadow-sm p-4">
+                                <div class="app-card-body">
+                                    <div class="mb-3">
+                                        <label for="surname" class="form-label">Surname</label>
+                                        @Html.TextBox("surname", null, new { @class = "form-control", placeholder = "Surname", required = true })
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="givenName" class="form-label">Given Name</label>
+                                        @Html.TextBox("givenName", null, new { @class = "form-control", placeholder = "Given Name", required = true })
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="dateOfBirth" class="form-label">Date of Birth</label>
+                                        @Html.TextBox("dateOfBirth", null, new { @class = "form-control", placeholder = "Date of Birth", required = true })
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="nationalId" class="form-label">National Identification Number</label>
+                                        @Html.TextBox("nationalId", null, new { @class = "form-control", placeholder = "National ID", required = true })
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label for="nationalId" class="form-label">Card Number</label>
+                                        @Html.TextBox("cardnumber", null, new { @class = "form-control", placeholder = "Card Number", required = true })
+                                    </div>
+
+                                    <button type="submit" class="btn btn-custom">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Display NIN Validation Results -->
+                    if (ViewBag.NINResult != null)
+                    {
+                        <div class="row g-4 settings-section">
+                            <div class="col-12 col-md-8 offset-md-4">
+                                <div class="app-card app-card-settings shadow-sm p-4">
+                                    <div class="app-card-body">
+                                        <table class="table">
+                                            <thead>
+
+
+                                                <tr>
+                                                    <th>ResponseField6</th>
+                                                    <th>ResponseField7</th>
+                                                    <th>ResponseField27</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>@ViewBag.NINResult.ResponseField6</td>
+                                                    <td>@ViewBag.NINResult.ResponseField7</td>
+                                                    <td>@ViewBag.NINResult.ResponseField27</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+
+                <!-- Sanctions Check Form -->
+                <h1 class="app-page-title">Sanctions Check</h1>
+                <hr class="mb-4">
+                @using (Html.BeginForm("SanctionsCheck", "Business", FormMethod.Post, new { @class = "settings-form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="row g-4 settings-section">
+                        <div class="col-12 col-md-4">
+                            <h3 class="section-title">Sanctions Check</h3>
+                            <div class="section-intro">Enter the details for sanctions check</div>
+                        </div>
+                        <div class="col-12 col-md-8">
+                            <div class="app-card app-card-settings shadow-sm p-4">
+                                <div class="app-card-body">
+                                    <div class="mb-3">
+                                        <label for="PassedName" class="form-label">Name</label>
+                                        @Html.TextBox("PassedName", null, new { @class = "form-control", placeholder = "Name", required = true })
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="PassedSchema" class="form-label">Type</label>
+                                        @Html.DropDownList("PassedSchema", new SelectList(new List<string> { "Person", "Company" }), new { @class = "form-control", required = true })
+                                    </div>
+                                    <button type="submit" class="btn btn-custom">Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Display Sanctions Check Results -->
+                    if (ViewBag.SanctionResult != null)
+                    {
+                        <div class="row g-4 settings-section">
+                            <div class="col-12 col-md-8 offset-md-4">
+                                <div class="app-card app-card-settings shadow-sm p-4">
+                                    <div class="app-card-body">
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Status Code</th>
+                                                    <th>Status Description</th>
+                                                    <th>Sanctioned</th>
+                                                    <th>Score</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>@ViewBag.SanctionResult.StatusCode</td>
+                                                    <td>@ViewBag.SanctionResult.StatusDescription</td>
+                                                    <td>@ViewBag.SanctionResult.Sanctioned</td>
+                                                    <td>@ViewBag.SanctionResult.Score</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+S
+            </div>
+        </div>
+    </div>
+
+    <!-- App JS -->
+    <script src="~/assets/js/app.js"></script>
+</body>
+</html>
+
+

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Reflection;
 using System.Web.Mvc;
 
 namespace KYC_WebPlatform.Controllers
@@ -92,6 +93,105 @@ namespace KYC_WebPlatform.Controllers
 
                 return View("Error", e.Message);
             }
+        }
+
+        public ActionResult ApproveOrReject(ApprovalViewModel model, string action)
+        {
+            ApproveService approveService = new ApproveService();
+            EmailService emailService = new EmailService("jemimahsoulsister@outlook.com", "jemimah@soulsister", "smtp.office365.com", 587, true);
+            string name = "";
+            int id = 0;
+
+            string businessUserEmail = HttpContext.Session["Email"].ToString();
+
+            Debug.WriteLine("From ApproveOrReject: " + businessUserEmail);
+
+            foreach (var detail in model.BusinessDetails)
+            {
+                // Process each business detail here
+                var businessId = detail.BusinessID;
+                var businessName = detail.BusinessName;
+                var directorName = detail.DirectorName;
+                var directorNIN = detail.DirectorNIN;
+                var isNINValid = detail.IsNINValid;
+                var sanctionScore = detail.SanctionScore;
+                var isSanctionValid = detail.IsSanctionValid;
+
+                name = businessName;
+                id = businessId;
+            }
+
+            if (action == "approve")
+            {
+                string email = approveService.GetBusinessEmailByIdToApprove(id);
+                if (email != null)
+                {
+                    if (approveService.ApproveClientByEmail(email))
+                    {
+                        if (approveService.ApproveBusinessByEmail(email, businessUserEmail))
+                        {
+
+                            string toEmail = email;
+                            string subject = "Pegasus Client Review";
+                            string body = "We've reviewed your business details. You can now upload your KYC documents. The following are the requirements required to be onboarded onto the platform.\r\n\r\n- Contract with Pegasus Technologies\r\n- Valid Trading License.\r\n- Tax registration Certificate\r\n- Memorandum & Articles of Association\r\n- Company form 20 (certified)\r\n- Certificate of incorporation(certified)\r\n- Directors IDs\r\n- Company profile\r\n- Board resolution to apply for and use Pegasus services.\r\n- Proof of Address\r\n- Letter from official banker.\r\n- Bank statement for 6 months\r\n- 6 months' revenue projections\r\n- Beneficiaries form (form 1)(certified)\r\nThank you . Regards Please contact " + businessUserEmail;
+
+
+                            emailService.SendEmail(toEmail, subject, body);
+
+                            TempData["SuccessMessage"] = "Client has been approved";
+                            return RedirectToAction("ViewClients", "Business");
+                        }
+                        else
+                        {
+                            TempData["ErrorMessage"] = "Client has not been approved";
+                            return RedirectToAction("ViewClients", "Business");
+                        }
+                    }
+                    else
+                    {
+                        Debug.WriteLine("ApproveClientByEmail did not execute");
+                    }
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Client email not found";
+                    return RedirectToAction("ViewClients", "Business");
+                }
+            }
+            else if (action == "reject")
+            {
+                string email = approveService.GetBusinessEmailByIdToApprove(id);
+                if (email != null)
+                {
+                    if (approveService.RejectClientByEmail(email))
+                    {
+                        if (approveService.RejectBusinessByEmail(email, businessUserEmail))
+                        {
+                            string toEmail = email;
+                            string subject = "Pegasus Client Review";
+                            string body = "We've reviewed your business info and it's not within our requirements. Please contact " + businessUserEmail +" for more details";
+
+                            emailService.SendEmail(toEmail, subject, body);
+
+                            TempData["SuccessMessage"] = "Client has been rejected";
+                            return RedirectToAction("ViewClients", "Business");
+                        }
+                        else
+                        {
+                            TempData["ErrorMessage"] = "Client has not been rejected";
+                            return RedirectToAction("ViewClients", "Business");
+                        }
+                    }
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Client email not found";
+                    return RedirectToAction("ViewClients", "Business");
+                }
+            }
+
+            TempData["ErrorMessage"] = "Action not recognized";
+            return RedirectToAction("ViewClients", "Business");
         }
 
         public ActionResult ViewStatus()
