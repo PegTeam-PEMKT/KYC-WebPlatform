@@ -197,12 +197,12 @@ namespace KYC_WebPlatform.Controllers
             EmailService notifyEmail = new EmailService("jemimahsoulsister@outlook.com", "jemimah@soulsister", "smtp.office365.com", 587, true);
             bool SentOk = false;
             // Use a parameterized query to prevent SQL injection
-            string query = "SELECT Email FROM HeadOfDepartment WHERE DepartmentHeadId = @ApprovalCode";
+            //string query = "SELECT Email FROM Departments WHERE DeptCode = @ApprovalCode";
             SqlParameter[] parameters = new SqlParameter[]
             {
                  new SqlParameter("@ApprovalCode", approvalCode)
             };
-            Dictionary<string, List<object>> receiver = _storage.ExecuteSelectQuery(query, parameters);
+            Dictionary<string, List<object>> receiver = _storage.ExecuteSelectQuery("GetToEmail", parameters);
             string toEmail = receiver.Values.ToString();
             string subject = "Pending KYC Approval";
             string body = "You have a pending File approval from the KYC platform";
