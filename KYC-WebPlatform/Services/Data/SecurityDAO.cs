@@ -28,7 +28,7 @@ namespace KYC_WebPlatform.Services.Data
             }
             else
             {
-                if (signupDto.Role == UserRole.Admin && signupDto.DeptRole == DeptRole.Business)
+                if (signupDto.Role == UserRole.Business && signupDto.DeptRole == DeptRole.Business)
                 {
                     Debug.WriteLine("Failure creating admin");
                     return userCreated;
@@ -38,7 +38,7 @@ namespace KYC_WebPlatform.Services.Data
                     Debug.WriteLine("Failure creating admin");
                     return userCreated;
                 }*/
-                if (signupDto.Role == UserRole.Admin)
+                if (signupDto.Role == UserRole.Business)
                 {
 
                     if (InsertDepartmentPerson("BUSINESS", signupDto.Username, signupDto.Email, "BUSINESS#001"))
@@ -64,7 +64,7 @@ namespace KYC_WebPlatform.Services.Data
                         return userCreated;
                     }
                 }
-                if (signupDto.Role == UserRole.DepartmentHead)
+                if (signupDto.Role == UserRole.Finance)
                 {
                     var deptHeadIds = new Dictionary<int, string>
                     {
@@ -457,6 +457,39 @@ namespace KYC_WebPlatform.Services.Data
             }
 
             return isClientCreated;
+        }
+
+        internal bool FindAdmin(LoginDto loginDto)
+        {
+            bool isValidUser = false;
+
+            Debug.WriteLine("From FindAdmin: " + loginDto.Email);
+            try
+            {
+                using (SqlConnection sqlConnection = dbContext.GetConnection())
+                {
+                    string query = "SELECT * FROM dbo.SuperAdmin WHERE SuperEmail = @Email AND SuperPassword = @Password";
+
+                    SqlCommand command = new SqlCommand(query, sqlConnection);
+                    command.Parameters.AddWithValue("@Email", loginDto.Email);
+                    command.Parameters.AddWithValue("@Password", loginDto.Password);
+
+                    sqlConnection.Open();
+                    using (SqlDataReader reader = command.ExecuteReader())
+                    {
+                        if (reader.HasRows)
+                        {
+                            isValidUser = true; // If rows are returned, the user is valid
+                        }
+                    }
+                }
+            }
+            catch (System.Exception e)
+            {
+                Debug.WriteLine("From FindAdmin: " + e.Message);
+            }
+
+            return isValidUser;
         }
     }
 }

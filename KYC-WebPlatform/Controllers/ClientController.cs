@@ -238,7 +238,7 @@ namespace KYC_WebPlatform.Controllers
                 var fileDic = "Content/Files";
                 string filePath = Server.MapPath("~/") + fileDic;
 
-                //string TIN = HttpContext.Session["TIN"] as string;
+                string TIN = HttpContext.Session["TIN"] as string;
                 string Email = HttpContext.Session["Email"] as string;
                 Debug.WriteLine($"=============TIN: {TIN}=============");
 
