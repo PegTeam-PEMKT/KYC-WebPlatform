@@ -1445,6 +1445,8 @@
     <Content Include="Views\Login\ForgotOtpView.cshtml" />
     <Content Include="Views\Login\UpdatePassword.cshtml" />
     <Content Include="Views\Business\Validations.cshtml" />
+    <Content Include="Views\Shared\_ClientIndexLayout.cshtml" />
+    <Content Include="Views\Shared\_BusinessIndexLayout.cshtml" />
     <Content Include="Views\Legal\Legal.cshtml" />
     <Content Include="Views\Shared\_LegalLayout.cshtml" />
     <Content Include="Views\Legal\LegalValidations.cshtml" />
