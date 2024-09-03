@@ -33,29 +33,34 @@ namespace KYC_WebPlatform.Services.Data
                     Debug.WriteLine("Failure creating admin");
                     return userCreated;
                 }
-                if (signupDto.Role == UserRole.Admin && !(signupDto.DeptRole == DeptRole.Business))
+                /*if (signupDto.Role == UserRole.Admin && !(signupDto.DeptRole == DeptRole.Business))
                 {
                     Debug.WriteLine("Failure creating admin");
                     return userCreated;
-                }
+                }*/
                 if (signupDto.Role == UserRole.Admin)
                 {
-                    if (InsertAdmin(signupDto.Username, hashedPassword))
+
+                    if (InsertDepartmentPerson("BUSINESS", signupDto.Username, signupDto.Email, "BUSINESS#001"))
                     {
-                        Debug.WriteLine("Admin Created");
-                        if (InsertDepartmentHead("BUSINESS#001", signupDto.Username, 5, signupDto.Email, signupDto.PhoneNumber))
-                        {
-                            Debug.WriteLine("DeptHead Created");
-                        }
-                        else
-                        {
-                            Debug.WriteLine("Failure creating DeptHead");
-                            return userCreated;
-                        }
+                        Debug.WriteLine("Business person Created");
                     }
                     else
                     {
-                        Debug.WriteLine("Failure creating admin");
+                        Debug.WriteLine("Failure creating Business person");
+                        return userCreated;
+                    }
+                    
+                }
+                if(signupDto.Role == UserRole.Legal)
+                {
+                    if (InsertDepartmentPerson("LEGAL", signupDto.Username, signupDto.Email, "HRLEGAL#001"))
+                    {
+                        Debug.WriteLine("Legal person Created");
+                    }
+                    else
+                    {
+                        Debug.WriteLine("Failure creating legal person");
                         return userCreated;
                     }
                 }
@@ -272,6 +277,42 @@ namespace KYC_WebPlatform.Services.Data
             catch (Exception ex)
             {
                 Debug.WriteLine("From InsertDepartmentHead: " + ex.Message);
+            }
+
+            return deptHeadCreated;
+
+        }
+
+        internal bool InsertDepartmentPerson(string DeptName, string username, string email, string deptCode)
+        {
+            Random rand = new Random();
+            bool deptHeadCreated = false;
+
+            string query = "INSERT INTO dbo.Departments (DepartmentName, Username, Email, DeptCode) VALUES (@DepartmentName, @Username, @Email, @DeptCode)";
+            try
+            {
+                using (SqlConnection connection = dbContext.GetConnection())
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(query, connection);
+
+                    command.Parameters.AddWithValue("@DepartmentName", DeptName);
+                    command.Parameters.AddWithValue("@Username", username.ToString());
+                    command.Parameters.AddWithValue("@Email", email);
+                    command.Parameters.AddWithValue("@DeptCode", deptCode);
+
+                    int rowsAffected = command.ExecuteNonQuery();
+
+                    if (rowsAffected > 0)
+                    {
+                        deptHeadCreated = true;
+                        return deptHeadCreated;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("From InsertDepartmentPerson: " + ex.Message);
             }
 
             return deptHeadCreated;

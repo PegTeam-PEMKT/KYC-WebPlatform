@@ -170,6 +170,7 @@
     <Compile Include="Controllers\BusinessController.cs" />
     <Compile Include="Controllers\ClientController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LegalController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\SignupController.cs" />
     <Compile Include="Controllers\ValuesController.cs" />
@@ -1446,6 +1447,10 @@
     <Content Include="Views\Business\Validations.cshtml" />
     <Content Include="Views\Shared\_ClientIndexLayout.cshtml" />
     <Content Include="Views\Shared\_BusinessIndexLayout.cshtml" />
+    <Content Include="Views\Legal\Legal.cshtml" />
+    <Content Include="Views\Shared\_LegalLayout.cshtml" />
+    <Content Include="Views\Legal\LegalValidations.cshtml" />
+    <Content Include="Views\Legal\PendingLegalFiles.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
