@@ -367,3 +367,4 @@ FodyWeavers.xsd
 /KYC-WebPlatform/Services/Data/DBContext.cs
 /KYC-WebPlatform/Web.config
 *.docx
+*.txt
