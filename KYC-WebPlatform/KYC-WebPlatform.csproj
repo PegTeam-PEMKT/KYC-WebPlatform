@@ -1444,6 +1444,7 @@
     <Content Include="Views\Login\ForgotOtpView.cshtml" />
     <Content Include="Views\Login\UpdatePassword.cshtml" />
     <Content Include="Views\Business\Validations.cshtml" />
+    <Content Include="Views\Approvals\Legal.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
