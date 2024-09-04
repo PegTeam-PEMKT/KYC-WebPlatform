@@ -1,4 +1,5 @@
-﻿using KYC_WebPlatform.Services.Data;
+﻿using KYC_WebPlatform.Services.Business;
+using KYC_WebPlatform.Services.Data;
 using KYC_WebPlatform.Services.Data.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace KYC_WebPlatform.Controllers
             }
         }
 
-        public ActionResult GetFiles(int BusinessId, string BusinessName, int fileCount)
+        public ActionResult GetFiles(int BusinessId)
         {
             try
             {
@@ -70,6 +71,152 @@ namespace KYC_WebPlatform.Controllers
             {
                 Debug.WriteLine(s.Message);
                 return View("Error");
+            }
+        }
+
+        [HttpPost]
+        public ActionResult DisplayApproval()
+        {
+            try
+            {
+                string BusinessId;
+                string fileName = Request.Form["FileName"];
+                string businessName = Request.Form["BusinessName"];
+                SqlParameter[] parameters = new SqlParameter[] { new SqlParameter("@BusinessName", businessName) };
+                Dictionary<string, List<object>> result = _storage.ExecuteSelectQuery("sp_GetBusinessId", parameters);
+
+                List<object> firstList = result.Values.First();
+
+                BusinessId = firstList.First().ToString();
+                Debug.WriteLine("BUSINESS ID HERE HERE HERE: " + BusinessId);
+
+
+                /*
+                Debug.WriteLine(Request.Form["UploadedDate"]);
+                DateTime uploadedDate = DateTime.Parse(Request.Form["UploadedDate"]);*/
+                string filePath = Request.Form["FilePath"];
+                string currentApprovalCode = Request.Form["ApprovalCode"];
+                /* if (System.IO.File.Exists(filePath))
+                 {
+                     return File(filePath, "application/pdf");
+                 }*/
+                // Use these values to display the view with the corresponding data
+                return View("LegalFileViewer", new List<Object> { filePath, currentApprovalCode, BusinessId, fileName, BusinessId });
+
+            }
+            catch (Exception ee)
+            {
+                Debug.WriteLine("From DisplayApproval: " + ee.Message);
+                return View("Error");
+            }
+
+        }
+
+        public ActionResult UpdateApprovalCode2(int status, string approvalCode, int businessId, string fileName, string nextApprover = null, string rejectionReason = null)
+        {
+            Debug.WriteLine("received status...." + status + "  approvalCode....." + approvalCode + " businessId...." + businessId + "  fileName....." + fileName);
+
+            SqlParameter[] parameters = new SqlParameter[]
+                    {
+                        new SqlParameter("@status", status),
+                        new SqlParameter("@approvalCode", approvalCode),
+                        new SqlParameter("@businessId", businessId),
+                        new SqlParameter("@fileName", fileName),
+                        new SqlParameter("@NextApprover", (object)nextApprover ?? DBNull.Value),
+                        new SqlParameter("@RejectionReason", (object)rejectionReason ?? DBNull.Value)
+                    };
+            Debug.WriteLine("received code...." + approvalCode);
+
+            Dictionary<string, List<object>> results = _storage.ExecuteSelectQuery("UpdateApprovalCode2", parameters);
+            // Assuming you know the key (e.g., "ApprovalCode")
+            // Get the first key-value pair in the dictionary
+            var firstKeyValuePair = results.FirstOrDefault();
+            object firstElement = new object();
+            string updatedApprovalCode = firstElement.ToString();
+            // Check if the dictionary is not empty
+            if (firstKeyValuePair.Key != null)
+            {
+                // Print the first key
+                Console.WriteLine($"First Key: {firstKeyValuePair.Key}");
+
+                // Retrieve the list associated with the first key
+                List<object> values = firstKeyValuePair.Value;
+
+                // Check if the list is not empty and print the first element
+                if (values.Count > 0)
+                {
+                    firstElement = values[0];
+                    Console.WriteLine($"First Value in the List: {firstElement}");
+                }
+                else
+                {
+                    Console.WriteLine("The list is empty.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("The dictionary is empty.");
+            }
+
+
+            Debug.WriteLine("UPDATED code...." + firstElement.ToString());
+            return RedirectToAction("NotifyNextApprover", new { approvalCode, updatedApprovalCode, nextApprover });
+        }
+
+        public string NotifyNextApprover(string approvalCode, string updatedApprovalCode, string nextApprover)
+        {
+            try
+            {
+                string SourceEmailAddress = HttpContext.Session["Email"] as string;
+                Debug.WriteLine("Inside the notifier a.k.a the rumourMonger: " + SourceEmailAddress);
+
+
+                Dictionary<string, string> approvalSequence = new Dictionary<string, string>
+                {
+                    { "BUSINESS#001", "HRLEGAL#001" },
+                    { "HRLEGAL#001", "FINANCE#001" },
+                    { "FINANCE#001", "MDAPPROVE#001" }
+                };
+
+
+                if (SendNotification(updatedApprovalCode, nextApprover))
+                {
+                    return "Notification sent to "+nextApprover;
+                }
+                else
+                {
+                    return "Notification not sent";
+                }
+
+            }
+            catch (Exception e)
+            {
+
+                return "From NotifyNextApprover: "+e.Message;
+
+            }
+
+
+        }
+
+        public bool SendNotification(string approvalCode, string toEmail)
+        {
+            EmailService notifyEmail = new EmailService("jemimahsoulsister@outlook.com", "jemimah@soulsister", "smtp.office365.com", 587, true);
+            bool SendOk = false;
+            string subject = "Pending KYC Approval";
+            string body = "You have a pending File approval from the KYC platform";
+            string altHost = "smtp-mail.outlook.com";
+            SendOk = notifyEmail.SendEmail(toEmail, subject, body);
+
+            if (SendOk)
+            {
+                return true;
+            }
+
+            else
+            {
+                Debug.WriteLine("Hmmm the email dint go");
+                return false;
             }
         }
     }
