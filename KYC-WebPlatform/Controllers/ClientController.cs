@@ -240,7 +240,7 @@ namespace KYC_WebPlatform.Controllers
 
                 //string TIN = HttpContext.Session["TIN"] as string;
                 string Email = HttpContext.Session["Email"] as string;
-                Debug.WriteLine($"=============TIN: {TIN}=============");
+                //Debug.WriteLine($"=============TIN: {TIN}=============");
 
                 /*string query = "Select BusinessId from ClientBusiness where TIN = @BusinessTIN";
                 int businessID = _storage.ExecuteGetIdQuery(query, TIN);*/

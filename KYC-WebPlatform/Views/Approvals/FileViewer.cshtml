@@ -5,7 +5,7 @@
 }
 @model  List<Object>
 
-<body class="app">
+<!--<body class="app">
     <div class="app-wrapper">
         <div class="app-content pt-3 p-md-3 p-lg-4">
             <div class="container-xl">
@@ -16,9 +16,9 @@
                     <div class="btn-group">
                         <button id="approve-btn" class="btn btn-primary">Approve</button>
                         <button id="reject-btn" class="btn btn-danger">Reject</button>
-                    </div>
+                    </div>-->
                     @*<a href="@Url.Content("~/Content/Files/" +@Model[3])">FFAYILO</a>*@
-                    <iframe src="@Url.Content("~/Content/Files/" + Model[3])" frameborder="0" width="100%" height="500"></iframe>
+                    <!--<iframe src="@Url.Content("~/Content/Files/" + Model[3])" frameborder="0" width="100%" height="500"></iframe>
 
                 </div>
             </div>
@@ -29,7 +29,7 @@
         $(document).ready(function () {
             $('#approve-btn').click(function () {
                 var status = parseInt(0);
-                var approvalCode = '@Model[0]';
+                var approvalCode = '@Model[1]';
                 var businessId = parseInt('@Model[2]');
                 var fileName = '@Model[3]';
 
@@ -64,8 +64,89 @@
             });
         });
     </script>
-</body>
+</body>-->
+
 @*                    <iframe src="pdflink.to/d3e89180" frameborder="0" width="100%" height="500"></iframe>
 *@
 @*<iframe src="@Url.Action("GetFile", "File")?filePath=@$(" #filePath").val()" frameborder="0" width="100%" height="500"></iframe>*@
 @*<a href="/ViewerJS/#../file:///C:/Users/bugsbunny/Downloads/week4_KevinAndEdith_DeviceFinancingAndExtraFloat.drawio.pdf">*@
+
+
+
+<body class="app">
+    <div class="app-wrapper">
+        <div class="app-content pt-3 p-md-3 p-lg-4">
+            <div class="container-xl">
+                <h1 class="app-page-title">Your Clients</h1>
+                <div class="row g-4 mb-4">
+                    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                    <h1>@Model[2] : @Model[3]</h1>
+                    <div class="btn-group">
+                        <button id="approve-btn" class="btn btn-custom">Approve</button>
+                        <button id="reject-btn" class="btn btn-danger">Reject</button>
+                    </div>
+
+                    <div id="approve-section" style="display:none;">
+                        <label for="nextApprover">Select next approver:</label>
+                        <select id="nextApprover" class="form-control">
+                            <option value="kiraboisaac6@gmail.com">Sheillah</option>
+                            <option value="jemimahm437@gmail.com">Blessing</option>
+                        </select>
+                        <button id="approve-submit-btn" class="btn btn-custom mt-2">Confirm Approval</button>
+                    </div>
+
+                    <div id="reject-section" style="display:none;">
+                        <label for="rejectionReason">Reason for rejection:</label>
+                        <textarea id="rejectionReason" class="form-control"></textarea>
+                        <button id="reject-submit-btn" class="btn btn-danger mt-2">Submit Rejection</button>
+                    </div>
+
+                    <iframe src="@Url.Content("~/Content/Files/" + Model[3])" frameborder="0" width="100%" height="500"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#approve-btn').click(function () {
+                $('#approve-section').show();
+                $('#reject-section').hide();
+            });
+
+            $('#reject-btn').click(function () {
+                $('#reject-section').show();
+                $('#approve-section').hide();
+            });
+
+            $('#approve-submit-btn').click(function () {
+                var status = 0; // Approval status
+                var approvalCode = '@Model[1]';
+                var businessId = '@Model[2]';
+                var fileName = '@Model[3]';
+                var nextApprover = $('#nextApprover').val();
+
+                $.post('/Approvals/UpdateApprovalCode2', { status: status, approvalCode: approvalCode, businessId: businessId, fileName: fileName, nextApprover: nextApprover }, function (response) {
+                    console.log('Your button Status:', status);
+                    //alert('Approval submitted!');
+                    // Redirect or perform other actions
+                    window.location.href = '/Approvals/GetFiles?BusinessId=' + businessId; 
+                });
+            });
+
+            $('#reject-submit-btn').click(function () {
+                var status = 1; // Rejection status
+                var approvalCode = '@Model[1]';
+                var businessId = '@Model[2]';
+                var fileName = '@Model[3]';
+                var rejectionReason = $('#rejectionReason').val();
+
+                $.post('/Approvals/UpdateApprovalCode2', { status: status, approvalCode: approvalCode, businessId: businessId, fileName: fileName, rejectionReason: rejectionReason }, function (response) {
+                   // alert('Rejection submitted!');
+                    // Redirect or perform other actions
+                    window.location.href = '/Approvals/GetFiles?BusinessId=' + businessId; 
+                });
+            });
+        });
+    </script>
+</body>
