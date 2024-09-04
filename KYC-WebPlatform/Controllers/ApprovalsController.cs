@@ -42,90 +42,6 @@ namespace KYC_WebPlatform.Controllers
             }
         }
 
-        /*public ActionResult ApproveOrReject(ApprovalViewModel model, string action)
-        {
-            ApproveService approveService = new ApproveService();
-            string name = "";
-            int id = 0;
-
-            string businessUserEmail = HttpContext.Session["Email"].ToString();
-
-            Debug.WriteLine("From ApproveOrReject: " + businessUserEmail);
-
-            foreach (var detail in model.BusinessDetails)
-            {
-                // Process each business detail here
-                var businessId = detail.BusinessID;
-                var businessName = detail.BusinessName;
-                var directorName = detail.DirectorName;
-                var directorNIN = detail.DirectorNIN;
-                var isNINValid = detail.IsNINValid;
-                var sanctionScore = detail.SanctionScore;
-                var isSanctionValid = detail.IsSanctionValid;
-
-                name = businessName;
-                id = businessId;
-            }
-
-            if (action == "approve")
-            {
-                string email = approveService.GetBusinessEmailByIdToApprove(id);
-                if (email != null)
-                {
-                    if (approveService.ApproveClientByEmail(email))
-                    {
-                        if(approveService.ApproveBusinessByEmail(email, businessUserEmail))
-                        {
-                            ViewBag.SuccessMessage = "Client has been approved";
-                            return View("ViewClientDetails");
-                        }
-                        else
-                        {
-                            ViewBag.ErrorMessage = "Client has not been approved";
-                            return View("ViewClientDetails");
-                        }
-                    }
-                    else
-                    {
-                        Debug.WriteLine("ApproveClientByEmail did not execute");
-                    }
-                }
-                else
-                {
-                    ViewBag.ErrorMessage = "Client email not found";
-                    return View("ViewClientDetails");
-                }
-            }
-            else if (action == "reject")
-            {
-                string email = approveService.GetBusinessEmailByIdToApprove(id);
-                if (email != null)
-                {
-                    if (approveService.RejectClientByEmail(email))
-                    {
-                        if(approveService.RejectBusinessByEmail(email, businessUserEmail))
-                        {
-                            ViewBag.SuccessMessage = "Client has been rejected";
-                            return View("ViewClientDetails");
-                        }
-                        else
-                        {
-                            ViewBag.ErrorMessage = "Client has not been rejected";
-                            return View("ViewClientDetails");
-                        }
-                    }
-                }
-                else
-                {
-                    ViewBag.ErrorMessage = "Client email not found";
-                    return View("ViewClientDetails");
-                }
-            }
-
-            ViewBag.ErrorMessage = "Action not recognized";
-            return View("ViewClientDetails"); ;
-        }*/
-
         //for the files
         public ActionResult GetFiles(int BusinessId)
         {
@@ -172,6 +88,18 @@ namespace KYC_WebPlatform.Controllers
                 BusinessId = firstList.First().ToString();
                 Debug.WriteLine("BUSINESS ID HERE HERE HERE: " + BusinessId);
 
+                //Getting all Legal people
+                string query = "SELECT Username, Email FROM Departments WHERE DeptCode = 'HRLEGAL#001'";
+                Dictionary<string, List<object>> receivers = _storage.ExecuteSelectQuery(query);
+                 Debug.WriteLine("Emails here counts " + receivers.Count);
+                var receiverList = new List<Tuple<string, string>>(); // Tuple to hold Username and Email
+                foreach (var receiver in receivers.Values)
+                {
+                    receiverList.Add(new Tuple<string, string>(receiver[0].ToString(), receiver[1].ToString()));
+                    Debug.WriteLine("*****\n\n\n****"+ receiver[0].ToString()+"\n"+ receiver[1].ToString() + "\n\n*******");
+                }
+
+                
 
                 /*
                 Debug.WriteLine(Request.Form["UploadedDate"]);
@@ -183,7 +111,7 @@ namespace KYC_WebPlatform.Controllers
                      return File(filePath, "application/pdf");
                  }*/
                 // Use these values to display the view with the corresponding data
-                return View("FileViewer", new List<Object> { filePath, currentApprovalCode, BusinessId, fileName, BusinessId });
+                return View("FileViewer", new List<Object> { filePath, currentApprovalCode, BusinessId, fileName, BusinessId, receiverList });
 
             }
             catch (Exception ee)
