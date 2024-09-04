@@ -21,8 +21,10 @@
                     <div id="approve-section" style="display:none;">
                         <label for="nextApprover">Select next approver:</label>
                         <select id="nextApprover" class="form-control">
-                            <option value="kiraboisaac6@gmail.com">Sheillah</option>
-                            <option value="jemimahm437@gmail.com">Blessing</option>
+                            @foreach (var receiver in (List<Tuple<string, string>>)Model[5])
+                            {
+                                <option value="@receiver.Item2">@receiver.Item1</option>
+                            }
                         </select>
                         <button id="approve-submit-btn" class="btn btn-custom mt-2">Confirm Approval</button>
                     </div>
