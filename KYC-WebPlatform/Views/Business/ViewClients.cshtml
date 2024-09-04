@@ -1,6 +1,6 @@
 ﻿@{
     ViewBag.Title = "ViewClients";
-    Layout = "~/Views/Shared/_BusinessLayout.cshtml";
+    Layout = "~/Views/Shared/_BusinessIndexLayout.cshtml";
 }
 @model Dictionary<string, List<object>>
 
@@ -49,7 +49,14 @@
                                         <li><strong>Phone Number:</strong> @row.Value[8]</li>
                                         <li><strong>Location:</strong> @row.Value[9]</li>
                                         <li><strong>Created Date:</strong> @row.Value[10]</li>
-                                        @* <li class="badge badge bg-warning"><strong>Pending</strong></li>*@
+                                        @if (row.Value[11].Equals(true))
+                                        {
+                                            <li class="badge badge bg-success"><strong>Approved</strong></li>
+                                        }
+                                        else
+                                        {
+                                            <li class="badge badge bg-danger"><strong>Rejected</strong></li>
+                                        }
 
                                     </ul>
                                 </div><!--//app-card-body-->
