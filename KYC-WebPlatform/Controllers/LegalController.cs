@@ -90,6 +90,16 @@ namespace KYC_WebPlatform.Controllers
                 BusinessId = firstList.First().ToString();
                 Debug.WriteLine("BUSINESS ID HERE HERE HERE: " + BusinessId);
 
+                //getting all finance people
+                string query = "SELECT Username, Email FROM Departments WHERE DeptCode = 'FINANCE#001'";
+                Dictionary<string, List<object>> receivers = _storage.ExecuteSelectQuery(query);
+                Debug.WriteLine("Emails here counts " + receivers.Count);
+                var receiverList = new List<Tuple<string, string>>(); // Tuple to hold Username and Email
+                foreach (var receiver in receivers.Values)
+                {
+                    receiverList.Add(new Tuple<string, string>(receiver[0].ToString(), receiver[1].ToString()));
+                    Debug.WriteLine("*****\n\n\n****" + receiver[0].ToString() + "\n" + receiver[1].ToString() + "\n\n*******");
+                }
 
                 /*
                 Debug.WriteLine(Request.Form["UploadedDate"]);
@@ -101,7 +111,7 @@ namespace KYC_WebPlatform.Controllers
                      return File(filePath, "application/pdf");
                  }*/
                 // Use these values to display the view with the corresponding data
-                return View("LegalFileViewer", new List<Object> { filePath, currentApprovalCode, BusinessId, fileName, BusinessId });
+                return View("LegalFileViewer", new List<Object> { filePath, currentApprovalCode, BusinessId, fileName, BusinessId, receiverList });
 
             }
             catch (Exception ee)
