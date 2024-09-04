@@ -2,9 +2,9 @@
 {
     public enum UserRole
     {
-        Admin = 11, //Business
+        Business = 11, //Business
         ProjectManager = 12,
-        DepartmentHead = 13, //Not used
+        Finance = 13, //Not used
         Legal = 14, 
         Client = 15,
     }

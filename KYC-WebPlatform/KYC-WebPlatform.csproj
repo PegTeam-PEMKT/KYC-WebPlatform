@@ -1445,10 +1445,15 @@
     <Content Include="Views\Login\ForgotOtpView.cshtml" />
     <Content Include="Views\Login\UpdatePassword.cshtml" />
     <Content Include="Views\Business\Validations.cshtml" />
+    <Content Include="Views\Shared\_ClientIndexLayout.cshtml" />
+    <Content Include="Views\Shared\_BusinessIndexLayout.cshtml" />
     <Content Include="Views\Legal\Legal.cshtml" />
     <Content Include="Views\Shared\_LegalLayout.cshtml" />
     <Content Include="Views\Legal\LegalValidations.cshtml" />
     <Content Include="Views\Legal\PendingLegalFiles.cshtml" />
+    <Content Include="Views\Admin\AdminSignIn.cshtml" />
+    <Content Include="Views\Admin\AdminOtpView.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
