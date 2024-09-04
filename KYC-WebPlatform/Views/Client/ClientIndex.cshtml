@@ -8,6 +8,12 @@
     string email = TempData["Email"] as string;
     string username = TempData["Username"] as string;
     string testEmail = Session["Email"] as string;
+
+    if (Session["Email"] == null)
+    {
+        // Redirect to the login page if the email session is not set
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
 }
 
 
