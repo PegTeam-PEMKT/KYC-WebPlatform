@@ -294,7 +294,7 @@ namespace KYC_WebPlatform.Controllers
             return RedirectToAction("NotifyNextApprover", new { approvalCode, updatedApprovalCode, nextApprover });
         }
 
-        public ActionResult NotifyNextApprover(string approvalCode, string updatedApprovalCode, string nextApprover)
+        public string NotifyNextApprover(string approvalCode, string updatedApprovalCode, string nextApprover)
         {
             try
             {
@@ -312,18 +312,18 @@ namespace KYC_WebPlatform.Controllers
 
                 if (SendNotification(updatedApprovalCode, nextApprover))
                 {
-                    return RedirectToAction("GetFiles", "Approvals");
+                    return "Notification sent to " + nextApprover;
                 }
                 else
                 {
-                    return View("Error");
+                    return "Notification not sent";
                 }
 
             }
             catch (Exception e)
             {
 
-                return View("Error", e.Message);
+                return "From NotifyNextApprover: " + e.Message;
 
             }
 
