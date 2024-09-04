@@ -15,6 +15,11 @@ namespace KYC_WebPlatform.Controllers
             return View("AdminSignIn");
         }
 
+        public ActionResult AddUser()
+        {
+            return View("AddUser");
+        }
+
         public ActionResult CreateUser(SignupDto signupDto)
         {
             if (signupDto.PhoneNumber.Length < 10 || signupDto.PhoneNumber.Length > 10)
