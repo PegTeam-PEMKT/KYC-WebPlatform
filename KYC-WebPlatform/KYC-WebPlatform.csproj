@@ -1454,6 +1454,7 @@
     <Content Include="Views\Admin\AdminSignIn.cshtml" />
     <Content Include="Views\Admin\AdminOtpView.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\Legal\LegalFileViewer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
