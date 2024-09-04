@@ -31,7 +31,7 @@ namespace KYC_WebPlatform.Controllers
             try
             {
                 // Fetch records from the database and map to ViewModel
-                Dictionary<string, List<object>> pendingBusinesses = _storage.ExecuteSelectQuery("sp_GetInactiveBusinesses");
+                Dictionary<string, List<object>> pendingBusinesses = _storage.ExecuteSelectQuery("sp_GetBusinessPendingBusinesses");
                 Debug.WriteLine("AAAAAAA********" + pendingBusinesses.Values.Count);
                 return View("PendingBusinesses", pendingBusinesses);
             }
