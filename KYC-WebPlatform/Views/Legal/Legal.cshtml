@@ -2,6 +2,11 @@
     ViewBag.Title = "Legal";
     Layout = "~/Views/Shared/_LegalIndexLayout.cshtml";
 
+    if (Session["Email"] == null)
+    {
+        // Redirect to the login page if the email session is not set
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
 }
 
 <h2>Legal</h2>

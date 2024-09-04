@@ -138,6 +138,7 @@ namespace KYC_WebPlatform.Controllers
         public ActionResult ViewStatus(string tab)
         {
             string clientEmail = HttpContext.Session["Email"] as string;
+            Debug.WriteLine(clientEmail);
 
             List<Document> documents = new List<Document>();
             /*List<Document> documents = dbContext.GetClientDocuments(clientEmail);*/

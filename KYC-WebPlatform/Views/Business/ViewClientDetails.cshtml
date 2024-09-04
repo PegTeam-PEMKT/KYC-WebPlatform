@@ -1,6 +1,12 @@
 ﻿@{
     ViewBag.Title = "ViewClientDetails";
     Layout = "~/Views/Shared/_BusinessLayout.cshtml";
+
+    if (Session["Email"] == null)
+    {
+        // Redirect to the login page if the email session is not set
+        Response.Redirect(Url.Action("Index", "Login"));
+    }
 }
 @model Dictionary<string, List<object>>
 
