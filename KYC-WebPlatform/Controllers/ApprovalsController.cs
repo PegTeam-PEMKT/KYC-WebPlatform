@@ -188,6 +188,7 @@ namespace KYC_WebPlatform.Controllers
             }
             catch (Exception ee)
             {
+                Debug.WriteLine("From DisplayApproval: " + ee.Message);
                 return View("Error");
             }
 
@@ -311,7 +312,7 @@ namespace KYC_WebPlatform.Controllers
 
                 if (SendNotification(updatedApprovalCode, nextApprover))
                 {
-                    return View("PendingBusinessFiles", approvalCode);
+                    return RedirectToAction("GetFiles", "Approvals");
                 }
                 else
                 {

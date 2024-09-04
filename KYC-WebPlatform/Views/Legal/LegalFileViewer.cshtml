@@ -1,8 +1,9 @@
 ﻿
 @{
-    ViewBag.Title = "FileViewer";
-    Layout = "~/Views/Shared/_BusinessLayout.cshtml";
+    ViewBag.Title = "LegalFileViewer";
+    Layout = "~/Views/Shared/_LegalLayout.cshtml";
 }
+
 @model  List<Object>
 
 <body class="app">
@@ -59,11 +60,11 @@
                 var fileName = '@Model[3]';
                 var nextApprover = $('#nextApprover').val();
 
-                $.post('/Approvals/UpdateApprovalCode2', { status: status, approvalCode: approvalCode, businessId: businessId, fileName: fileName, nextApprover: nextApprover }, function (response) {
+                $.post('/Legal/UpdateApprovalCode2', { status: status, approvalCode: approvalCode, businessId: businessId, fileName: fileName, nextApprover: nextApprover }, function (response) {
                     console.log('Your button Status:', status);
-                    //alert('Approval submitted!');
+                    alert('Approval submitted!');
                     // Redirect or perform other actions
-                    window.location.href = '/Approvals/GetFiles?BusinessId=' + businessId; 
+                    window.location.href = '/Legal/GetFiles?BusinessId=' + businessId;
                 });
             });
 
@@ -74,12 +75,13 @@
                 var fileName = '@Model[3]';
                 var rejectionReason = $('#rejectionReason').val();
 
-                $.post('/Approvals/UpdateApprovalCode2', { status: status, approvalCode: approvalCode, businessId: businessId, fileName: fileName, rejectionReason: rejectionReason }, function (response) {
+                $.post('/Legal/UpdateApprovalCode2', { status: status, approvalCode: approvalCode, businessId: businessId, fileName: fileName, rejectionReason: rejectionReason }, function (response) {
                    // alert('Rejection submitted!');
                     // Redirect or perform other actions
-                    window.location.href = '/Approvals/GetFiles?BusinessId=' + businessId; 
+                    window.location.href = '/Legal/GetFiles?BusinessId=' + businessId;
                 });
             });
         });
     </script>
 </body>
+
