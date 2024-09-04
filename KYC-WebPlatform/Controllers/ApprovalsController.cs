@@ -127,7 +127,7 @@ namespace KYC_WebPlatform.Controllers
         }*/
 
         //for the files
-        public ActionResult GetFiles(int BusinessId, string BusinessName, int fileCount)
+        public ActionResult GetFiles(int BusinessId)
         {
             try
             {
@@ -177,13 +177,13 @@ namespace KYC_WebPlatform.Controllers
                 Debug.WriteLine(Request.Form["UploadedDate"]);
                 DateTime uploadedDate = DateTime.Parse(Request.Form["UploadedDate"]);*/
                 string filePath = Request.Form["FilePath"];
-                string toBeApprovedBy = Request.Form["ToBeApprovedBy"];
+                string currentApprovalCode = Request.Form["ApprovalCode"];
                 /* if (System.IO.File.Exists(filePath))
                  {
                      return File(filePath, "application/pdf");
                  }*/
                 // Use these values to display the view with the corresponding data
-                return View("FileViewer", new List<Object> { filePath, toBeApprovedBy, BusinessId, fileName, BusinessId });
+                return View("FileViewer", new List<Object> { filePath, currentApprovalCode, BusinessId, fileName, BusinessId });
 
             }
             catch (Exception ee)
@@ -242,7 +242,58 @@ namespace KYC_WebPlatform.Controllers
             return RedirectToAction("NotifyNextApprover", new { approvalCode, updatedApprovalCode });
         }
 
-        public ActionResult NotifyNextApprover(string approvalCode, string updatedApprovalCode)
+        public ActionResult UpdateApprovalCode2(int status, string approvalCode, int businessId, string fileName, string nextApprover = null, string rejectionReason = null)
+        {
+            Debug.WriteLine("received status...." + status + "  approvalCode....." + approvalCode + " businessId...." + businessId + "  fileName....." + fileName);
+
+            SqlParameter[] parameters = new SqlParameter[]
+                    {
+                        new SqlParameter("@status", status),
+                        new SqlParameter("@approvalCode", approvalCode),
+                        new SqlParameter("@businessId", businessId),
+                        new SqlParameter("@fileName", fileName),
+                        new SqlParameter("@NextApprover", (object)nextApprover ?? DBNull.Value),
+                        new SqlParameter("@RejectionReason", (object)rejectionReason ?? DBNull.Value)
+                    };
+            Debug.WriteLine("received code...." + approvalCode);
+
+            Dictionary<string, List<object>> results = _storage.ExecuteSelectQuery("UpdateApprovalCode2", parameters);
+            // Assuming you know the key (e.g., "ApprovalCode")
+            // Get the first key-value pair in the dictionary
+            var firstKeyValuePair = results.FirstOrDefault();
+            object firstElement = new object();
+            string updatedApprovalCode = firstElement.ToString();
+            // Check if the dictionary is not empty
+            if (firstKeyValuePair.Key != null)
+            {
+                // Print the first key
+                Console.WriteLine($"First Key: {firstKeyValuePair.Key}");
+
+                // Retrieve the list associated with the first key
+                List<object> values = firstKeyValuePair.Value;
+
+                // Check if the list is not empty and print the first element
+                if (values.Count > 0)
+                {
+                    firstElement = values[0];
+                    Console.WriteLine($"First Value in the List: {firstElement}");
+                }
+                else
+                {
+                    Console.WriteLine("The list is empty.");
+                }
+            }
+            else
+            {
+                Console.WriteLine("The dictionary is empty.");
+            }
+
+
+            Debug.WriteLine("UPDATED code...." + firstElement.ToString());
+            return RedirectToAction("NotifyNextApprover", new { approvalCode, updatedApprovalCode, nextApprover });
+        }
+
+        public ActionResult NotifyNextApprover(string approvalCode, string updatedApprovalCode, string nextApprover)
         {
             try
             {
@@ -258,7 +309,7 @@ namespace KYC_WebPlatform.Controllers
                 };
 
 
-                if (SendNotification(updatedApprovalCode))
+                if (SendNotification(updatedApprovalCode, nextApprover))
                 {
                     return View("PendingBusinessFiles", approvalCode);
                 }
@@ -308,6 +359,27 @@ namespace KYC_WebPlatform.Controllers
                 return false;
             }
 
+        }
+
+        public bool SendNotification(string approvalCode, string toEmail)
+        {
+            EmailService notifyEmail = new EmailService("jemimahsoulsister@outlook.com", "jemimah@soulsister", "smtp.office365.com", 587, true);
+            bool SendOk = false;
+            string subject = "Pending KYC Approval";
+            string body = "You have a pending File approval from the KYC platform";
+            string altHost = "smtp-mail.outlook.com";
+            SendOk = notifyEmail.SendEmail(toEmail, subject, body);
+
+            if (SendOk)
+            {
+                return true;
+            }
+
+            else
+            {
+                Debug.WriteLine("Hmmm the email dint go");
+                return false;
+            }
         }
     }
 }
