@@ -4,6 +4,7 @@ using KYC_WebPlatform.Services.Data;
 using System;
 using System.Diagnostics;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace KYC_WebPlatform.Controllers
 {
@@ -16,9 +17,13 @@ namespace KYC_WebPlatform.Controllers
 
         public ActionResult Logout()
         {
-            HttpContext.Session.Remove("Email");
-            HttpContext.Session.Remove("Username");
-            return View("SignIn");
+            HttpContext.Session.Clear();
+            HttpContext.Session.Abandon();
+
+            // Clear authentication cookie
+            FormsAuthentication.SignOut();
+
+            return RedirectToAction("Index", "Login");
         }
 
         public ActionResult Login(LoginDto loginDto)

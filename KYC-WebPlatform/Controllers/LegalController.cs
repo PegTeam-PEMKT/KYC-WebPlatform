@@ -16,6 +16,15 @@ namespace KYC_WebPlatform.Controllers
         private ClientService _storage = new ClientService();
         public SecurityDAO security = new SecurityDAO();
 
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (Session["Email"] == null) // or any session variable that confirms login
+            {
+                filterContext.Result = RedirectToAction("Index", "Login");
+            }
+            base.OnActionExecuting(filterContext);
+        }
+
         // GET: Legal
         public ActionResult Index()
         {
