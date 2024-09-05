@@ -5,60 +5,10 @@
     Layout = null;
 }
 
-<!--<h2>Sign In</h2>-->
-
-@*@using (Html.BeginForm())["Action", "Controller-name", Method]*@
-<!--@using (Html.BeginForm("Login", "Login", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
-
-    <div class="form-horizontal">
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.PasswordFor(model => model.Password, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10 mt-2">
-                <input type="submit" value="Sign In" class="btn btn-primary" />
-            </div>
-        </div>
-    </div>
-    if (ViewBag.ErrorMessage != null)
-    {
-        <div class="alert alert-danger">
-            @ViewBag.ErrorMessage
-        </div>
-    }
-    if (ViewBag.SuccessMessage != null)
-    {
-        <div class="alert alert-success">
-            @ViewBag.SuccessMessage
-        </div>
-    }
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>-->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Portal</title>
+    <title>KYC Portal</title>
 
     <!-- Meta -->
     <meta charset="utf-8">
@@ -84,12 +34,12 @@
             <div class="d-flex flex-column align-content-end">
                 <div class="app-auth-body mx-auto">
                     <div class="app-auth-branding mb-4">
-                        <a class="app-logo" href="index.html">
+                        <a class="app-logo" href="">
                             <img class="logo-icon me-2" src="~/assets/images/pegpay_logo.jpeg" alt="logo"> <!--logo here-->
 
                         </a>
                     </div>
-                    <h2 class="auth-heading text-center mb-5">Log in to Portal</h2>
+                    <h2 class="auth-heading text-center mb-5">Log in to the KYC Portal</h2>
                     <div class="auth-form-container text-start">
                         <div class="auth-form login-form">
                             @using (Html.BeginForm("Login", "Login", FormMethod.Post, new { @class = "auth-form login-form" }))

@@ -14,7 +14,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Portal - Bootstrap 5 Admin Dashboard Template For Developers</title>
+    <title>KYC Portal</title>
 
     <!-- Meta -->
     <meta charset="utf-8">
@@ -46,9 +46,9 @@
                 <hr class="mb-4">
 
                 <!-- Form -->
-                @using (Html.BeginForm("AddBusiness", "Client", FormMethod.Post, new { @class = "settings-form" }))
+                @using (Html.BeginForm("CreateBusiness", "Client", FormMethod.Post, new { @class = "settings-form" }))
                 {
-                    @Html.AntiForgeryToken()
+                    @*Html.AntiForgeryToken()*@
 
                     <div class="row g-4 settings-section">
                         <div class="col-12 col-md-4">
@@ -85,10 +85,16 @@
                                     </div>
                                     <div class="mb-3">
                                         <label for="TIN Number" class="form-label">TIN Number</label>
-                                        @Html.TextBoxFor(m => m.BusinessTIN, new { @class = "form-control", type = "text" })
+                                        @Html.TextBoxFor(m => m.BusinessTIN, new { @class = "form-control", type = "text", required = true })
                                     </div>
                                     @*<button type="submit" class="btn app-btn-primary">Submit Business Info</button>*@
-                                </div>
+                                    @if (ViewBag.ErrorMessage != null)
+                                    {
+                                        <div class="alert alert-danger mt-3">
+                                            @ViewBag.ErrorMessage
+                                        </div>
+                                    }
+                                    </div>
                             </div>
                         </div>
                     </div>

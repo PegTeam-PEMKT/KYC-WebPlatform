@@ -208,6 +208,8 @@
     <Content Include="assets\images\background\background-1.jpg" />
     <Content Include="assets\images\background\background-2.jpg" />
     <Content Include="assets\images\background\background-3.jpg" />
+    <Content Include="assets\images\background\background-4.jpg" />
+    <Content Include="assets\images\background\background-5.jpg" />
     <Content Include="assets\images\doc-thumb-1.jpg" />
     <Content Include="assets\images\doc-thumb-2.jpg" />
     <Content Include="assets\images\pegasus_logo.jpeg" />

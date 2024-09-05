@@ -30,6 +30,14 @@ namespace KYC_WebPlatform.Controllers
             _apiService = new ApiService(); // For Open Sanctions validation
         }
 
+        protected override void OnActionExecuting(ActionExecutingContext filterContext)
+        {
+            if (Session["Email"] == null) // or any session variable that confirms login
+            {
+                filterContext.Result = RedirectToAction("Index", "Login");
+            }
+            base.OnActionExecuting(filterContext);
+        }
 
         // GET: Client
         public ActionResult ClientIndex()
@@ -43,6 +51,26 @@ namespace KYC_WebPlatform.Controllers
             {
                 model.Directors = new List<Director_MODEL>();
             }
+            return View("AddBusiness", model);
+        }
+
+        public ActionResult CreateBusiness(AddBusiness_MODEL model)
+        {
+            if (model.Directors == null)
+            {
+                model.Directors = new List<Director_MODEL>();
+            }
+            if(!(model.BusinessTIN.Length == 10))
+            {
+                ViewBag.ErrorMessage = "Invalid TIN number length";
+                return View("AddBusiness", model);
+            }
+            if (!(int.TryParse(model.BusinessTIN, out int tin)))
+            {
+                ViewBag.ErrorMessage = "TIN number can only contain digits";
+                return View("AddBusiness", model);
+            }
+
             try
             {
                 HttpContext.Session["TIN"] = model.BusinessTIN;
