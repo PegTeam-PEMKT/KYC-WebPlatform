@@ -161,6 +161,8 @@ namespace KYC_WebPlatform.Controllers
                     // Execute the command and read the data
                     using (SqlDataReader reader = command.ExecuteReader())
                     {
+
+                        Debug.WriteLine("Going to execute stored procedure");
                         while (reader.Read())
                         {
                             // Create a new Document object and populate it with the data
@@ -175,6 +177,7 @@ namespace KYC_WebPlatform.Controllers
                                 FilePath = reader["FilePath"] != DBNull.Value ? reader["FilePath"].ToString() : null,
                             };
 
+                            Debug.WriteLine("Data");
                             // Add the document to the list
                             documents.Add(document);
                         }
@@ -194,7 +197,7 @@ namespace KYC_WebPlatform.Controllers
                     documents = documents.Where(d => !d.IsVerified.HasValue || !d.IsVerified.Value).ToList();
                     break;
                 case "orders-cancelled":
-                    documents = documents.Where(d => d.ApprovalCode == "Cancelled").ToList(); //To change to correct Approval Code
+                    documents = documents.Where(d => d.ApprovalCode == "REJECTED").ToList(); //To change to correct Approval Code
                     break;
                 default:
                     // Show all documents

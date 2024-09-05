@@ -240,7 +240,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach (var document in Model.Where(d => d.ApprovalCode == "Cancelled"))  //We will have to modify the approval code. couldn't trace at this time
+                                            @foreach (var document in Model.Where(d => d.ApprovalCode == "REJECTED"))  //We will have to modify the approval code. couldn't trace at this time
                                             {
                                                 <tr>
                                                     <td class="cell">@document.FileId</td>
