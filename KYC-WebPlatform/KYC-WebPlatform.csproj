@@ -1458,6 +1458,7 @@
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Legal\LegalFileViewer.cshtml" />
     <Content Include="Views\Shared\_LegalIndexLayout.cshtml" />
+    <Content Include="Views\Login\PegasusSignIn.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

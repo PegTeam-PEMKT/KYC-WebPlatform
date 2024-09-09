@@ -1,0 +1,112 @@
+﻿@model KYC_WebPlatform.Models.LoginDto
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>KYC Portal</title>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="description" content="Portal - Bootstrap 5 Admin Dashboard Template For Developers">
+    <meta name="author" content="Xiaoying Riley at 3rd Wave Media">
+    <link rel="shortcut icon" href="favicon.ico">
+
+    <!-- FontAwesome JS-->
+    <script defer src="~/assets/plugins/fontawesome/js/all.min.js"></script>
+
+    <!-- App CSS -->
+    <link id="theme-style" rel="stylesheet" href="~/assets/css/portal.css">
+    <link id="theme-style" rel="stylesheet" href="~/assets/css/custom.css">
+
+</head>
+
+<body class="app app-login p-0">
+    <div class="row g-0 app-auth-wrapper">
+        <div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5">
+            <div class="d-flex flex-column align-content-end">
+                <div class="app-auth-body mx-auto">
+                    <div class="app-auth-branding mb-4">
+                        <a class="app-logo" href="">
+                            <img class="logo-icon me-2" src="~/assets/images/pegpay_logo.jpeg" alt="logo"> <!--logo here-->
+
+                        </a>
+                    </div>
+                    <h2 class="auth-heading text-center mb-5">Log in to the KYC Portal</h2>
+                    <div class="auth-form-container text-start">
+                        <div class="auth-form login-form">
+                            @using (Html.BeginForm("Login", "Login", FormMethod.Post, new { @class = "auth-form login-form" }))
+                            {
+                                @Html.AntiForgeryToken()
+
+                                <div class="auth-form-container text-start">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                                    <div class="email mb-3">
+                                        <label class="sr-only" for="signin-email">Email</label>
+                                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control signin-email", id = "signin-email", placeholder = "Email address", required = true })
+                                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                                    </div><!--//form-group-->
+
+
+                                    <div class="password mb-3">
+                                        <label class="sr-only" for="signin-password">Password</label>
+                                        @Html.PasswordFor(m => m.Password, new { @class = "form-control signin-password", id = "signin-password", placeholder = "Password", type = "password", required = true })
+                                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+
+                                    </div><!--//form-group-->
+                                    <div class="extra mt-3 row justify-content-between">
+                                        <div class="col-6">
+
+                                        </div><!--//col-6-->
+                                        <div class="col-6">
+                                            <div class="forgot-password text-end">
+                                                <a href="/Login/ForgotView">Forgot password?</a>
+                                            </div>
+                                        </div><!--//col-6-->
+                                    </div><!--//extra-->
+                                    <div class="text-center">
+                                        <button type="submit" class="btn btn-custom w-100 theme-btn mx-auto">Log In</button>
+                                    </div>
+
+                                    @if (ViewBag.ErrorMessage != null)
+                                    {
+                                        <div class="alert alert-danger mt-3">
+                                            @ViewBag.ErrorMessage
+                                        </div>
+                                    }
+                                    @if (ViewBag.SuccessMessage != null)
+                                    {
+                                        <div class="alert alert-success mt-3">
+                                            @ViewBag.SuccessMessage
+                                        </div>
+                                    }
+                                </div><!--//auth-form-container-->
+                            }
+
+                        </div>
+                    </div>
+                </div><!--//auth-body-->
+
+            </div><!--//flex-column-->
+        </div><!--//auth-main-col-->
+
+        <div class="col-12 col-md-5 col-lg-6 h-100 auth-background-col">
+            <div class="auth-background-holder">
+            </div>
+            <div class="auth-background-mask"></div>
+            <div class="auth-background-overlay p-3 p-lg-5">
+                <div class="d-flex flex-column align-content-end h-100">
+                    <div class="h-100"></div>
+                </div>
+            </div><!--//auth-background-overlay-->
+        </div><!--//auth-background-col-->
+    </div><!--//row-->
+</body>
+</html>

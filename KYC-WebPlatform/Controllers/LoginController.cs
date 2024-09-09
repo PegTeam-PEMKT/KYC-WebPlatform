@@ -15,6 +15,11 @@ namespace KYC_WebPlatform.Controllers
             return View("SignIn");
         }
 
+        public ActionResult PegasusLogin()
+        {
+            return View("PegasusSignIn");
+        }
+
         public ActionResult Logout()
         {
             HttpContext.Session.Clear();
